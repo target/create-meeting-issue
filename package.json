@@ -1,0 +1,49 @@
+{
+	"name": "create-meeting-issue",
+	"version": "0.0.1",
+	"description": "Automatically scaffold out a meeting using .ics recurrence, timezone info, and agenda topics from the issue log and prs.",
+	"type": "module",
+	"scripts": {
+		"dev": "pnpm package --watch",
+		"package": "npx ncc build src/index.ts -o dist --license licenses.txt",
+		"lint": "pnpm biome check src",
+		"test": "vitest",
+		"coverage": "vitest run --coverage"
+	},
+	"keywords": ["actions", "node", "meeting", "agenda", "working-groups"],
+	"engines": {
+		"node": ">=20"
+	},
+	"exports": {
+		".": "./dist/index.js"
+	},
+	"dependencies": {
+		"@actions/core": "1.11.1",
+		"@actions/github": "6.0.1",
+		"is-dst": "1.0.0",
+		"isomorphic-dompurify": "2.25.0",
+		"luxon": "3.6.1",
+		"node-ical": "0.20.1"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@types/luxon": "3.6.2",
+		"@types/node": "22.15.33",
+		"@vercel/ncc": "0.38.3",
+		"@vitest/coverage-v8": "3.2.4",
+		"rrule": "2.8.1",
+		"typescript": "5.8.3",
+		"vitest": "3.2.4"
+	},
+	"author": "bmuenzenmeyer",
+	"license": "Apache-2.0",
+	"homepage": "https://github.com/target/create-meeting-issue",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/target/create-meeting-issue"
+	},
+	"bugs": {
+		"url": "https://github.com/target/create-meeting-issue/issues"
+	},
+	"packageManager": "pnpm@10.12.3"
+}

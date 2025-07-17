@@ -1,0 +1,37 @@
+name: "create-meeting-issue"
+description: "Automatically scaffold out a meeting using .ics recurrence, timezone info, and agenda topics from the issue log and prs."
+author: "Brian Muenzenmeyer"
+
+inputs:
+  GITHUB_TOKEN:
+    description: "token with access to the repository"
+    required: true
+  MEETING_PATH:
+    description: 'the path to recurring meeting.ics file. Default is "meeting.ics"'
+    default: "meeting.ics"
+    required: true
+  SLACK_CHANNEL:
+    description: "the url of the slack channel"
+    required: false
+  TIMEZONES:
+    description: 'comma-separated list of TZ identifiers. Example: "America/Chicago,Asia/Kolkata" Default is "Etc/UTC"'
+    default: "Etc/UTC"
+    required: true
+  DRY_RUN:
+    description: "If true, only outputs the issue body instead of creating the issue"
+    required: false
+    default: false
+
+outputs:
+  ISSUE_URL:
+    description: "The issue url of the next meeting"
+  NEXT_MEETING_DATE:
+    description: "The date of the next meeting"
+  LOCATION:
+    description: "The location of the next meeting"
+
+runs:
+  # using: node22
+  # main: "node --experimental-strip-types --disable-warning=ExperimentalWarning index.ts"
+  using: node20
+  main: dist/index.js
