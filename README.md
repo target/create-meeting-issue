@@ -106,8 +106,8 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-	# this is unaffiliated boilerplate and should be tailored to your needs
-	# using https://github.com/slackapi/slack-github-action/tree/main?tab=readme-ov-file#technique-1-slack-workflow-builder is a pretty lightweight way to do this
+  # this is unaffiliated boilerplate and should be tailored to your needs
+  # using https://github.com/slackapi/slack-github-action/tree/main?tab=readme-ov-file#technique-1-slack-workflow-builder is a pretty lightweight way to do this
   notify-slack:
     runs-on: ubuntu-latest
     needs: create-meeting
