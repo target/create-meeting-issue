@@ -46,6 +46,8 @@ describe('extractInput', () => {
 				slackChannel: MOCK_SLACK_CHANNEL,
 				timezones: ['UTC', 'CST'],
 				dryRun: true,
+				agendaLabel: 'agenda',
+				orgWide: false,
 			})
 		})
 
@@ -69,6 +71,35 @@ describe('extractInput', () => {
 				slackChannel: undefined,
 				timezones: ['UTC', 'CST'],
 				dryRun: false,
+				agendaLabel: 'agenda',
+				orgWide: false,
+			})
+		})
+
+		it('should handle custom agenda label and org wide search', () => {
+			;(getInput as Mock).mockImplementation((name: string) => {
+				const inputs: { [key: string]: string } = {
+					GITHUB_TOKEN: MOCK_GITHUB_TOKEN,
+					MEETING_PATH: MOCK_PATH,
+					TIMEZONES: MOCK_TIMEZONES,
+					AGENDA_LABEL: 'meeting-topic',
+					ORG_WIDE: 'true',
+				}
+				return inputs[name]
+			})
+
+			const input = extractInput()
+
+			expect(input).toEqual({
+				token: MOCK_GITHUB_TOKEN,
+				org: MOCK_OWNER,
+				repo: MOCK_REPO,
+				meetingPath: MOCK_PATH,
+				slackChannel: undefined,
+				timezones: ['UTC', 'CST'],
+				dryRun: false,
+				agendaLabel: 'meeting-topic',
+				orgWide: true,
 			})
 		})
 	})
