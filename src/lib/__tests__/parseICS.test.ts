@@ -2,6 +2,8 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import parseICS from '../parseICS'
 
+process.env.TZ = 'UTC'
+
 const MOCK_RECURRENCE = `
 BEGIN:VCALENDAR
 METHOD:PUBLISH
@@ -86,6 +88,7 @@ describe('parseICS', () => {
 		vi.setSystemTime(MOCK_DATE)
 	})
 	afterEach(() => {
+		vi.unstubAllEnvs()
 		vi.useRealTimers()
 	})
 
@@ -106,12 +109,14 @@ describe('parseICS', () => {
 	})
 
 	test('during daylight savings time, should not add an hour to the next calculated recurrence', async () => {
+		vi.stubEnv('TZ', 'America/New_York')
 		vi.setSystemTime(new Date(2024, 5, 1)) // June 1, 2024
 		const { nextMeetingDateAndTimeUTC } = await parseICS(MOCK_RECURRENCE)
 		expect(nextMeetingDateAndTimeUTC.toISOTime()).toEqual('13:30:00.000Z')
 	})
 
 	test('when it is not daylight savings time, should add an hour to the next calculated recurrence', async () => {
+		vi.stubEnv('TZ', 'America/New_York')
 		vi.setSystemTime(new Date(2024, 11, 16)) // December 16, 2024
 		const { nextMeetingDateAndTimeUTC } = await parseICS(MOCK_RECURRENCE)
 		expect(nextMeetingDateAndTimeUTC.toISOTime()).toEqual('14:30:00.000Z')
