@@ -21,6 +21,14 @@ inputs:
     description: "If true, only outputs the issue body instead of creating the issue"
     required: false
     default: false
+  AGENDA_LABEL:
+    description: "The label used to identify agenda items. Default is 'agenda'"
+    required: false
+    default: "agenda"
+  ORG_WIDE:
+    description: "If true, searches for agenda items across the entire organization instead of just the repository"
+    required: false
+    default: false
 
 outputs:
   ISSUE_URL:

@@ -13,7 +13,7 @@ Upon invocation, the action will:
   - find the next meeting occurrence date and useful timezone info
   - > ⚠️ The recurrence does not know about any moved instances
   - read the location from the meeting, often a zoom, slack huddle, or teams link
-- find all issues and pull requests labeled `agenda` and add them to the upcoming meeting agenda
+- find all issues and pull requests labeled with the specified agenda label (default: `agenda`) and add them to the upcoming meeting agenda
 - open a new issue with the collected date, timezones, location info, and agenda items
 - output the issue url, location, and next meeting date for further use by downstream actions
 
@@ -63,6 +63,8 @@ steps:
 | `TIMEZONES`     | ✅       | `Etc/UTC`     | The comma-separated timezones to display for the next meeting. For example, `America/Chicago,Asia/Kolkata`. Use `TZ Identifiers` from [this list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). |
 | `SLACK_CHANNEL` |          |               | The slack channel to mention within the issue body.<br />This input is **not used** in any workflow dispatch logic mentioned later, that is a separate process governed by a webhook originating in Slack.       |
 | `DRY_RUN`       |          | `false`       | If true, only outputs the issue body instead of creating the issue.                                                                                                                                              |
+| `AGENDA_LABEL`  |          | `agenda`      | The label used to identify agenda items to include in the meeting.                                                                                                                                              |
+| `ORG_WIDE`      |          | `false`       | If true, searches for agenda items across the entire organization instead of just the repository.                                                                                                               |
 
 ### Outputs
 

@@ -4,6 +4,7 @@ const createIssueBody = (
 	nextMeetingDateAndTimesAcrossTimeZones: string,
 	issues: string,
 	location: string,
+	agendaLabel: string,
 ) => {
 	const bodyContent = `Agenda for ${repo} meeting
 
@@ -17,7 +18,7 @@ ${nextMeetingDateAndTimesAcrossTimeZones}
 
 ## Agenda Items
 
-> Generated from issues and pull requests with the 'agenda' label.
+> Generated from issues and pull requests with the '${agendaLabel}' label.
 
 ${issues}
 

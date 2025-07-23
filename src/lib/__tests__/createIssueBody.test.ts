@@ -15,6 +15,7 @@ describe('createIssueBody', () => {
 			MOCK_NEXT_MEETING,
 			MOCK_ISSUES,
 			MOCK_LOCATION,
+			'agenda',
 		)
 
 		expect(result).toBe(`Agenda for test-repo meeting
@@ -44,6 +45,7 @@ Tomorrow
 			MOCK_NEXT_MEETING,
 			MOCK_ISSUES,
 			MOCK_LOCATION,
+			'agenda',
 		)
 
 		expect(result).toBe(`Agenda for test-repo meeting
@@ -73,6 +75,7 @@ Tomorrow
 			MOCK_NEXT_MEETING,
 			'',
 			MOCK_LOCATION,
+			'agenda',
 		)
 
 		expect(result).toBe(`Agenda for test-repo meeting
