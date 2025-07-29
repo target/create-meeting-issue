@@ -58,7 +58,7 @@ describe('getLabeledIssuesAndPRs', () => {
 
 		const result = await getLabeledIssuesAndPRs('org', 'repo')
 		expect(result).toBe(
-			'\n- [ ] Issue [#1 Issue 1](https://github.com/org/repo/issues/1)\n- [ ] PR [#4 PR 4](https://github.com/org/repo/pull/4)',
+			'- [ ] https://github.com/org/repo/issues/1\n- [ ] https://github.com/org/repo/pull/4',
 		)
 	})
 
@@ -86,25 +86,6 @@ describe('getLabeledIssuesAndPRs', () => {
 		consoleErrorSpy.mockRestore()
 	})
 
-	test('should escape special characters in issue titles', async () => {
-		;(paginateIssues as any).mockResolvedValue([
-			{
-				number: 5,
-				title: 'Can I inject?](https://example.com) [',
-				html_url: 'https://github.com/org/repo/issues/5',
-				labels: [{ name: 'agenda' }],
-				pull_request: null,
-			},
-		])
-
-		const result = await getLabeledIssuesAndPRs('org', 'repo')
-
-		expect(result).toBe(
-			`
-- [ ] Issue [#5 Can I inject?\\]\\(https://example.com\\) \\[](https://github.com/org/repo/issues/5)`,
-		)
-	})
-
 	test('should use custom agenda label', async () => {
 		const customLabeledIssues = [
 			{
@@ -119,9 +100,7 @@ describe('getLabeledIssuesAndPRs', () => {
 
 		const result = await getLabeledIssuesAndPRs('org', 'repo', 'meeting-topic')
 
-		expect(result).toBe(
-			'\n- [ ] Issue [#1 Issue with custom label](https://github.com/org/repo/issues/1)',
-		)
+		expect(result).toBe('- [ ] https://github.com/org/repo/issues/1')
 		expect(paginateIssues).toHaveBeenCalledWith(
 			'org',
 			'repo',
@@ -141,8 +120,7 @@ describe('getLabeledIssuesAndPRs', () => {
 		)
 
 		expect(result).toBe(
-			'\n- [ ] Issue [repo1/#1 Issue 1](https://github.com/org/repo1/issues/1)' +
-				'\n- [ ] PR [repo2/#4 PR 4](https://github.com/org/repo2/pull/4)',
+			'- [ ] https://github.com/org/repo1/issues/1\n- [ ] https://github.com/org/repo2/pull/4',
 		)
 		expect(paginateIssues).toHaveBeenCalledWith(
 			'org',
