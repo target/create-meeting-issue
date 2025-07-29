@@ -1,6 +1,6 @@
 {
 	"name": "create-meeting-issue",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"description": "Automatically scaffold out a meeting using .ics recurrence, timezone info, and agenda topics from the issue log and prs.",
 	"type": "module",
 	"scripts": {
