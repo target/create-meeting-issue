@@ -1,18 +1,6 @@
 import { paginateIssues } from './paginateIssues'
 
 /**
- * Escapes special characters in a string that are used in Markdown links.
- * This ensures that the characters `[`, `]`, `(`, and `)` are treated as plain text
- * rather than being interpreted as part of a Markdown link.
- *
- * @param text - The input string to escape.
- * @returns A new string with Markdown link characters escaped.
- */
-const escapeMarkdownLink = (text: string): string => {
-	return text.replace(/([\[\]\(\)])/g, '\\$1')
-}
-
-/**
  * Fetches all issues and pull requests from the repository or organization that have the specified label.
  *
  * @param {string} org - The organization name.
@@ -33,28 +21,13 @@ const getLabeledIssuesAndPRs = async (
 	agendaLabel = 'agenda',
 	orgWide = false,
 ) => {
-	let issueContent = ''
+	const issueContent = ''
 	// use octokit to find all issues with the specified agenda label
 	try {
 		// The label filtering is now performed in the pagination API call
 		const issuesAndPRs = await paginateIssues(org, repo, orgWide, agendaLabel)
 
-		// iterate through each response
-		for (const item of issuesAndPRs) {
-			let repoInfo = ''
-			if (orgWide && item.repository_url) {
-				// Extract the repo name from the repository_url, which is in the format
-				// https://api.github.com/repos/{owner}/{repo}
-				const urlParts = item.repository_url.split('/')
-				if (urlParts.length >= 2) {
-					repoInfo = `${urlParts[urlParts.length - 1]}/`
-				}
-			}
-
-			issueContent += `\n- [ ] ${item.pull_request ? 'PR' : 'Issue'} [${repoInfo}#${
-				item.number
-			} ${escapeMarkdownLink(item.title)}](${item.html_url})`
-		}
+		return issuesAndPRs.map((item) => `- [ ] ${item.html_url}`).join('\n')
 	} catch (err: unknown) {
 		console.error('Error fetching issues', (err as Error).message)
 	}
