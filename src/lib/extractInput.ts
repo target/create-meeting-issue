@@ -9,6 +9,8 @@ export type Input = {
 	slackChannel?: string
 	timezones: string[]
 	dryRun?: boolean
+	agendaLabel: string
+	orgWide: boolean
 }
 
 const extractInput = (): Input => {
@@ -20,6 +22,8 @@ const extractInput = (): Input => {
 		slackChannel: getInput('SLACK_CHANNEL'),
 		timezones: getInput('TIMEZONES').split(','),
 		dryRun: getInput('DRY_RUN') === 'true',
+		agendaLabel: getInput('AGENDA_LABEL') || 'agenda',
+		orgWide: getInput('ORG_WIDE') === 'true',
 	}
 }
 

@@ -9,8 +9,16 @@ import getLabeledIssuesAndPRs from './lib/getLabeledIssuesAndPRs'
 import output from './lib/output'
 import parseICS from './lib/parseICS'
 
-const { dryRun, meetingPath, org, repo, slackChannel, timezones } =
-	extractInput()
+const {
+	dryRun,
+	meetingPath,
+	org,
+	repo,
+	slackChannel,
+	timezones,
+	agendaLabel,
+	orgWide,
+} = extractInput()
 
 const isDryRun = dryRun || false
 
@@ -27,7 +35,7 @@ const nextMeetingDateAndTimesAcrossTimeZones = generateMeetingTimes(
 	timezones,
 	nextMeetingDateAndTimeUTC,
 )
-const issues = await getLabeledIssuesAndPRs(org, repo)
+const issues = await getLabeledIssuesAndPRs(org, repo, agendaLabel, orgWide)
 
 const bodyContent = createIssueBody(
 	repo,
@@ -35,6 +43,7 @@ const bodyContent = createIssueBody(
 	nextMeetingDateAndTimesAcrossTimeZones,
 	issues,
 	location,
+	agendaLabel,
 )
 
 const sanitizedBodyContent = DOMPurify.sanitize(bodyContent)
