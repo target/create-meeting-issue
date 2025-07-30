@@ -1,86 +1,107 @@
-import isDST from 'is-dst'
 import { DateTime } from 'luxon'
 import ical from 'node-ical'
 import type { RRule } from 'rrule'
+import { MeetingError, type ParsedMeetingData } from '../types/index.js'
 
-const parseICS = async (icsContents: string) => {
-	let rrule: RRule | undefined = undefined
-	let location = ''
-	try {
-		const icsData = await ical.async.parseICS(icsContents)
-
-		// find the next meeting
-		const icsEntries = Object.entries(icsData)
-		icsEntries.forEach((entry) => {
-			const [_key, value] = entry
-			const foundRRule = findPropertyRecursively(value, 'rrule')
-			if (foundRRule) {
-				rrule = foundRRule
-			}
-		})
-
-		// find the location
-		icsEntries.forEach((entry) => {
-			const [_key, value] = entry
-			const foundLocation = findPropertyRecursively(value, 'location')
-			if (foundLocation) {
-				location = foundLocation
-			}
-		})
-	} catch (err: unknown) {
-		console.error('Error parsing .ics file: %s', (err as Error).message)
-		throw err
-	}
-
-	if (rrule === undefined) {
-		throw new Error('Could not find rrule within .ics file')
-	}
-
-	const nextMeeting = (rrule as RRule).after(new Date(), true)
-
-	if (nextMeeting === null) {
-		throw new Error('Could not find next meeting date in .ics file')
-	}
-
-	// apply my local timezone to nextMeeting
-	const localNextMeeting = DateTime.fromJSDate(nextMeeting)
-
-	// this is done wrong, so we need to manually get the offset hours and add them
-	const offsetHours = localNextMeeting.offset / 60
-
-	// apply the offset hours to localNextMeeting
-	let adjustedLocalNextMeeting: DateTime
-	if (offsetHours < 0) {
-		adjustedLocalNextMeeting = localNextMeeting.plus({
-			hours: Math.abs(offsetHours),
-		})
-	} else {
-		adjustedLocalNextMeeting = localNextMeeting.minus({
-			hours: Math.abs(offsetHours),
-		})
-	}
-
-	// convert nextMeeting to UTC
-	const UTCNextMeeting = adjustedLocalNextMeeting.toUTC()
-
-	// if it is not DST, add an hour. this is due to a bug in Rrule coming from the ics parser in that recurrences do not account for DST traversal
-	// see https://github.com/jkbrzt/rrule/issues/610
-	// node-ical is using rrule, FWIW https://github.com/jens-maus/node-ical/blob/master/package.json#L23
-	const adjustedDate = isDST()
-		? UTCNextMeeting
-		: UTCNextMeeting.plus({ hours: 1 })
-	return { location, nextMeetingDateAndTimeUTC: adjustedDate }
-}
-
-//recursively look for needle within obj
-const findPropertyRecursively = (obj: any, needle: string) => {
+/**
+ * Recursively searches for a property in an object
+ */
+const findPropertyRecursively = (obj: any, needle: string): any => {
 	if (obj?.[needle]) {
 		return obj[needle]
 	}
 	for (const key in obj) {
-		if (typeof obj[key] === 'object') {
-			return findPropertyRecursively(obj[key], needle)
+		if (typeof obj[key] === 'object' && obj[key] !== null) {
+			const result = findPropertyRecursively(obj[key], needle)
+			if (result) {
+				return result
+			}
 		}
+	}
+	return null
+}
+
+/**
+ * Extracts recurrence rule and location from ICS data
+ */
+const extractICSData = (icsData: any): { rrule: RRule; location: string } => {
+	let rrule: RRule | null = null
+	let location = ''
+
+	const icsEntries = Object.entries(icsData)
+
+	for (const [_key, value] of icsEntries) {
+		if (!rrule) {
+			rrule = findPropertyRecursively(value, 'rrule')
+		}
+		if (!location) {
+			location = findPropertyRecursively(value, 'location') || ''
+		}
+
+		// Early exit if we have both
+		if (rrule && location) {
+			break
+		}
+	}
+
+	if (!rrule) {
+		throw new MeetingError(
+			'Could not find recurrence rule (rrule) in .ics file',
+			'MISSING_RRULE',
+		)
+	}
+
+	return { rrule, location }
+}
+
+/**
+ * Calculates the next meeting date
+ */
+const calculateNextMeetingDate = (rrule: RRule): DateTime => {
+	const now = new Date()
+	const nextMeeting = rrule.after(now, true)
+
+	if (!nextMeeting) {
+		throw new MeetingError(
+			'Could not find next meeting date in .ics file. The recurrence rule may have ended.',
+			'NO_NEXT_MEETING',
+		)
+	}
+
+	return DateTime.fromJSDate(nextMeeting)
+}
+
+/**
+ * Parses ICS content and extracts meeting information
+ */
+const parseICS = async (icsContents: string): Promise<ParsedMeetingData> => {
+	if (!icsContents.trim()) {
+		throw new MeetingError('ICS content is empty', 'EMPTY_ICS_CONTENT')
+	}
+
+	try {
+		const icsData = await ical.async.parseICS(icsContents)
+
+		if (!icsData || Object.keys(icsData).length === 0) {
+			throw new MeetingError('Invalid or empty ICS data', 'INVALID_ICS_DATA')
+		}
+
+		const { rrule, location } = extractICSData(icsData)
+		const nextMeetingDateAndTimeUTC = calculateNextMeetingDate(rrule)
+
+		return {
+			location,
+			nextMeetingDateAndTimeUTC,
+		}
+	} catch (error) {
+		if (error instanceof MeetingError) {
+			throw error
+		}
+		throw new MeetingError(
+			'Failed to parse .ics file',
+			'ICS_PARSE_ERROR',
+			error as Error,
+		)
 	}
 }
 

@@ -1,29 +1,62 @@
-const createIssueBody = (
-	repo: string,
-	slackChannel: string | undefined,
-	nextMeetingDateAndTimesAcrossTimeZones: string,
-	issues: string,
-	location: string,
-	agendaLabel: string,
-) => {
-	const bodyContent = `Agenda for ${repo} meeting
+import { join } from 'node:path'
 
-## Meeting Details
+import Handlebars from 'handlebars'
+import { DateTime } from 'luxon'
+import { MeetingError, type TemplateData } from '../types'
+import { fileExists, readFile } from './fileUtils'
 
-[Location](${location})${slackChannel ? ` | [Slack](${slackChannel})` : ''}
+// Register Handlebars helpers
+Handlebars.registerHelper('formatDate', (date: DateTime, timezone: string) => {
+	try {
+		return date.setZone(timezone).toLocaleString(DateTime.DATETIME_MED)
+	} catch (error) {
+		console.warn(`Failed to format date for timezone ${timezone}:`, error)
+		return date.toLocaleString(DateTime.DATETIME_FULL)
+	}
+})
 
-## Time
+Handlebars.registerHelper('formatDateISO', (date: DateTime) =>
+	date.toISO({ includeOffset: false }),
+)
 
-${nextMeetingDateAndTimesAcrossTimeZones}
+/**
+ * Creates issue body content using Handlebars template
+ */
+const createIssueBody = async (
+	templateData: TemplateData,
+	customTemplatePath?: string,
+): Promise<string> => {
+	try {
+		const templatePath = customTemplatePath
+			? join(process.cwd(), customTemplatePath)
+			: new URL('../templates/meetings.md', import.meta.url)
 
-## Agenda Items
+		// Check if template file exists
+		if (!(await fileExists(templatePath))) {
+			throw new MeetingError(
+				`Template file not found: ${templatePath}`,
+				'TEMPLATE_NOT_FOUND',
+			)
+		}
 
-> Generated from issues and pull requests with the '${agendaLabel}' label.
+		const templateContent = await readFile(templatePath)
 
-${issues}
+		if (!templateContent.trim()) {
+			throw new MeetingError('Template file is empty', 'EMPTY_TEMPLATE')
+		}
 
-`
-	return bodyContent
+		const template = Handlebars.compile(templateContent)
+		return template(templateData)
+	} catch (error) {
+		if (error instanceof MeetingError) {
+			throw error
+		}
+		throw new MeetingError(
+			'Failed to create issue body from template',
+			'TEMPLATE_PROCESSING_ERROR',
+			error as Error,
+		)
+	}
 }
 
 export default createIssueBody
