@@ -1,106 +1,198 @@
 import { getInput } from '@actions/core'
-import { context } from '@actions/github'
-import { describe, expect, it, vi } from 'vitest'
-import type { Mock } from 'vitest'
-
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { MeetingError } from '../../types'
 import extractInput from '../extractInput'
 
-const MOCK_GITHUB_TOKEN = 'test-token'
-const MOCK_OWNER = 'test-owner'
-const MOCK_REPO = 'test-repo'
-const MOCK_PATH = 'test/path'
-const MOCK_SLACK_CHANNEL = 'test-channel'
-const MOCK_TIMEZONES = 'UTC,CST'
+process.env.GITHUB_REPOSITORY = 'test-org/test-repo'
+
+const mockGetInput = vi.mocked(getInput)
 
 describe('extractInput', () => {
-	vi.mock('@actions/core')
-	vi.mock('@actions/github', () => ({
-		context: {
-			repo: {
-				owner: 'test-owner', // hoisted, so cannot use MOCK_OWNER
-				repo: 'test-repo', // hoisted, so cannot use MOCK_REPO
-			},
-		},
-	}))
+	describe('valid inputs', () => {
+		it('should extract input with all required fields', () => {
+			mockGetInput.mockImplementation((key) => {
+				const inputs: Record<string, string> = {
+					GITHUB_TOKEN: 'test-token',
+					MEETING_PATH: 'custom-meeting.ics',
+					TIMEZONES: 'America/New_York,Europe/London',
+					AGENDA_LABEL: 'meeting-agenda',
+					SLACK_CHANNEL: '#team-chat',
+					MEETING_TEMPLATE: 'custom-template.md',
+					DRY_RUN: 'true',
+					ORG_WIDE: 'false',
+				}
+				return inputs[key] || ''
+			})
 
-	describe('extractInput', () => {
-		it('should extract input correctly', () => {
-			;(getInput as Mock).mockImplementation((name: string) => {
-				const inputs: { [key: string]: string } = {
-					GITHUB_TOKEN: MOCK_GITHUB_TOKEN,
-					MEETING_PATH: MOCK_PATH,
-					SLACK_CHANNEL: MOCK_SLACK_CHANNEL,
-					TIMEZONES: MOCK_TIMEZONES,
+			const result = extractInput()
+
+			expect(result).toEqual({
+				token: 'test-token',
+				org: 'test-org',
+				repo: 'test-repo',
+				meetingPath: 'custom-meeting.ics',
+				slackChannel: '#team-chat',
+				meetingTemplate: 'custom-template.md',
+				timezones: ['America/New_York', 'Europe/London'],
+				dryRun: true,
+				agendaLabel: 'meeting-agenda',
+				orgWide: false,
+			})
+		})
+
+		it('should use defaults for optional fields', () => {
+			mockGetInput.mockImplementation((key) => {
+				const inputs: Record<string, string> = {
+					GITHUB_TOKEN: 'test-token',
+				}
+				return inputs[key] || ''
+			})
+
+			const result = extractInput()
+
+			expect(result).toEqual({
+				token: 'test-token',
+				org: 'test-org',
+				repo: 'test-repo',
+				meetingPath: 'meeting.ics',
+				slackChannel: undefined,
+				meetingTemplate: undefined,
+				timezones: ['Etc/UTC'],
+				dryRun: false,
+				agendaLabel: 'agenda',
+				orgWide: false,
+			})
+		})
+
+		it('should handle multiple timezones with whitespace', () => {
+			mockGetInput.mockImplementation((key) => {
+				const inputs: Record<string, string> = {
+					GITHUB_TOKEN: 'test-token',
+					TIMEZONES: 'America/New_York, Europe/London , Asia/Tokyo',
+				}
+				return inputs[key] || ''
+			})
+
+			const result = extractInput()
+
+			expect(result.timezones).toEqual([
+				'America/New_York',
+				'Europe/London',
+				'Asia/Tokyo',
+			])
+		})
+
+		it('should parse DRY_RUN correctly', () => {
+			mockGetInput.mockImplementation((key) => {
+				const inputs: Record<string, string> = {
+					GITHUB_TOKEN: 'test-token',
 					DRY_RUN: 'true',
 				}
-				return inputs[name]
+				return inputs[key] || ''
 			})
 
-			const input = extractInput()
-
-			expect(input).toEqual({
-				token: MOCK_GITHUB_TOKEN,
-				org: MOCK_OWNER,
-				repo: MOCK_REPO,
-				meetingPath: MOCK_PATH,
-				slackChannel: MOCK_SLACK_CHANNEL,
-				timezones: ['UTC', 'CST'],
-				dryRun: true,
-				agendaLabel: 'agenda',
-				orgWide: false,
-			})
+			const result = extractInput()
+			expect(result.dryRun).toBe(true)
 		})
 
-		it('should handle optional inputs correctly', () => {
-			;(getInput as Mock).mockImplementation((name: string) => {
-				const inputs: { [key: string]: string } = {
-					GITHUB_TOKEN: MOCK_GITHUB_TOKEN,
-					MEETING_PATH: MOCK_PATH,
-					TIMEZONES: MOCK_TIMEZONES,
-				}
-				return inputs[name]
-			})
-
-			const input = extractInput()
-
-			expect(input).toEqual({
-				token: MOCK_GITHUB_TOKEN,
-				org: MOCK_OWNER,
-				repo: MOCK_REPO,
-				meetingPath: MOCK_PATH,
-				slackChannel: undefined,
-				timezones: ['UTC', 'CST'],
-				dryRun: false,
-				agendaLabel: 'agenda',
-				orgWide: false,
-			})
-		})
-
-		it('should handle custom agenda label and org wide search', () => {
-			;(getInput as Mock).mockImplementation((name: string) => {
-				const inputs: { [key: string]: string } = {
-					GITHUB_TOKEN: MOCK_GITHUB_TOKEN,
-					MEETING_PATH: MOCK_PATH,
-					TIMEZONES: MOCK_TIMEZONES,
-					AGENDA_LABEL: 'meeting-topic',
+		it('should parse ORG_WIDE correctly', () => {
+			mockGetInput.mockImplementation((key) => {
+				const inputs: Record<string, string> = {
+					GITHUB_TOKEN: 'test-token',
 					ORG_WIDE: 'true',
 				}
-				return inputs[name]
+				return inputs[key] || ''
 			})
 
-			const input = extractInput()
+			const result = extractInput()
+			expect(result.orgWide).toBe(true)
+		})
+	})
 
-			expect(input).toEqual({
-				token: MOCK_GITHUB_TOKEN,
-				org: MOCK_OWNER,
-				repo: MOCK_REPO,
-				meetingPath: MOCK_PATH,
-				slackChannel: undefined,
-				timezones: ['UTC', 'CST'],
-				dryRun: false,
-				agendaLabel: 'meeting-topic',
-				orgWide: true,
+	describe('validation errors', () => {
+		it('should throw MeetingError when GITHUB_TOKEN is missing', () => {
+			mockGetInput.mockImplementation(() => '')
+
+			expect(() => extractInput()).toThrow(MeetingError)
+			expect(() => extractInput()).toThrow('GITHUB_TOKEN is required')
+		})
+
+		it('should throw MeetingError for invalid timezones', () => {
+			mockGetInput.mockImplementation((key) => {
+				const inputs: Record<string, string> = {
+					GITHUB_TOKEN: 'test-token',
+					TIMEZONES: 'Invalid/Timezone,America/New_York',
+				}
+				return inputs[key] || ''
 			})
+
+			expect(() => extractInput()).toThrow(MeetingError)
+			expect(() => extractInput()).toThrow(
+				'Invalid timezones: Invalid/Timezone',
+			)
+		})
+
+		it('should throw MeetingError for empty agenda label', () => {
+			mockGetInput.mockImplementation((key) => {
+				const inputs: Record<string, string> = {
+					GITHUB_TOKEN: 'test-token',
+					AGENDA_LABEL: '   ',
+				}
+				return inputs[key] || ''
+			})
+
+			expect(() => extractInput()).toThrow(MeetingError)
+			expect(() => extractInput()).toThrow('AGENDA_LABEL cannot be empty')
+		})
+
+		it('should wrap unexpected errors in MeetingError', () => {
+			mockGetInput.mockImplementation(() => {
+				throw new Error('Unexpected error')
+			})
+
+			expect(() => extractInput()).toThrow(MeetingError)
+			expect(() => extractInput()).toThrow('Failed to extract input')
+		})
+	})
+
+	describe('timezone validation', () => {
+		it('should accept valid timezones', () => {
+			const validTimezones = [
+				'America/New_York',
+				'Europe/London',
+				'Asia/Tokyo',
+				'UTC',
+				'Etc/UTC',
+			]
+
+			mockGetInput.mockImplementation((key) => {
+				const inputs: Record<string, string> = {
+					GITHUB_TOKEN: 'test-token',
+					TIMEZONES: validTimezones.join(','),
+				}
+				return inputs[key] || ''
+			})
+
+			const result = extractInput()
+			expect(result.timezones).toEqual(validTimezones)
+		})
+
+		it('should reject invalid timezone formats', () => {
+			const invalidTimezones = [
+				'Invalid/Zone',
+				'Not_A_Timezone',
+				'America/Invalid_City',
+			]
+
+			mockGetInput.mockImplementation((key) => {
+				const inputs: Record<string, string> = {
+					GITHUB_TOKEN: 'test-token',
+					TIMEZONES: invalidTimezones.join(','),
+				}
+				return inputs[key] || ''
+			})
+
+			expect(() => extractInput()).toThrow(MeetingError)
 		})
 	})
 })

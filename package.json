@@ -10,7 +10,13 @@
 		"test": "vitest",
 		"coverage": "vitest run --coverage"
 	},
-	"keywords": ["actions", "node", "meeting", "agenda", "working-groups"],
+	"keywords": [
+		"actions",
+		"node",
+		"meeting",
+		"agenda",
+		"working-groups"
+	],
 	"engines": {
 		"node": ">=20"
 	},
@@ -20,8 +26,7 @@
 	"dependencies": {
 		"@actions/core": "1.11.1",
 		"@actions/github": "6.0.1",
-		"is-dst": "1.0.0",
-		"isomorphic-dompurify": "2.25.0",
+		"handlebars": "4.7.8",
 		"luxon": "3.6.1",
 		"node-ical": "0.20.1"
 	},
