@@ -29,6 +29,14 @@ inputs:
     description: "If true, searches for agenda items across the entire organization instead of just the repository"
     required: false
     default: false
+  DATE_FORMAT:
+    description: "Date format for issue titles and outputs. 'iso' for ISO-8601 (YYYY-MM-DD), 'locale' for system locale (default)"
+    required: false
+    default: "locale"
+  TIME_FORMAT:
+    description: "Time format for meeting times. '24' for 24-hour format, '12' for 12-hour format (default)"
+    required: false
+    default: "12"
 
 outputs:
   ISSUE_URL:

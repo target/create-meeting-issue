@@ -48,6 +48,8 @@ describe('extractInput', () => {
 				dryRun: true,
 				agendaLabel: 'agenda',
 				orgWide: false,
+				dateFormat: 'locale',
+				timeFormat: '12',
 			})
 		})
 
@@ -73,6 +75,8 @@ describe('extractInput', () => {
 				dryRun: false,
 				agendaLabel: 'agenda',
 				orgWide: false,
+				dateFormat: 'locale',
+				timeFormat: '12',
 			})
 		})
 
@@ -100,6 +104,8 @@ describe('extractInput', () => {
 				dryRun: false,
 				agendaLabel: 'meeting-topic',
 				orgWide: true,
+				dateFormat: 'locale',
+				timeFormat: '12',
 			})
 		})
 	})

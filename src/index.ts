@@ -18,6 +18,8 @@ const {
 	timezones,
 	agendaLabel,
 	orgWide,
+	dateFormat,
+	timeFormat,
 } = extractInput()
 
 const isDryRun = dryRun || false
@@ -34,6 +36,7 @@ const { location, nextMeetingDateAndTimeUTC } = await parseICS(icsContents)
 const nextMeetingDateAndTimesAcrossTimeZones = generateMeetingTimes(
 	timezones,
 	nextMeetingDateAndTimeUTC,
+	timeFormat,
 )
 const issues = await getLabeledIssuesAndPRs(org, repo, agendaLabel, orgWide)
 
@@ -55,4 +58,5 @@ output(
 	sanitizedBodyContent,
 	nextMeetingDateAndTimeUTC,
 	location,
+	dateFormat,
 )

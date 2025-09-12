@@ -1,4 +1,5 @@
-import { DateTime } from 'luxon'
+import type { DateTime } from 'luxon'
+import { formatTime } from './formatDate'
 
 interface MeetingTime {
 	timezone: string
@@ -16,14 +17,16 @@ const getMeetingTimes = (
 	return dates
 }
 
-const generateMeetingTimes = (timezones: string[], date: DateTime): string => {
+const generateMeetingTimes = (
+	timezones: string[],
+	date: DateTime,
+	timeFormat: '12' | '24',
+): string => {
 	let timezoneContent = ''
 	const meetingTimes = getMeetingTimes(timezones, date)
 	for (const { timezone, date } of meetingTimes) {
 		const localAdjustedDate = date.setZone(timezone)
-		timezoneContent += `- ${localAdjustedDate.toLocaleString(
-			DateTime.TIME_SIMPLE,
-		)} ${timezone}\n`
+		timezoneContent += `- ${formatTime(localAdjustedDate, timeFormat)} ${timezone}\n`
 	}
 	return timezoneContent
 }

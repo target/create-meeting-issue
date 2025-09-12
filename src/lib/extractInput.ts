@@ -11,6 +11,8 @@ export type Input = {
 	dryRun?: boolean
 	agendaLabel: string
 	orgWide: boolean
+	dateFormat: 'iso' | 'locale'
+	timeFormat: '12' | '24'
 }
 
 const extractInput = (): Input => {
@@ -24,6 +26,8 @@ const extractInput = (): Input => {
 		dryRun: getInput('DRY_RUN') === 'true',
 		agendaLabel: getInput('AGENDA_LABEL') || 'agenda',
 		orgWide: getInput('ORG_WIDE') === 'true',
+		dateFormat: (getInput('DATE_FORMAT') as 'iso' | 'locale') || 'locale',
+		timeFormat: (getInput('TIME_FORMAT') as '12' | '24') || '12',
 	}
 }
 
