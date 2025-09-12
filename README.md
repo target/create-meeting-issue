@@ -54,6 +54,17 @@ steps:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
+For ISO-8601 date format and 24-hour time:
+
+```yaml
+  - uses: target/create-meeting-issue@v1 # use an immutable SHA in production
+    id: create-meeting
+    with:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      DATE_FORMAT: iso
+      TIME_FORMAT: 24
+```
+
 ### Inputs
 
 | Name            | Required | Default       | Description                                                                                                                                                                                                      |
@@ -65,6 +76,8 @@ steps:
 | `DRY_RUN`       |          | `false`       | If true, only outputs the issue body instead of creating the issue.                                                                                                                                              |
 | `AGENDA_LABEL`  |          | `agenda`      | The label used to identify agenda items to include in the meeting.                                                                                                                                              |
 | `ORG_WIDE`      |          | `false`       | If true, searches for agenda items across the entire organization instead of just the repository.                                                                                                               |
+| `DATE_FORMAT`   |          | `locale`      | Date format for issue titles and outputs. Use `iso` for ISO-8601 format (YYYY-MM-DD) or `locale` for system locale format.                                                                                   |
+| `TIME_FORMAT`   |          | `12`          | Time format for meeting times. Use `24` for 24-hour format (e.g., 14:30) or `12` for 12-hour format (e.g., 2:30 PM).                                                                                        |
 
 ### Outputs
 
