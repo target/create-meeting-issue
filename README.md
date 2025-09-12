@@ -1,5 +1,7 @@
 # create-meeting-issue
 
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/target/create-meeting-issue/badge)](https://scorecard.dev/viewer/?uri=github.com/target/create-meeting-issue)
+
 Automatically scaffold out a meeting using `.ics` recurrence, timezone info, and agenda topics from the issue log and prs.
 
 ## Why?
