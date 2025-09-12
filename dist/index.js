@@ -2058,7 +2058,7 @@ const Context = __importStar(__nccwpck_require__(99944));
 const Utils = __importStar(__nccwpck_require__(77276));
 // octokit + plugins
 const core_1 = __nccwpck_require__(76407);
-const plugin_rest_endpoint_methods_1 = __nccwpck_require__(54065);
+const plugin_rest_endpoint_methods_1 = __nccwpck_require__(90869);
 const plugin_paginate_rest_1 = __nccwpck_require__(55078);
 exports.context = new Context.Context();
 const baseUrl = Utils.getApiBaseUrl();
@@ -4622,7 +4622,7 @@ paginateRest.VERSION = VERSION;
 
 /***/ }),
 
-/***/ 54065:
+/***/ 90869:
 /***/ ((module) => {
 
 
@@ -7993,6 +7993,78 @@ function removeHook(state, name, method) {
 
   state.registry[name].splice(index, 1);
 }
+
+
+/***/ }),
+
+/***/ 429:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+
+
+var bind = __nccwpck_require__(35632);
+
+var $apply = __nccwpck_require__(89831);
+var $call = __nccwpck_require__(14715);
+var $reflectApply = __nccwpck_require__(59348);
+
+/** @type {import('./actualApply')} */
+module.exports = $reflectApply || bind.call($call, $apply);
+
+
+/***/ }),
+
+/***/ 89831:
+/***/ ((module) => {
+
+
+
+/** @type {import('./functionApply')} */
+module.exports = Function.prototype.apply;
+
+
+/***/ }),
+
+/***/ 14715:
+/***/ ((module) => {
+
+
+
+/** @type {import('./functionCall')} */
+module.exports = Function.prototype.call;
+
+
+/***/ }),
+
+/***/ 57063:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+
+
+var bind = __nccwpck_require__(35632);
+var $TypeError = __nccwpck_require__(56458);
+
+var $call = __nccwpck_require__(14715);
+var $actualApply = __nccwpck_require__(429);
+
+/** @type {(args: [Function, thisArg?: unknown, ...args: unknown[]]) => Function} TODO FIXME, find a way to use import('.') */
+module.exports = function callBindBasic(args) {
+	if (args.length < 1 || typeof args[0] !== 'function') {
+		throw new $TypeError('a function is required');
+	}
+	return $actualApply(bind, $call, args);
+};
+
+
+/***/ }),
+
+/***/ 59348:
+/***/ ((module) => {
+
+
+
+/** @type {import('./reflectApply')} */
+module.exports = typeof Reflect !== 'undefined' && Reflect && Reflect.apply;
 
 
 /***/ }),
@@ -20002,6 +20074,43 @@ module.exports = purify;
 
 /***/ }),
 
+/***/ 89594:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+
+
+var callBind = __nccwpck_require__(57063);
+var gOPD = __nccwpck_require__(72671);
+
+var hasProtoAccessor;
+try {
+	// eslint-disable-next-line no-extra-parens, no-proto
+	hasProtoAccessor = /** @type {{ __proto__?: typeof Array.prototype }} */ ([]).__proto__ === Array.prototype;
+} catch (e) {
+	if (!e || typeof e !== 'object' || !('code' in e) || e.code !== 'ERR_PROTO_ACCESS') {
+		throw e;
+	}
+}
+
+// eslint-disable-next-line no-extra-parens
+var desc = !!hasProtoAccessor && gOPD && gOPD(Object.prototype, /** @type {keyof typeof Object.prototype} */ ('__proto__'));
+
+var $Object = Object;
+var $getPrototypeOf = $Object.getPrototypeOf;
+
+/** @type {import('./get')} */
+module.exports = desc && typeof desc.get === 'function'
+	? callBind([desc.get])
+	: typeof $getPrototypeOf === 'function'
+		? /** @type {import('./get')} */ function getDunder(value) {
+			// eslint-disable-next-line eqeqeq
+			return $getPrototypeOf(value == null ? value : $Object(value));
+		}
+		: false;
+
+
+/***/ }),
+
 /***/ 95743:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -20784,6 +20893,157 @@ exports["default"] = new Uint16Array(
 
 /***/ }),
 
+/***/ 79674:
+/***/ ((module) => {
+
+
+
+/** @type {import('.')} */
+var $defineProperty = Object.defineProperty || false;
+if ($defineProperty) {
+	try {
+		$defineProperty({}, 'a', { value: 1 });
+	} catch (e) {
+		// IE 8 has a broken defineProperty
+		$defineProperty = false;
+	}
+}
+
+module.exports = $defineProperty;
+
+
+/***/ }),
+
+/***/ 49224:
+/***/ ((module) => {
+
+
+
+/** @type {import('./eval')} */
+module.exports = EvalError;
+
+
+/***/ }),
+
+/***/ 94684:
+/***/ ((module) => {
+
+
+
+/** @type {import('.')} */
+module.exports = Error;
+
+
+/***/ }),
+
+/***/ 24433:
+/***/ ((module) => {
+
+
+
+/** @type {import('./range')} */
+module.exports = RangeError;
+
+
+/***/ }),
+
+/***/ 97409:
+/***/ ((module) => {
+
+
+
+/** @type {import('./ref')} */
+module.exports = ReferenceError;
+
+
+/***/ }),
+
+/***/ 61681:
+/***/ ((module) => {
+
+
+
+/** @type {import('./syntax')} */
+module.exports = SyntaxError;
+
+
+/***/ }),
+
+/***/ 56458:
+/***/ ((module) => {
+
+
+
+/** @type {import('./type')} */
+module.exports = TypeError;
+
+
+/***/ }),
+
+/***/ 51866:
+/***/ ((module) => {
+
+
+
+/** @type {import('./uri')} */
+module.exports = URIError;
+
+
+/***/ }),
+
+/***/ 33485:
+/***/ ((module) => {
+
+
+
+/** @type {import('.')} */
+module.exports = Object;
+
+
+/***/ }),
+
+/***/ 14879:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+
+
+var GetIntrinsic = __nccwpck_require__(51412);
+
+var $defineProperty = GetIntrinsic('%Object.defineProperty%', true);
+
+var hasToStringTag = __nccwpck_require__(85005)();
+var hasOwn = __nccwpck_require__(2618);
+var $TypeError = __nccwpck_require__(56458);
+
+var toStringTag = hasToStringTag ? Symbol.toStringTag : null;
+
+/** @type {import('.')} */
+module.exports = function setToStringTag(object, value) {
+	var overrideIfSet = arguments.length > 2 && !!arguments[2] && arguments[2].force;
+	var nonConfigurable = arguments.length > 2 && !!arguments[2] && arguments[2].nonConfigurable;
+	if (
+		(typeof overrideIfSet !== 'undefined' && typeof overrideIfSet !== 'boolean')
+		|| (typeof nonConfigurable !== 'undefined' && typeof nonConfigurable !== 'boolean')
+	) {
+		throw new $TypeError('if provided, the `overrideIfSet` and `nonConfigurable` options must be booleans');
+	}
+	if (toStringTag && (overrideIfSet || !hasOwn(object, toStringTag))) {
+		if ($defineProperty) {
+			$defineProperty(object, toStringTag, {
+				configurable: !nonConfigurable,
+				enumerable: false,
+				value: value,
+				writable: false
+			});
+		} else {
+			object[toStringTag] = value; // eslint-disable-line no-param-reassign
+		}
+	}
+};
+
+
+/***/ }),
+
 /***/ 32143:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -21499,8 +21759,10 @@ module.exports.wrap = wrap;
 
 /***/ }),
 
-/***/ 3006:
+/***/ 34455:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+
 
 var CombinedStream = __nccwpck_require__(87315);
 var util = __nccwpck_require__(39023);
@@ -21510,15 +21772,12 @@ var https = __nccwpck_require__(65692);
 var parseUrl = (__nccwpck_require__(87016).parse);
 var fs = __nccwpck_require__(79896);
 var Stream = (__nccwpck_require__(2203).Stream);
+var crypto = __nccwpck_require__(76982);
 var mime = __nccwpck_require__(56553);
 var asynckit = __nccwpck_require__(95094);
-var populate = __nccwpck_require__(42291);
-
-// Public API
-module.exports = FormData;
-
-// make it a Stream
-util.inherits(FormData, CombinedStream);
+var setToStringTag = __nccwpck_require__(14879);
+var hasOwn = __nccwpck_require__(2618);
+var populate = __nccwpck_require__(30016);
 
 /**
  * Create readable "multipart/form-data" streams.
@@ -21526,7 +21785,7 @@ util.inherits(FormData, CombinedStream);
  * and file uploads to other web applications.
  *
  * @constructor
- * @param {Object} options - Properties to be added/overriden for FormData and CombinedStream
+ * @param {object} options - Properties to be added/overriden for FormData and CombinedStream
  */
 function FormData(options) {
   if (!(this instanceof FormData)) {
@@ -21539,35 +21798,39 @@ function FormData(options) {
 
   CombinedStream.call(this);
 
-  options = options || {};
-  for (var option in options) {
+  options = options || {}; // eslint-disable-line no-param-reassign
+  for (var option in options) { // eslint-disable-line no-restricted-syntax
     this[option] = options[option];
   }
 }
 
+// make it a Stream
+util.inherits(FormData, CombinedStream);
+
 FormData.LINE_BREAK = '\r\n';
 FormData.DEFAULT_CONTENT_TYPE = 'application/octet-stream';
 
-FormData.prototype.append = function(field, value, options) {
-
-  options = options || {};
+FormData.prototype.append = function (field, value, options) {
+  options = options || {}; // eslint-disable-line no-param-reassign
 
   // allow filename as single option
-  if (typeof options == 'string') {
-    options = {filename: options};
+  if (typeof options === 'string') {
+    options = { filename: options }; // eslint-disable-line no-param-reassign
   }
 
   var append = CombinedStream.prototype.append.bind(this);
 
   // all that streamy business can't handle numbers
-  if (typeof value == 'number') {
-    value = '' + value;
+  if (typeof value === 'number' || value == null) {
+    value = String(value); // eslint-disable-line no-param-reassign
   }
 
   // https://github.com/felixge/node-form-data/issues/38
   if (Array.isArray(value)) {
-    // Please convert your array into string
-    // the way web server expects it
+    /*
+     * Please convert your array into string
+     * the way web server expects it
+     */
     this._error(new Error('Arrays are not supported.'));
     return;
   }
@@ -21583,15 +21846,17 @@ FormData.prototype.append = function(field, value, options) {
   this._trackLength(header, value, options);
 };
 
-FormData.prototype._trackLength = function(header, value, options) {
+FormData.prototype._trackLength = function (header, value, options) {
   var valueLength = 0;
 
-  // used w/ getLengthSync(), when length is known.
-  // e.g. for streaming directly from a remote server,
-  // w/ a known file a size, and not wanting to wait for
-  // incoming file to finish to get its size.
+  /*
+   * used w/ getLengthSync(), when length is known.
+   * e.g. for streaming directly from a remote server,
+   * w/ a known file a size, and not wanting to wait for
+   * incoming file to finish to get its size.
+   */
   if (options.knownLength != null) {
-    valueLength += +options.knownLength;
+    valueLength += Number(options.knownLength);
   } else if (Buffer.isBuffer(value)) {
     valueLength = value.length;
   } else if (typeof value === 'string') {
@@ -21601,12 +21866,10 @@ FormData.prototype._trackLength = function(header, value, options) {
   this._valueLength += valueLength;
 
   // @check why add CRLF? does this account for custom/multiple CRLFs?
-  this._overheadLength +=
-    Buffer.byteLength(header) +
-    FormData.LINE_BREAK.length;
+  this._overheadLength += Buffer.byteLength(header) + FormData.LINE_BREAK.length;
 
   // empty or either doesn't have path or not an http response or not a stream
-  if (!value || ( !value.path && !(value.readable && value.hasOwnProperty('httpVersion')) && !(value instanceof Stream))) {
+  if (!value || (!value.path && !(value.readable && hasOwn(value, 'httpVersion')) && !(value instanceof Stream))) {
     return;
   }
 
@@ -21616,10 +21879,8 @@ FormData.prototype._trackLength = function(header, value, options) {
   }
 };
 
-FormData.prototype._lengthRetriever = function(value, callback) {
-
-  if (value.hasOwnProperty('fd')) {
-
+FormData.prototype._lengthRetriever = function (value, callback) {
+  if (hasOwn(value, 'fd')) {
     // take read range into a account
     // `end` = Infinity –> read file till the end
     //
@@ -21628,54 +21889,52 @@ FormData.prototype._lengthRetriever = function(value, callback) {
     // Fix it when node fixes it.
     // https://github.com/joyent/node/issues/7819
     if (value.end != undefined && value.end != Infinity && value.start != undefined) {
-
       // when end specified
       // no need to calculate range
       // inclusive, starts with 0
-      callback(null, value.end + 1 - (value.start ? value.start : 0));
+      callback(null, value.end + 1 - (value.start ? value.start : 0)); // eslint-disable-line callback-return
 
-    // not that fast snoopy
+      // not that fast snoopy
     } else {
       // still need to fetch file size from fs
-      fs.stat(value.path, function(err, stat) {
-
-        var fileSize;
-
+      fs.stat(value.path, function (err, stat) {
         if (err) {
           callback(err);
           return;
         }
 
         // update final size based on the range options
-        fileSize = stat.size - (value.start ? value.start : 0);
+        var fileSize = stat.size - (value.start ? value.start : 0);
         callback(null, fileSize);
       });
     }
 
-  // or http response
-  } else if (value.hasOwnProperty('httpVersion')) {
-    callback(null, +value.headers['content-length']);
+    // or http response
+  } else if (hasOwn(value, 'httpVersion')) {
+    callback(null, Number(value.headers['content-length'])); // eslint-disable-line callback-return
 
-  // or request stream http://github.com/mikeal/request
-  } else if (value.hasOwnProperty('httpModule')) {
+    // or request stream http://github.com/mikeal/request
+  } else if (hasOwn(value, 'httpModule')) {
     // wait till response come back
-    value.on('response', function(response) {
+    value.on('response', function (response) {
       value.pause();
-      callback(null, +response.headers['content-length']);
+      callback(null, Number(response.headers['content-length']));
     });
     value.resume();
 
-  // something else
+    // something else
   } else {
-    callback('Unknown stream');
+    callback('Unknown stream'); // eslint-disable-line callback-return
   }
 };
 
-FormData.prototype._multiPartHeader = function(field, value, options) {
-  // custom header specified (as string)?
-  // it becomes responsible for boundary
-  // (e.g. to handle extra CRLFs on .NET servers)
-  if (typeof options.header == 'string') {
+FormData.prototype._multiPartHeader = function (field, value, options) {
+  /*
+   * custom header specified (as string)?
+   * it becomes responsible for boundary
+   * (e.g. to handle extra CRLFs on .NET servers)
+   */
+  if (typeof options.header === 'string') {
     return options.header;
   }
 
@@ -21683,7 +21942,7 @@ FormData.prototype._multiPartHeader = function(field, value, options) {
   var contentType = this._getContentType(value, options);
 
   var contents = '';
-  var headers  = {
+  var headers = {
     // add custom disposition as third element or keep it two elements if not
     'Content-Disposition': ['form-data', 'name="' + field + '"'].concat(contentDisposition || []),
     // if no content type. allow it to be empty array
@@ -21691,77 +21950,74 @@ FormData.prototype._multiPartHeader = function(field, value, options) {
   };
 
   // allow custom headers.
-  if (typeof options.header == 'object') {
+  if (typeof options.header === 'object') {
     populate(headers, options.header);
   }
 
   var header;
-  for (var prop in headers) {
-    if (!headers.hasOwnProperty(prop)) continue;
-    header = headers[prop];
+  for (var prop in headers) { // eslint-disable-line no-restricted-syntax
+    if (hasOwn(headers, prop)) {
+      header = headers[prop];
 
-    // skip nullish headers.
-    if (header == null) {
-      continue;
-    }
+      // skip nullish headers.
+      if (header == null) {
+        continue; // eslint-disable-line no-restricted-syntax, no-continue
+      }
 
-    // convert all headers to arrays.
-    if (!Array.isArray(header)) {
-      header = [header];
-    }
+      // convert all headers to arrays.
+      if (!Array.isArray(header)) {
+        header = [header];
+      }
 
-    // add non-empty headers.
-    if (header.length) {
-      contents += prop + ': ' + header.join('; ') + FormData.LINE_BREAK;
+      // add non-empty headers.
+      if (header.length) {
+        contents += prop + ': ' + header.join('; ') + FormData.LINE_BREAK;
+      }
     }
   }
 
   return '--' + this.getBoundary() + FormData.LINE_BREAK + contents + FormData.LINE_BREAK;
 };
 
-FormData.prototype._getContentDisposition = function(value, options) {
-
-  var filename
-    , contentDisposition
-    ;
+FormData.prototype._getContentDisposition = function (value, options) { // eslint-disable-line consistent-return
+  var filename;
 
   if (typeof options.filepath === 'string') {
     // custom filepath for relative paths
     filename = path.normalize(options.filepath).replace(/\\/g, '/');
-  } else if (options.filename || value.name || value.path) {
-    // custom filename take precedence
-    // formidable and the browser add a name property
-    // fs- and request- streams have path property
-    filename = path.basename(options.filename || value.name || value.path);
-  } else if (value.readable && value.hasOwnProperty('httpVersion')) {
+  } else if (options.filename || (value && (value.name || value.path))) {
+    /*
+     * custom filename take precedence
+     * formidable and the browser add a name property
+     * fs- and request- streams have path property
+     */
+    filename = path.basename(options.filename || (value && (value.name || value.path)));
+  } else if (value && value.readable && hasOwn(value, 'httpVersion')) {
     // or try http response
     filename = path.basename(value.client._httpMessage.path || '');
   }
 
   if (filename) {
-    contentDisposition = 'filename="' + filename + '"';
+    return 'filename="' + filename + '"';
   }
-
-  return contentDisposition;
 };
 
-FormData.prototype._getContentType = function(value, options) {
-
+FormData.prototype._getContentType = function (value, options) {
   // use custom content-type above all
   var contentType = options.contentType;
 
   // or try `name` from formidable, browser
-  if (!contentType && value.name) {
+  if (!contentType && value && value.name) {
     contentType = mime.lookup(value.name);
   }
 
   // or try `path` from fs-, request- streams
-  if (!contentType && value.path) {
+  if (!contentType && value && value.path) {
     contentType = mime.lookup(value.path);
   }
 
   // or if it's http-reponse
-  if (!contentType && value.readable && value.hasOwnProperty('httpVersion')) {
+  if (!contentType && value && value.readable && hasOwn(value, 'httpVersion')) {
     contentType = value.headers['content-type'];
   }
 
@@ -21771,18 +22027,18 @@ FormData.prototype._getContentType = function(value, options) {
   }
 
   // fallback to the default content type if `value` is not simple value
-  if (!contentType && typeof value == 'object') {
+  if (!contentType && value && typeof value === 'object') {
     contentType = FormData.DEFAULT_CONTENT_TYPE;
   }
 
   return contentType;
 };
 
-FormData.prototype._multiPartFooter = function() {
-  return function(next) {
+FormData.prototype._multiPartFooter = function () {
+  return function (next) {
     var footer = FormData.LINE_BREAK;
 
-    var lastPart = (this._streams.length === 0);
+    var lastPart = this._streams.length === 0;
     if (lastPart) {
       footer += this._lastBoundary();
     }
@@ -21791,18 +22047,18 @@ FormData.prototype._multiPartFooter = function() {
   }.bind(this);
 };
 
-FormData.prototype._lastBoundary = function() {
+FormData.prototype._lastBoundary = function () {
   return '--' + this.getBoundary() + '--' + FormData.LINE_BREAK;
 };
 
-FormData.prototype.getHeaders = function(userHeaders) {
+FormData.prototype.getHeaders = function (userHeaders) {
   var header;
   var formHeaders = {
     'content-type': 'multipart/form-data; boundary=' + this.getBoundary()
   };
 
-  for (header in userHeaders) {
-    if (userHeaders.hasOwnProperty(header)) {
+  for (header in userHeaders) { // eslint-disable-line no-restricted-syntax
+    if (hasOwn(userHeaders, header)) {
       formHeaders[header.toLowerCase()] = userHeaders[header];
     }
   }
@@ -21810,11 +22066,14 @@ FormData.prototype.getHeaders = function(userHeaders) {
   return formHeaders;
 };
 
-FormData.prototype.setBoundary = function(boundary) {
+FormData.prototype.setBoundary = function (boundary) {
+  if (typeof boundary !== 'string') {
+    throw new TypeError('FormData boundary must be a string');
+  }
   this._boundary = boundary;
 };
 
-FormData.prototype.getBoundary = function() {
+FormData.prototype.getBoundary = function () {
   if (!this._boundary) {
     this._generateBoundary();
   }
@@ -21822,60 +22081,55 @@ FormData.prototype.getBoundary = function() {
   return this._boundary;
 };
 
-FormData.prototype.getBuffer = function() {
-  var dataBuffer = new Buffer.alloc( 0 );
+FormData.prototype.getBuffer = function () {
+  var dataBuffer = new Buffer.alloc(0); // eslint-disable-line new-cap
   var boundary = this.getBoundary();
 
   // Create the form content. Add Line breaks to the end of data.
   for (var i = 0, len = this._streams.length; i < len; i++) {
     if (typeof this._streams[i] !== 'function') {
-
       // Add content to the buffer.
-      if(Buffer.isBuffer(this._streams[i])) {
-        dataBuffer = Buffer.concat( [dataBuffer, this._streams[i]]);
-      }else {
-        dataBuffer = Buffer.concat( [dataBuffer, Buffer.from(this._streams[i])]);
+      if (Buffer.isBuffer(this._streams[i])) {
+        dataBuffer = Buffer.concat([dataBuffer, this._streams[i]]);
+      } else {
+        dataBuffer = Buffer.concat([dataBuffer, Buffer.from(this._streams[i])]);
       }
 
       // Add break after content.
-      if (typeof this._streams[i] !== 'string' || this._streams[i].substring( 2, boundary.length + 2 ) !== boundary) {
-        dataBuffer = Buffer.concat( [dataBuffer, Buffer.from(FormData.LINE_BREAK)] );
+      if (typeof this._streams[i] !== 'string' || this._streams[i].substring(2, boundary.length + 2) !== boundary) {
+        dataBuffer = Buffer.concat([dataBuffer, Buffer.from(FormData.LINE_BREAK)]);
       }
     }
   }
 
   // Add the footer and return the Buffer object.
-  return Buffer.concat( [dataBuffer, Buffer.from(this._lastBoundary())] );
+  return Buffer.concat([dataBuffer, Buffer.from(this._lastBoundary())]);
 };
 
-FormData.prototype._generateBoundary = function() {
+FormData.prototype._generateBoundary = function () {
   // This generates a 50 character boundary similar to those used by Firefox.
-  // They are optimized for boyer-moore parsing.
-  var boundary = '--------------------------';
-  for (var i = 0; i < 24; i++) {
-    boundary += Math.floor(Math.random() * 10).toString(16);
-  }
 
-  this._boundary = boundary;
+  // They are optimized for boyer-moore parsing.
+  this._boundary = '--------------------------' + crypto.randomBytes(12).toString('hex');
 };
 
 // Note: getLengthSync DOESN'T calculate streams length
-// As workaround one can calculate file size manually
-// and add it as knownLength option
-FormData.prototype.getLengthSync = function() {
+// As workaround one can calculate file size manually and add it as knownLength option
+FormData.prototype.getLengthSync = function () {
   var knownLength = this._overheadLength + this._valueLength;
 
-  // Don't get confused, there are 3 "internal" streams for each keyval pair
-  // so it basically checks if there is any value added to the form
+  // Don't get confused, there are 3 "internal" streams for each keyval pair so it basically checks if there is any value added to the form
   if (this._streams.length) {
     knownLength += this._lastBoundary().length;
   }
 
   // https://github.com/form-data/form-data/issues/40
   if (!this.hasKnownLength()) {
-    // Some async length retrievers are present
-    // therefore synchronous length calculation is false.
-    // Please use getLength(callback) to get proper length
+    /*
+     * Some async length retrievers are present
+     * therefore synchronous length calculation is false.
+     * Please use getLength(callback) to get proper length
+     */
     this._error(new Error('Cannot calculate proper length in synchronous way.'));
   }
 
@@ -21885,7 +22139,7 @@ FormData.prototype.getLengthSync = function() {
 // Public API to check if length of added values is known
 // https://github.com/form-data/form-data/issues/196
 // https://github.com/form-data/form-data/issues/262
-FormData.prototype.hasKnownLength = function() {
+FormData.prototype.hasKnownLength = function () {
   var hasKnownLength = true;
 
   if (this._valuesToMeasure.length) {
@@ -21895,7 +22149,7 @@ FormData.prototype.hasKnownLength = function() {
   return hasKnownLength;
 };
 
-FormData.prototype.getLength = function(cb) {
+FormData.prototype.getLength = function (cb) {
   var knownLength = this._overheadLength + this._valueLength;
 
   if (this._streams.length) {
@@ -21907,13 +22161,13 @@ FormData.prototype.getLength = function(cb) {
     return;
   }
 
-  asynckit.parallel(this._valuesToMeasure, this._lengthRetriever, function(err, values) {
+  asynckit.parallel(this._valuesToMeasure, this._lengthRetriever, function (err, values) {
     if (err) {
       cb(err);
       return;
     }
 
-    values.forEach(function(length) {
+    values.forEach(function (length) {
       knownLength += length;
     });
 
@@ -21921,31 +22175,26 @@ FormData.prototype.getLength = function(cb) {
   });
 };
 
-FormData.prototype.submit = function(params, cb) {
-  var request
-    , options
-    , defaults = {method: 'post'}
-    ;
+FormData.prototype.submit = function (params, cb) {
+  var request;
+  var options;
+  var defaults = { method: 'post' };
 
-  // parse provided url if it's string
-  // or treat it as options object
-  if (typeof params == 'string') {
-
-    params = parseUrl(params);
+  // parse provided url if it's string or treat it as options object
+  if (typeof params === 'string') {
+    params = parseUrl(params); // eslint-disable-line no-param-reassign
+    /* eslint sort-keys: 0 */
     options = populate({
       port: params.port,
       path: params.pathname,
       host: params.hostname,
       protocol: params.protocol
     }, defaults);
-
-  // use custom params
-  } else {
-
+  } else { // use custom params
     options = populate(params, defaults);
     // if no port provided use default one
     if (!options.port) {
-      options.port = options.protocol == 'https:' ? 443 : 80;
+      options.port = options.protocol === 'https:' ? 443 : 80;
     }
   }
 
@@ -21953,14 +22202,14 @@ FormData.prototype.submit = function(params, cb) {
   options.headers = this.getHeaders(params.headers);
 
   // https if specified, fallback to http in any other case
-  if (options.protocol == 'https:') {
+  if (options.protocol === 'https:') {
     request = https.request(options);
   } else {
     request = http.request(options);
   }
 
   // get content length and fire away
-  this.getLength(function(err, length) {
+  this.getLength(function (err, length) {
     if (err && err !== 'Unknown stream') {
       this._error(err);
       return;
@@ -21979,7 +22228,7 @@ FormData.prototype.submit = function(params, cb) {
         request.removeListener('error', callback);
         request.removeListener('response', onResponse);
 
-        return cb.call(this, error, responce);
+        return cb.call(this, error, responce); // eslint-disable-line no-invalid-this
       };
 
       onResponse = callback.bind(this, null);
@@ -21992,7 +22241,7 @@ FormData.prototype.submit = function(params, cb) {
   return request;
 };
 
-FormData.prototype._error = function(err) {
+FormData.prototype._error = function (err) {
   if (!this.error) {
     this.error = err;
     this.pause();
@@ -22003,23 +22252,606 @@ FormData.prototype._error = function(err) {
 FormData.prototype.toString = function () {
   return '[object FormData]';
 };
+setToStringTag(FormData, 'FormData');
+
+// Public API
+module.exports = FormData;
 
 
 /***/ }),
 
-/***/ 42291:
+/***/ 30016:
 /***/ ((module) => {
 
-// populates missing values
-module.exports = function(dst, src) {
 
-  Object.keys(src).forEach(function(prop)
-  {
-    dst[prop] = dst[prop] || src[prop];
+
+// populates missing values
+module.exports = function (dst, src) {
+  Object.keys(src).forEach(function (prop) {
+    dst[prop] = dst[prop] || src[prop]; // eslint-disable-line no-param-reassign
   });
 
   return dst;
 };
+
+
+/***/ }),
+
+/***/ 96404:
+/***/ ((module) => {
+
+
+
+/* eslint no-invalid-this: 1 */
+
+var ERROR_MESSAGE = 'Function.prototype.bind called on incompatible ';
+var toStr = Object.prototype.toString;
+var max = Math.max;
+var funcType = '[object Function]';
+
+var concatty = function concatty(a, b) {
+    var arr = [];
+
+    for (var i = 0; i < a.length; i += 1) {
+        arr[i] = a[i];
+    }
+    for (var j = 0; j < b.length; j += 1) {
+        arr[j + a.length] = b[j];
+    }
+
+    return arr;
+};
+
+var slicy = function slicy(arrLike, offset) {
+    var arr = [];
+    for (var i = offset || 0, j = 0; i < arrLike.length; i += 1, j += 1) {
+        arr[j] = arrLike[i];
+    }
+    return arr;
+};
+
+var joiny = function (arr, joiner) {
+    var str = '';
+    for (var i = 0; i < arr.length; i += 1) {
+        str += arr[i];
+        if (i + 1 < arr.length) {
+            str += joiner;
+        }
+    }
+    return str;
+};
+
+module.exports = function bind(that) {
+    var target = this;
+    if (typeof target !== 'function' || toStr.apply(target) !== funcType) {
+        throw new TypeError(ERROR_MESSAGE + target);
+    }
+    var args = slicy(arguments, 1);
+
+    var bound;
+    var binder = function () {
+        if (this instanceof bound) {
+            var result = target.apply(
+                this,
+                concatty(args, arguments)
+            );
+            if (Object(result) === result) {
+                return result;
+            }
+            return this;
+        }
+        return target.apply(
+            that,
+            concatty(args, arguments)
+        );
+
+    };
+
+    var boundLength = max(0, target.length - args.length);
+    var boundArgs = [];
+    for (var i = 0; i < boundLength; i++) {
+        boundArgs[i] = '$' + i;
+    }
+
+    bound = Function('binder', 'return function (' + joiny(boundArgs, ',') + '){ return binder.apply(this,arguments); }')(binder);
+
+    if (target.prototype) {
+        var Empty = function Empty() {};
+        Empty.prototype = target.prototype;
+        bound.prototype = new Empty();
+        Empty.prototype = null;
+    }
+
+    return bound;
+};
+
+
+/***/ }),
+
+/***/ 35632:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+
+
+var implementation = __nccwpck_require__(96404);
+
+module.exports = Function.prototype.bind || implementation;
+
+
+/***/ }),
+
+/***/ 51412:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+
+
+var undefined;
+
+var $Object = __nccwpck_require__(33485);
+
+var $Error = __nccwpck_require__(94684);
+var $EvalError = __nccwpck_require__(49224);
+var $RangeError = __nccwpck_require__(24433);
+var $ReferenceError = __nccwpck_require__(97409);
+var $SyntaxError = __nccwpck_require__(61681);
+var $TypeError = __nccwpck_require__(56458);
+var $URIError = __nccwpck_require__(51866);
+
+var abs = __nccwpck_require__(34328);
+var floor = __nccwpck_require__(70422);
+var max = __nccwpck_require__(71378);
+var min = __nccwpck_require__(87388);
+var pow = __nccwpck_require__(80526);
+var round = __nccwpck_require__(17816);
+var sign = __nccwpck_require__(19947);
+
+var $Function = Function;
+
+// eslint-disable-next-line consistent-return
+var getEvalledConstructor = function (expressionSyntax) {
+	try {
+		return $Function('"use strict"; return (' + expressionSyntax + ').constructor;')();
+	} catch (e) {}
+};
+
+var $gOPD = __nccwpck_require__(72671);
+var $defineProperty = __nccwpck_require__(79674);
+
+var throwTypeError = function () {
+	throw new $TypeError();
+};
+var ThrowTypeError = $gOPD
+	? (function () {
+		try {
+			// eslint-disable-next-line no-unused-expressions, no-caller, no-restricted-properties
+			arguments.callee; // IE 8 does not throw here
+			return throwTypeError;
+		} catch (calleeThrows) {
+			try {
+				// IE 8 throws on Object.getOwnPropertyDescriptor(arguments, '')
+				return $gOPD(arguments, 'callee').get;
+			} catch (gOPDthrows) {
+				return throwTypeError;
+			}
+		}
+	}())
+	: throwTypeError;
+
+var hasSymbols = __nccwpck_require__(79718)();
+
+var getProto = __nccwpck_require__(99272);
+var $ObjectGPO = __nccwpck_require__(85932);
+var $ReflectGPO = __nccwpck_require__(3172);
+
+var $apply = __nccwpck_require__(89831);
+var $call = __nccwpck_require__(14715);
+
+var needsEval = {};
+
+var TypedArray = typeof Uint8Array === 'undefined' || !getProto ? undefined : getProto(Uint8Array);
+
+var INTRINSICS = {
+	__proto__: null,
+	'%AggregateError%': typeof AggregateError === 'undefined' ? undefined : AggregateError,
+	'%Array%': Array,
+	'%ArrayBuffer%': typeof ArrayBuffer === 'undefined' ? undefined : ArrayBuffer,
+	'%ArrayIteratorPrototype%': hasSymbols && getProto ? getProto([][Symbol.iterator]()) : undefined,
+	'%AsyncFromSyncIteratorPrototype%': undefined,
+	'%AsyncFunction%': needsEval,
+	'%AsyncGenerator%': needsEval,
+	'%AsyncGeneratorFunction%': needsEval,
+	'%AsyncIteratorPrototype%': needsEval,
+	'%Atomics%': typeof Atomics === 'undefined' ? undefined : Atomics,
+	'%BigInt%': typeof BigInt === 'undefined' ? undefined : BigInt,
+	'%BigInt64Array%': typeof BigInt64Array === 'undefined' ? undefined : BigInt64Array,
+	'%BigUint64Array%': typeof BigUint64Array === 'undefined' ? undefined : BigUint64Array,
+	'%Boolean%': Boolean,
+	'%DataView%': typeof DataView === 'undefined' ? undefined : DataView,
+	'%Date%': Date,
+	'%decodeURI%': decodeURI,
+	'%decodeURIComponent%': decodeURIComponent,
+	'%encodeURI%': encodeURI,
+	'%encodeURIComponent%': encodeURIComponent,
+	'%Error%': $Error,
+	'%eval%': eval, // eslint-disable-line no-eval
+	'%EvalError%': $EvalError,
+	'%Float16Array%': typeof Float16Array === 'undefined' ? undefined : Float16Array,
+	'%Float32Array%': typeof Float32Array === 'undefined' ? undefined : Float32Array,
+	'%Float64Array%': typeof Float64Array === 'undefined' ? undefined : Float64Array,
+	'%FinalizationRegistry%': typeof FinalizationRegistry === 'undefined' ? undefined : FinalizationRegistry,
+	'%Function%': $Function,
+	'%GeneratorFunction%': needsEval,
+	'%Int8Array%': typeof Int8Array === 'undefined' ? undefined : Int8Array,
+	'%Int16Array%': typeof Int16Array === 'undefined' ? undefined : Int16Array,
+	'%Int32Array%': typeof Int32Array === 'undefined' ? undefined : Int32Array,
+	'%isFinite%': isFinite,
+	'%isNaN%': isNaN,
+	'%IteratorPrototype%': hasSymbols && getProto ? getProto(getProto([][Symbol.iterator]())) : undefined,
+	'%JSON%': typeof JSON === 'object' ? JSON : undefined,
+	'%Map%': typeof Map === 'undefined' ? undefined : Map,
+	'%MapIteratorPrototype%': typeof Map === 'undefined' || !hasSymbols || !getProto ? undefined : getProto(new Map()[Symbol.iterator]()),
+	'%Math%': Math,
+	'%Number%': Number,
+	'%Object%': $Object,
+	'%Object.getOwnPropertyDescriptor%': $gOPD,
+	'%parseFloat%': parseFloat,
+	'%parseInt%': parseInt,
+	'%Promise%': typeof Promise === 'undefined' ? undefined : Promise,
+	'%Proxy%': typeof Proxy === 'undefined' ? undefined : Proxy,
+	'%RangeError%': $RangeError,
+	'%ReferenceError%': $ReferenceError,
+	'%Reflect%': typeof Reflect === 'undefined' ? undefined : Reflect,
+	'%RegExp%': RegExp,
+	'%Set%': typeof Set === 'undefined' ? undefined : Set,
+	'%SetIteratorPrototype%': typeof Set === 'undefined' || !hasSymbols || !getProto ? undefined : getProto(new Set()[Symbol.iterator]()),
+	'%SharedArrayBuffer%': typeof SharedArrayBuffer === 'undefined' ? undefined : SharedArrayBuffer,
+	'%String%': String,
+	'%StringIteratorPrototype%': hasSymbols && getProto ? getProto(''[Symbol.iterator]()) : undefined,
+	'%Symbol%': hasSymbols ? Symbol : undefined,
+	'%SyntaxError%': $SyntaxError,
+	'%ThrowTypeError%': ThrowTypeError,
+	'%TypedArray%': TypedArray,
+	'%TypeError%': $TypeError,
+	'%Uint8Array%': typeof Uint8Array === 'undefined' ? undefined : Uint8Array,
+	'%Uint8ClampedArray%': typeof Uint8ClampedArray === 'undefined' ? undefined : Uint8ClampedArray,
+	'%Uint16Array%': typeof Uint16Array === 'undefined' ? undefined : Uint16Array,
+	'%Uint32Array%': typeof Uint32Array === 'undefined' ? undefined : Uint32Array,
+	'%URIError%': $URIError,
+	'%WeakMap%': typeof WeakMap === 'undefined' ? undefined : WeakMap,
+	'%WeakRef%': typeof WeakRef === 'undefined' ? undefined : WeakRef,
+	'%WeakSet%': typeof WeakSet === 'undefined' ? undefined : WeakSet,
+
+	'%Function.prototype.call%': $call,
+	'%Function.prototype.apply%': $apply,
+	'%Object.defineProperty%': $defineProperty,
+	'%Object.getPrototypeOf%': $ObjectGPO,
+	'%Math.abs%': abs,
+	'%Math.floor%': floor,
+	'%Math.max%': max,
+	'%Math.min%': min,
+	'%Math.pow%': pow,
+	'%Math.round%': round,
+	'%Math.sign%': sign,
+	'%Reflect.getPrototypeOf%': $ReflectGPO
+};
+
+if (getProto) {
+	try {
+		null.error; // eslint-disable-line no-unused-expressions
+	} catch (e) {
+		// https://github.com/tc39/proposal-shadowrealm/pull/384#issuecomment-1364264229
+		var errorProto = getProto(getProto(e));
+		INTRINSICS['%Error.prototype%'] = errorProto;
+	}
+}
+
+var doEval = function doEval(name) {
+	var value;
+	if (name === '%AsyncFunction%') {
+		value = getEvalledConstructor('async function () {}');
+	} else if (name === '%GeneratorFunction%') {
+		value = getEvalledConstructor('function* () {}');
+	} else if (name === '%AsyncGeneratorFunction%') {
+		value = getEvalledConstructor('async function* () {}');
+	} else if (name === '%AsyncGenerator%') {
+		var fn = doEval('%AsyncGeneratorFunction%');
+		if (fn) {
+			value = fn.prototype;
+		}
+	} else if (name === '%AsyncIteratorPrototype%') {
+		var gen = doEval('%AsyncGenerator%');
+		if (gen && getProto) {
+			value = getProto(gen.prototype);
+		}
+	}
+
+	INTRINSICS[name] = value;
+
+	return value;
+};
+
+var LEGACY_ALIASES = {
+	__proto__: null,
+	'%ArrayBufferPrototype%': ['ArrayBuffer', 'prototype'],
+	'%ArrayPrototype%': ['Array', 'prototype'],
+	'%ArrayProto_entries%': ['Array', 'prototype', 'entries'],
+	'%ArrayProto_forEach%': ['Array', 'prototype', 'forEach'],
+	'%ArrayProto_keys%': ['Array', 'prototype', 'keys'],
+	'%ArrayProto_values%': ['Array', 'prototype', 'values'],
+	'%AsyncFunctionPrototype%': ['AsyncFunction', 'prototype'],
+	'%AsyncGenerator%': ['AsyncGeneratorFunction', 'prototype'],
+	'%AsyncGeneratorPrototype%': ['AsyncGeneratorFunction', 'prototype', 'prototype'],
+	'%BooleanPrototype%': ['Boolean', 'prototype'],
+	'%DataViewPrototype%': ['DataView', 'prototype'],
+	'%DatePrototype%': ['Date', 'prototype'],
+	'%ErrorPrototype%': ['Error', 'prototype'],
+	'%EvalErrorPrototype%': ['EvalError', 'prototype'],
+	'%Float32ArrayPrototype%': ['Float32Array', 'prototype'],
+	'%Float64ArrayPrototype%': ['Float64Array', 'prototype'],
+	'%FunctionPrototype%': ['Function', 'prototype'],
+	'%Generator%': ['GeneratorFunction', 'prototype'],
+	'%GeneratorPrototype%': ['GeneratorFunction', 'prototype', 'prototype'],
+	'%Int8ArrayPrototype%': ['Int8Array', 'prototype'],
+	'%Int16ArrayPrototype%': ['Int16Array', 'prototype'],
+	'%Int32ArrayPrototype%': ['Int32Array', 'prototype'],
+	'%JSONParse%': ['JSON', 'parse'],
+	'%JSONStringify%': ['JSON', 'stringify'],
+	'%MapPrototype%': ['Map', 'prototype'],
+	'%NumberPrototype%': ['Number', 'prototype'],
+	'%ObjectPrototype%': ['Object', 'prototype'],
+	'%ObjProto_toString%': ['Object', 'prototype', 'toString'],
+	'%ObjProto_valueOf%': ['Object', 'prototype', 'valueOf'],
+	'%PromisePrototype%': ['Promise', 'prototype'],
+	'%PromiseProto_then%': ['Promise', 'prototype', 'then'],
+	'%Promise_all%': ['Promise', 'all'],
+	'%Promise_reject%': ['Promise', 'reject'],
+	'%Promise_resolve%': ['Promise', 'resolve'],
+	'%RangeErrorPrototype%': ['RangeError', 'prototype'],
+	'%ReferenceErrorPrototype%': ['ReferenceError', 'prototype'],
+	'%RegExpPrototype%': ['RegExp', 'prototype'],
+	'%SetPrototype%': ['Set', 'prototype'],
+	'%SharedArrayBufferPrototype%': ['SharedArrayBuffer', 'prototype'],
+	'%StringPrototype%': ['String', 'prototype'],
+	'%SymbolPrototype%': ['Symbol', 'prototype'],
+	'%SyntaxErrorPrototype%': ['SyntaxError', 'prototype'],
+	'%TypedArrayPrototype%': ['TypedArray', 'prototype'],
+	'%TypeErrorPrototype%': ['TypeError', 'prototype'],
+	'%Uint8ArrayPrototype%': ['Uint8Array', 'prototype'],
+	'%Uint8ClampedArrayPrototype%': ['Uint8ClampedArray', 'prototype'],
+	'%Uint16ArrayPrototype%': ['Uint16Array', 'prototype'],
+	'%Uint32ArrayPrototype%': ['Uint32Array', 'prototype'],
+	'%URIErrorPrototype%': ['URIError', 'prototype'],
+	'%WeakMapPrototype%': ['WeakMap', 'prototype'],
+	'%WeakSetPrototype%': ['WeakSet', 'prototype']
+};
+
+var bind = __nccwpck_require__(35632);
+var hasOwn = __nccwpck_require__(2618);
+var $concat = bind.call($call, Array.prototype.concat);
+var $spliceApply = bind.call($apply, Array.prototype.splice);
+var $replace = bind.call($call, String.prototype.replace);
+var $strSlice = bind.call($call, String.prototype.slice);
+var $exec = bind.call($call, RegExp.prototype.exec);
+
+/* adapted from https://github.com/lodash/lodash/blob/4.17.15/dist/lodash.js#L6735-L6744 */
+var rePropName = /[^%.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|%$))/g;
+var reEscapeChar = /\\(\\)?/g; /** Used to match backslashes in property paths. */
+var stringToPath = function stringToPath(string) {
+	var first = $strSlice(string, 0, 1);
+	var last = $strSlice(string, -1);
+	if (first === '%' && last !== '%') {
+		throw new $SyntaxError('invalid intrinsic syntax, expected closing `%`');
+	} else if (last === '%' && first !== '%') {
+		throw new $SyntaxError('invalid intrinsic syntax, expected opening `%`');
+	}
+	var result = [];
+	$replace(string, rePropName, function (match, number, quote, subString) {
+		result[result.length] = quote ? $replace(subString, reEscapeChar, '$1') : number || match;
+	});
+	return result;
+};
+/* end adaptation */
+
+var getBaseIntrinsic = function getBaseIntrinsic(name, allowMissing) {
+	var intrinsicName = name;
+	var alias;
+	if (hasOwn(LEGACY_ALIASES, intrinsicName)) {
+		alias = LEGACY_ALIASES[intrinsicName];
+		intrinsicName = '%' + alias[0] + '%';
+	}
+
+	if (hasOwn(INTRINSICS, intrinsicName)) {
+		var value = INTRINSICS[intrinsicName];
+		if (value === needsEval) {
+			value = doEval(intrinsicName);
+		}
+		if (typeof value === 'undefined' && !allowMissing) {
+			throw new $TypeError('intrinsic ' + name + ' exists, but is not available. Please file an issue!');
+		}
+
+		return {
+			alias: alias,
+			name: intrinsicName,
+			value: value
+		};
+	}
+
+	throw new $SyntaxError('intrinsic ' + name + ' does not exist!');
+};
+
+module.exports = function GetIntrinsic(name, allowMissing) {
+	if (typeof name !== 'string' || name.length === 0) {
+		throw new $TypeError('intrinsic name must be a non-empty string');
+	}
+	if (arguments.length > 1 && typeof allowMissing !== 'boolean') {
+		throw new $TypeError('"allowMissing" argument must be a boolean');
+	}
+
+	if ($exec(/^%?[^%]*%?$/, name) === null) {
+		throw new $SyntaxError('`%` may not be present anywhere but at the beginning and end of the intrinsic name');
+	}
+	var parts = stringToPath(name);
+	var intrinsicBaseName = parts.length > 0 ? parts[0] : '';
+
+	var intrinsic = getBaseIntrinsic('%' + intrinsicBaseName + '%', allowMissing);
+	var intrinsicRealName = intrinsic.name;
+	var value = intrinsic.value;
+	var skipFurtherCaching = false;
+
+	var alias = intrinsic.alias;
+	if (alias) {
+		intrinsicBaseName = alias[0];
+		$spliceApply(parts, $concat([0, 1], alias));
+	}
+
+	for (var i = 1, isOwn = true; i < parts.length; i += 1) {
+		var part = parts[i];
+		var first = $strSlice(part, 0, 1);
+		var last = $strSlice(part, -1);
+		if (
+			(
+				(first === '"' || first === "'" || first === '`')
+				|| (last === '"' || last === "'" || last === '`')
+			)
+			&& first !== last
+		) {
+			throw new $SyntaxError('property names with quotes must have matching quotes');
+		}
+		if (part === 'constructor' || !isOwn) {
+			skipFurtherCaching = true;
+		}
+
+		intrinsicBaseName += '.' + part;
+		intrinsicRealName = '%' + intrinsicBaseName + '%';
+
+		if (hasOwn(INTRINSICS, intrinsicRealName)) {
+			value = INTRINSICS[intrinsicRealName];
+		} else if (value != null) {
+			if (!(part in value)) {
+				if (!allowMissing) {
+					throw new $TypeError('base intrinsic for ' + name + ' exists, but the property is not available.');
+				}
+				return void undefined;
+			}
+			if ($gOPD && (i + 1) >= parts.length) {
+				var desc = $gOPD(value, part);
+				isOwn = !!desc;
+
+				// By convention, when a data property is converted to an accessor
+				// property to emulate a data property that does not suffer from
+				// the override mistake, that accessor's getter is marked with
+				// an `originalValue` property. Here, when we detect this, we
+				// uphold the illusion by pretending to see that original data
+				// property, i.e., returning the value rather than the getter
+				// itself.
+				if (isOwn && 'get' in desc && !('originalValue' in desc.get)) {
+					value = desc.get;
+				} else {
+					value = value[part];
+				}
+			} else {
+				isOwn = hasOwn(value, part);
+				value = value[part];
+			}
+
+			if (isOwn && !skipFurtherCaching) {
+				INTRINSICS[intrinsicRealName] = value;
+			}
+		}
+	}
+	return value;
+};
+
+
+/***/ }),
+
+/***/ 85932:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+
+
+var $Object = __nccwpck_require__(33485);
+
+/** @type {import('./Object.getPrototypeOf')} */
+module.exports = $Object.getPrototypeOf || null;
+
+
+/***/ }),
+
+/***/ 3172:
+/***/ ((module) => {
+
+
+
+/** @type {import('./Reflect.getPrototypeOf')} */
+module.exports = (typeof Reflect !== 'undefined' && Reflect.getPrototypeOf) || null;
+
+
+/***/ }),
+
+/***/ 99272:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+
+
+var reflectGetProto = __nccwpck_require__(3172);
+var originalGetProto = __nccwpck_require__(85932);
+
+var getDunderProto = __nccwpck_require__(89594);
+
+/** @type {import('.')} */
+module.exports = reflectGetProto
+	? function getProto(O) {
+		// @ts-expect-error TS can't narrow inside a closure, for some reason
+		return reflectGetProto(O);
+	}
+	: originalGetProto
+		? function getProto(O) {
+			if (!O || (typeof O !== 'object' && typeof O !== 'function')) {
+				throw new TypeError('getProto: not an object');
+			}
+			// @ts-expect-error TS can't narrow inside a closure, for some reason
+			return originalGetProto(O);
+		}
+		: getDunderProto
+			? function getProto(O) {
+				// @ts-expect-error TS can't narrow inside a closure, for some reason
+				return getDunderProto(O);
+			}
+			: null;
+
+
+/***/ }),
+
+/***/ 47401:
+/***/ ((module) => {
+
+
+
+/** @type {import('./gOPD')} */
+module.exports = Object.getOwnPropertyDescriptor;
+
+
+/***/ }),
+
+/***/ 72671:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+
+
+/** @type {import('.')} */
+var $gOPD = __nccwpck_require__(47401);
+
+if ($gOPD) {
+	try {
+		$gOPD([], 'length');
+	} catch (e) {
+		// IE 8 has a broken gOPD
+		$gOPD = null;
+	}
+}
+
+module.exports = $gOPD;
 
 
 /***/ }),
@@ -22035,6 +22867,109 @@ module.exports = (flag, argv = process.argv) => {
 	const terminatorPosition = argv.indexOf('--');
 	return position !== -1 && (terminatorPosition === -1 || position < terminatorPosition);
 };
+
+
+/***/ }),
+
+/***/ 79718:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+
+
+var origSymbol = typeof Symbol !== 'undefined' && Symbol;
+var hasSymbolSham = __nccwpck_require__(96044);
+
+/** @type {import('.')} */
+module.exports = function hasNativeSymbols() {
+	if (typeof origSymbol !== 'function') { return false; }
+	if (typeof Symbol !== 'function') { return false; }
+	if (typeof origSymbol('foo') !== 'symbol') { return false; }
+	if (typeof Symbol('bar') !== 'symbol') { return false; }
+
+	return hasSymbolSham();
+};
+
+
+/***/ }),
+
+/***/ 96044:
+/***/ ((module) => {
+
+
+
+/** @type {import('./shams')} */
+/* eslint complexity: [2, 18], max-statements: [2, 33] */
+module.exports = function hasSymbols() {
+	if (typeof Symbol !== 'function' || typeof Object.getOwnPropertySymbols !== 'function') { return false; }
+	if (typeof Symbol.iterator === 'symbol') { return true; }
+
+	/** @type {{ [k in symbol]?: unknown }} */
+	var obj = {};
+	var sym = Symbol('test');
+	var symObj = Object(sym);
+	if (typeof sym === 'string') { return false; }
+
+	if (Object.prototype.toString.call(sym) !== '[object Symbol]') { return false; }
+	if (Object.prototype.toString.call(symObj) !== '[object Symbol]') { return false; }
+
+	// temp disabled per https://github.com/ljharb/object.assign/issues/17
+	// if (sym instanceof Symbol) { return false; }
+	// temp disabled per https://github.com/WebReflection/get-own-property-symbols/issues/4
+	// if (!(symObj instanceof Symbol)) { return false; }
+
+	// if (typeof Symbol.prototype.toString !== 'function') { return false; }
+	// if (String(sym) !== Symbol.prototype.toString.call(sym)) { return false; }
+
+	var symVal = 42;
+	obj[sym] = symVal;
+	for (var _ in obj) { return false; } // eslint-disable-line no-restricted-syntax, no-unreachable-loop
+	if (typeof Object.keys === 'function' && Object.keys(obj).length !== 0) { return false; }
+
+	if (typeof Object.getOwnPropertyNames === 'function' && Object.getOwnPropertyNames(obj).length !== 0) { return false; }
+
+	var syms = Object.getOwnPropertySymbols(obj);
+	if (syms.length !== 1 || syms[0] !== sym) { return false; }
+
+	if (!Object.prototype.propertyIsEnumerable.call(obj, sym)) { return false; }
+
+	if (typeof Object.getOwnPropertyDescriptor === 'function') {
+		// eslint-disable-next-line no-extra-parens
+		var descriptor = /** @type {PropertyDescriptor} */ (Object.getOwnPropertyDescriptor(obj, sym));
+		if (descriptor.value !== symVal || descriptor.enumerable !== true) { return false; }
+	}
+
+	return true;
+};
+
+
+/***/ }),
+
+/***/ 85005:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+
+
+var hasSymbols = __nccwpck_require__(96044);
+
+/** @type {import('.')} */
+module.exports = function hasToStringTagShams() {
+	return hasSymbols() && !!Symbol.toStringTag;
+};
+
+
+/***/ }),
+
+/***/ 2618:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+
+
+var call = Function.prototype.call;
+var $hasOwn = Object.prototype.hasOwnProperty;
+var bind = __nccwpck_require__(35632);
+
+/** @type {import('.')} */
+module.exports = bind.call(call, $hasOwn);
 
 
 /***/ }),
@@ -25776,6 +26711,103 @@ module.exports = isPotentialCustomElementName;
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 function e(e){return e&&e.default||e}module.exports=global.DOMPurify=global.DOMPurify||("undefined"!=typeof window?e(__nccwpck_require__(72629)):function(){const r=e(__nccwpck_require__(72629)),{JSDOM:u}=e(__nccwpck_require__(81184)),{window:o}=new u("<!DOCTYPE html>");return r(o)}());
+
+/***/ }),
+
+/***/ 34328:
+/***/ ((module) => {
+
+
+
+/** @type {import('./abs')} */
+module.exports = Math.abs;
+
+
+/***/ }),
+
+/***/ 70422:
+/***/ ((module) => {
+
+
+
+/** @type {import('./floor')} */
+module.exports = Math.floor;
+
+
+/***/ }),
+
+/***/ 24021:
+/***/ ((module) => {
+
+
+
+/** @type {import('./isNaN')} */
+module.exports = Number.isNaN || function isNaN(a) {
+	return a !== a;
+};
+
+
+/***/ }),
+
+/***/ 71378:
+/***/ ((module) => {
+
+
+
+/** @type {import('./max')} */
+module.exports = Math.max;
+
+
+/***/ }),
+
+/***/ 87388:
+/***/ ((module) => {
+
+
+
+/** @type {import('./min')} */
+module.exports = Math.min;
+
+
+/***/ }),
+
+/***/ 80526:
+/***/ ((module) => {
+
+
+
+/** @type {import('./pow')} */
+module.exports = Math.pow;
+
+
+/***/ }),
+
+/***/ 17816:
+/***/ ((module) => {
+
+
+
+/** @type {import('./round')} */
+module.exports = Math.round;
+
+
+/***/ }),
+
+/***/ 19947:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+
+
+var $isNaN = __nccwpck_require__(24021);
+
+/** @type {import('./sign')} */
+module.exports = function sign(number) {
+	if ($isNaN(number) || number === 0) {
+		return number;
+	}
+	return number < 0 ? -1 : +1;
+};
+
 
 /***/ }),
 
@@ -33401,7 +34433,7 @@ module.exports = {
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const fs = __nccwpck_require__(79896);
-const axios = __nccwpck_require__(93694);
+const axios = __nccwpck_require__(92244);
 const ical = __nccwpck_require__(51360);
 
 /**
@@ -225081,7 +226113,7 @@ var __privateAdd = (obj, member, value) => member.has(obj) ? __typeError("Cannot
 var __privateSet = (obj, member, value, setter) => (__accessCheck(obj, member, "write to private field"), setter ? setter.call(obj, value) : member.set(obj, value), value);
 var _hasNum, _numSum, _numMul, _hasPct, _pctSum, _pctMul, _hasDim, _dimSum, _dimSub, _dimMul, _dimDiv, _hasEtc, _etcSum, _etcSub, _etcMul, _etcDiv;
 Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-const cssCalc$1 = __nccwpck_require__(89253);
+const cssCalc$1 = __nccwpck_require__(83177);
 const cssTokenizer = __nccwpck_require__(10618);
 const lruCache = __nccwpck_require__(72013);
 const common = __nccwpck_require__(58289);
@@ -226081,8 +227113,8 @@ exports.resolveCustomProperty = resolveCustomProperty;
 
 
 Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-const cssColorParser = __nccwpck_require__(46921);
-const cssParserAlgorithms = __nccwpck_require__(46295);
+const cssColorParser = __nccwpck_require__(41735);
+const cssParserAlgorithms = __nccwpck_require__(66500);
 const cssTokenizer = __nccwpck_require__(10618);
 const lruCache = __nccwpck_require__(72013);
 const common = __nccwpck_require__(58289);
@@ -227291,23 +228323,23 @@ var _;return n=[lin_a98rgb_channel((_=n)[0]),lin_a98rgb_channel(_[1]),lin_a98rgb
 
 /***/ }),
 
-/***/ 89253:
+/***/ 83177:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
-var e=__nccwpck_require__(46295),n=__nccwpck_require__(10618);const t=/[A-Z]/g;function toLowerCaseAZ(e){return e.replace(t,(e=>String.fromCharCode(e.charCodeAt(0)+32)))}const o={cm:"px",in:"px",mm:"px",pc:"px",pt:"px",px:"px",q:"px",deg:"deg",grad:"deg",rad:"deg",turn:"deg",ms:"s",s:"s",hz:"hz",khz:"hz"},r=new Map([["cm",e=>e],["mm",e=>10*e],["q",e=>40*e],["in",e=>e/2.54],["pc",e=>e/2.54*6],["pt",e=>e/2.54*72],["px",e=>e/2.54*96]]),i=new Map([["deg",e=>e],["grad",e=>e/.9],["rad",e=>e/180*Math.PI],["turn",e=>e/360]]),u=new Map([["deg",e=>.9*e],["grad",e=>e],["rad",e=>.9*e/180*Math.PI],["turn",e=>.9*e/360]]),a=new Map([["hz",e=>e],["khz",e=>e/1e3]]),s=new Map([["cm",e=>2.54*e],["mm",e=>25.4*e],["q",e=>25.4*e*4],["in",e=>e],["pc",e=>6*e],["pt",e=>72*e],["px",e=>96*e]]),l=new Map([["hz",e=>1e3*e],["khz",e=>e]]),c=new Map([["cm",e=>e/10],["mm",e=>e],["q",e=>4*e],["in",e=>e/25.4],["pc",e=>e/25.4*6],["pt",e=>e/25.4*72],["px",e=>e/25.4*96]]),m=new Map([["ms",e=>e],["s",e=>e/1e3]]),v=new Map([["cm",e=>e/6*2.54],["mm",e=>e/6*25.4],["q",e=>e/6*25.4*4],["in",e=>e/6],["pc",e=>e],["pt",e=>e/6*72],["px",e=>e/6*96]]),T=new Map([["cm",e=>e/72*2.54],["mm",e=>e/72*25.4],["q",e=>e/72*25.4*4],["in",e=>e/72],["pc",e=>e/72*6],["pt",e=>e],["px",e=>e/72*96]]),p=new Map([["cm",e=>e/96*2.54],["mm",e=>e/96*25.4],["q",e=>e/96*25.4*4],["in",e=>e/96],["pc",e=>e/96*6],["pt",e=>e/96*72],["px",e=>e]]),N=new Map([["cm",e=>e/4/10],["mm",e=>e/4],["q",e=>e],["in",e=>e/4/25.4],["pc",e=>e/4/25.4*6],["pt",e=>e/4/25.4*72],["px",e=>e/4/25.4*96]]),f=new Map([["deg",e=>180*e/Math.PI],["grad",e=>180*e/Math.PI/.9],["rad",e=>e],["turn",e=>180*e/Math.PI/360]]),k=new Map([["ms",e=>1e3*e],["s",e=>e]]),d=new Map([["deg",e=>360*e],["grad",e=>360*e/.9],["rad",e=>360*e/180*Math.PI],["turn",e=>e]]),C=new Map([["cm",r],["mm",c],["q",N],["in",s],["pc",v],["pt",T],["px",p],["ms",m],["s",k],["deg",i],["grad",u],["rad",f],["turn",d],["hz",a],["khz",l]]);function convertUnit(e,t){if(!n.isTokenDimension(e))return t;if(!n.isTokenDimension(t))return t;const o=toLowerCaseAZ(e[4].unit),r=toLowerCaseAZ(t[4].unit);if(o===r)return t;const i=C.get(r);if(!i)return t;const u=i.get(o);if(!u)return t;const a=u(t[4].value),s=[n.TokenType.Dimension,"",t[2],t[3],{...t[4],signCharacter:a<0?"-":void 0,type:Number.isInteger(a)?n.NumberType.Integer:n.NumberType.Number,value:a}];return n.mutateUnit(s,e[4].unit),s}function toCanonicalUnit(e){if(!n.isTokenDimension(e))return e;const t=toLowerCaseAZ(e[4].unit),r=o[t];if(t===r)return e;const i=C.get(t);if(!i)return e;const u=i.get(r);if(!u)return e;const a=u(e[4].value),s=[n.TokenType.Dimension,"",e[2],e[3],{...e[4],signCharacter:a<0?"-":void 0,type:Number.isInteger(a)?n.NumberType.Integer:n.NumberType.Number,value:a}];return n.mutateUnit(s,r),s}function addition(t){if(2!==t.length)return-1;const o=t[0].value;let r=t[1].value;if(n.isTokenNumber(o)&&n.isTokenNumber(r)){const t=o[4].value+r[4].value;return new e.TokenNode([n.TokenType.Number,t.toString(),o[2],r[3],{value:t,type:o[4].type===n.NumberType.Integer&&r[4].type===n.NumberType.Integer?n.NumberType.Integer:n.NumberType.Number}])}if(n.isTokenPercentage(o)&&n.isTokenPercentage(r)){const t=o[4].value+r[4].value;return new e.TokenNode([n.TokenType.Percentage,t.toString()+"%",o[2],r[3],{value:t}])}if(n.isTokenDimension(o)&&n.isTokenDimension(r)&&(r=convertUnit(o,r),toLowerCaseAZ(o[4].unit)===toLowerCaseAZ(r[4].unit))){const t=o[4].value+r[4].value;return new e.TokenNode([n.TokenType.Dimension,t.toString()+o[4].unit,o[2],r[3],{value:t,type:o[4].type===n.NumberType.Integer&&r[4].type===n.NumberType.Integer?n.NumberType.Integer:n.NumberType.Number,unit:o[4].unit}])}return-1}function division(t){if(2!==t.length)return-1;const o=t[0].value,r=t[1].value;if(n.isTokenNumber(o)&&n.isTokenNumber(r)){const t=o[4].value/r[4].value;return new e.TokenNode([n.TokenType.Number,t.toString(),o[2],r[3],{value:t,type:Number.isInteger(t)?n.NumberType.Integer:n.NumberType.Number}])}if(n.isTokenPercentage(o)&&n.isTokenNumber(r)){const t=o[4].value/r[4].value;return new e.TokenNode([n.TokenType.Percentage,t.toString()+"%",o[2],r[3],{value:t}])}if(n.isTokenDimension(o)&&n.isTokenNumber(r)){const t=o[4].value/r[4].value;return new e.TokenNode([n.TokenType.Dimension,t.toString()+o[4].unit,o[2],r[3],{value:t,type:Number.isInteger(t)?n.NumberType.Integer:n.NumberType.Number,unit:o[4].unit}])}return-1}function isCalculation(e){return!!e&&"object"==typeof e&&"inputs"in e&&Array.isArray(e.inputs)&&"operation"in e}function solve(n){if(-1===n)return-1;const t=[];for(let o=0;o<n.inputs.length;o++){const r=n.inputs[o];if(e.isTokenNode(r)){t.push(r);continue}const i=solve(r);if(-1===i)return-1;t.push(i)}return n.operation(t)}function multiplication(t){if(2!==t.length)return-1;const o=t[0].value,r=t[1].value;if(n.isTokenNumber(o)&&n.isTokenNumber(r)){const t=o[4].value*r[4].value;return new e.TokenNode([n.TokenType.Number,t.toString(),o[2],r[3],{value:t,type:o[4].type===n.NumberType.Integer&&r[4].type===n.NumberType.Integer?n.NumberType.Integer:n.NumberType.Number}])}if(n.isTokenPercentage(o)&&n.isTokenNumber(r)){const t=o[4].value*r[4].value;return new e.TokenNode([n.TokenType.Percentage,t.toString()+"%",o[2],r[3],{value:t}])}if(n.isTokenNumber(o)&&n.isTokenPercentage(r)){const t=o[4].value*r[4].value;return new e.TokenNode([n.TokenType.Percentage,t.toString()+"%",o[2],r[3],{value:t}])}if(n.isTokenDimension(o)&&n.isTokenNumber(r)){const t=o[4].value*r[4].value;return new e.TokenNode([n.TokenType.Dimension,t.toString()+o[4].unit,o[2],r[3],{value:t,type:o[4].type===n.NumberType.Integer&&r[4].type===n.NumberType.Integer?n.NumberType.Integer:n.NumberType.Number,unit:o[4].unit}])}if(n.isTokenNumber(o)&&n.isTokenDimension(r)){const t=o[4].value*r[4].value;return new e.TokenNode([n.TokenType.Dimension,t.toString()+r[4].unit,o[2],r[3],{value:t,type:o[4].type===n.NumberType.Integer&&r[4].type===n.NumberType.Integer?n.NumberType.Integer:n.NumberType.Number,unit:r[4].unit}])}return-1}function resolveGlobalsAndConstants(t,o){for(let r=0;r<t.length;r++){const i=t[r];if(!e.isTokenNode(i))continue;const u=i.value;if(!n.isTokenIdent(u))continue;const a=toLowerCaseAZ(u[4].value);switch(a){case"e":t.splice(r,1,new e.TokenNode([n.TokenType.Number,Math.E.toString(),u[2],u[3],{value:Math.E,type:n.NumberType.Number}]));break;case"pi":t.splice(r,1,new e.TokenNode([n.TokenType.Number,Math.PI.toString(),u[2],u[3],{value:Math.PI,type:n.NumberType.Number}]));break;case"infinity":t.splice(r,1,new e.TokenNode([n.TokenType.Number,"infinity",u[2],u[3],{value:1/0,type:n.NumberType.Number}]));break;case"-infinity":t.splice(r,1,new e.TokenNode([n.TokenType.Number,"-infinity",u[2],u[3],{value:-1/0,type:n.NumberType.Number}]));break;case"nan":t.splice(r,1,new e.TokenNode([n.TokenType.Number,"NaN",u[2],u[3],{value:Number.NaN,type:n.NumberType.Number}]));break;default:if(o.has(a)){const n=o.get(a);t.splice(r,1,new e.TokenNode(n))}}}return t}function unary(e){if(1!==e.length)return-1;const t=e[0].value;return n.isTokenNumeric(t)?e[0]:-1}function resultToCalculation(e,t,o){return n.isTokenDimension(t)?dimensionToCalculation(e,t[4].unit,o):n.isTokenPercentage(t)?percentageToCalculation(e,o):n.isTokenNumber(t)?numberToCalculation(e,o):-1}function dimensionToCalculation(t,o,r){const i=t.tokens();return{inputs:[new e.TokenNode([n.TokenType.Dimension,r.toString()+o,i[0][2],i[i.length-1][3],{value:r,type:Number.isInteger(r)?n.NumberType.Integer:n.NumberType.Number,unit:o}])],operation:unary}}function percentageToCalculation(t,o){const r=t.tokens();return{inputs:[new e.TokenNode([n.TokenType.Percentage,o.toString()+"%",r[0][2],r[r.length-1][3],{value:o}])],operation:unary}}function numberToCalculation(t,o){const r=t.tokens();return{inputs:[new e.TokenNode([n.TokenType.Number,o.toString(),r[0][2],r[r.length-1][3],{value:o,type:Number.isInteger(o)?n.NumberType.Integer:n.NumberType.Number}])],operation:unary}}function solveACos(e,t){const o=t.value;if(!n.isTokenNumber(o))return-1;return dimensionToCalculation(e,"rad",Math.acos(o[4].value))}function solveASin(e,t){const o=t.value;if(!n.isTokenNumber(o))return-1;return dimensionToCalculation(e,"rad",Math.asin(o[4].value))}function solveATan(e,t){const o=t.value;if(!n.isTokenNumber(o))return-1;return dimensionToCalculation(e,"rad",Math.atan(o[4].value))}function isDimensionOrNumber(e){return n.isTokenDimension(e)||n.isTokenNumber(e)}function arrayOfSameNumeric(e){if(0===e.length)return!0;const t=e[0];if(!n.isTokenNumeric(t))return!1;if(1===e.length)return!0;if(n.isTokenDimension(t)){const n=toLowerCaseAZ(t[4].unit);for(let o=1;o<e.length;o++){const r=e[o];if(t[0]!==r[0])return!1;if(n!==toLowerCaseAZ(r[4].unit))return!1}return!0}for(let n=1;n<e.length;n++){const o=e[n];if(t[0]!==o[0])return!1}return!0}function twoOfSameNumeric(e,t){return!!n.isTokenNumeric(e)&&(n.isTokenDimension(e)?e[0]===t[0]&&toLowerCaseAZ(e[4].unit)===toLowerCaseAZ(t[4].unit):e[0]===t[0])}function solveATan2(e,n,t){const o=n.value;if(!isDimensionOrNumber(o))return-1;const r=convertUnit(o,t.value);if(!twoOfSameNumeric(o,r))return-1;return dimensionToCalculation(e,"rad",Math.atan2(o[4].value,r[4].value))}function solveAbs(e,t,o){const r=t.value;if(!n.isTokenNumeric(r))return-1;if(!o.rawPercentages&&n.isTokenPercentage(r))return-1;return resultToCalculation(e,r,Math.abs(r[4].value))}function solveClamp(t,o,r,i,u){if(!e.isTokenNode(o)||!e.isTokenNode(r)||!e.isTokenNode(i))return-1;const a=o.value;if(!n.isTokenNumeric(a))return-1;if(!u.rawPercentages&&n.isTokenPercentage(a))return-1;const s=convertUnit(a,r.value);if(!twoOfSameNumeric(a,s))return-1;const l=convertUnit(a,i.value);if(!twoOfSameNumeric(a,l))return-1;return resultToCalculation(t,a,Math.max(a[4].value,Math.min(s[4].value,l[4].value)))}function solveCos(e,t){const o=t.value;if(!isDimensionOrNumber(o))return-1;let r=o[4].value;if(n.isTokenDimension(o))switch(o[4].unit.toLowerCase()){case"rad":break;case"deg":r=i.get("rad")(o[4].value);break;case"grad":r=u.get("rad")(o[4].value);break;case"turn":r=d.get("rad")(o[4].value);break;default:return-1}return r=Math.cos(r),numberToCalculation(e,r)}function solveExp(e,t){const o=t.value;if(!n.isTokenNumber(o))return-1;return numberToCalculation(e,Math.exp(o[4].value))}function solveHypot(t,o,r){if(!o.every(e.isTokenNode))return-1;const i=o[0].value;if(!n.isTokenNumeric(i))return-1;if(!r.rawPercentages&&n.isTokenPercentage(i))return-1;const u=o.map((e=>convertUnit(i,e.value)));if(!arrayOfSameNumeric(u))return-1;const a=u.map((e=>e[4].value)),s=Math.hypot(...a);return resultToCalculation(t,i,s)}function solveMax(t,o,r){if(!o.every(e.isTokenNode))return-1;const i=o[0].value;if(!n.isTokenNumeric(i))return-1;if(!r.rawPercentages&&n.isTokenPercentage(i))return-1;const u=o.map((e=>convertUnit(i,e.value)));if(!arrayOfSameNumeric(u))return-1;const a=u.map((e=>e[4].value)),s=Math.max(...a);return resultToCalculation(t,i,s)}function solveMin(t,o,r){if(!o.every(e.isTokenNode))return-1;const i=o[0].value;if(!n.isTokenNumeric(i))return-1;if(!r.rawPercentages&&n.isTokenPercentage(i))return-1;const u=o.map((e=>convertUnit(i,e.value)));if(!arrayOfSameNumeric(u))return-1;const a=u.map((e=>e[4].value)),s=Math.min(...a);return resultToCalculation(t,i,s)}function solveMod(e,t,o){const r=t.value;if(!n.isTokenNumeric(r))return-1;const i=convertUnit(r,o.value);if(!twoOfSameNumeric(r,i))return-1;let u;return u=0===i[4].value?Number.NaN:Number.isFinite(r[4].value)&&(Number.isFinite(i[4].value)||(i[4].value!==Number.POSITIVE_INFINITY||r[4].value!==Number.NEGATIVE_INFINITY&&!Object.is(0*r[4].value,-0))&&(i[4].value!==Number.NEGATIVE_INFINITY||r[4].value!==Number.POSITIVE_INFINITY&&!Object.is(0*r[4].value,0)))?Number.isFinite(i[4].value)?(r[4].value%i[4].value+i[4].value)%i[4].value:r[4].value:Number.NaN,resultToCalculation(e,r,u)}function solvePow(e,t,o){const r=t.value,i=o.value;if(!n.isTokenNumber(r))return-1;if(!twoOfSameNumeric(r,i))return-1;return numberToCalculation(e,Math.pow(r[4].value,i[4].value))}function solveRem(e,t,o){const r=t.value;if(!n.isTokenNumeric(r))return-1;const i=convertUnit(r,o.value);if(!twoOfSameNumeric(r,i))return-1;let u;return u=0===i[4].value?Number.NaN:Number.isFinite(r[4].value)?Number.isFinite(i[4].value)?r[4].value%i[4].value:r[4].value:Number.NaN,resultToCalculation(e,r,u)}function solveRound(e,t,o,r,i){const u=o.value;if(!n.isTokenNumeric(u))return-1;if(!i.rawPercentages&&n.isTokenPercentage(u))return-1;const a=convertUnit(u,r.value);if(!twoOfSameNumeric(u,a))return-1;let s;if(0===a[4].value)s=Number.NaN;else if(Number.isFinite(u[4].value)||Number.isFinite(a[4].value))if(!Number.isFinite(u[4].value)&&Number.isFinite(a[4].value))s=u[4].value;else if(Number.isFinite(u[4].value)&&!Number.isFinite(a[4].value))switch(t){case"down":s=u[4].value<0?-1/0:Object.is(-0,0*u[4].value)?-0:0;break;case"up":s=u[4].value>0?1/0:Object.is(0,0*u[4].value)?0:-0;break;default:s=Object.is(0,0*u[4].value)?0:-0}else if(Number.isFinite(a[4].value))switch(t){case"down":s=Math.floor(u[4].value/a[4].value)*a[4].value;break;case"up":s=Math.ceil(u[4].value/a[4].value)*a[4].value;break;case"to-zero":s=Math.trunc(u[4].value/a[4].value)*a[4].value;break;default:{let e=Math.floor(u[4].value/a[4].value)*a[4].value,n=Math.ceil(u[4].value/a[4].value)*a[4].value;if(e>n){const t=e;e=n,n=t}const t=Math.abs(u[4].value-e),o=Math.abs(u[4].value-n);s=t===o?n:t<o?e:n;break}}else s=u[4].value;else s=Number.NaN;return resultToCalculation(e,u,s)}function solveSign(e,t,o){const r=t.value;if(!n.isTokenNumeric(r))return-1;if(!o.rawPercentages&&n.isTokenPercentage(r))return-1;return numberToCalculation(e,Math.sign(r[4].value))}function solveSin(e,t){const o=t.value;if(!isDimensionOrNumber(o))return-1;let r=o[4].value;if(n.isTokenDimension(o))switch(toLowerCaseAZ(o[4].unit)){case"rad":break;case"deg":r=i.get("rad")(o[4].value);break;case"grad":r=u.get("rad")(o[4].value);break;case"turn":r=d.get("rad")(o[4].value);break;default:return-1}return r=Math.sin(r),numberToCalculation(e,r)}function solveSqrt(e,t){const o=t.value;if(!n.isTokenNumber(o))return-1;return numberToCalculation(e,Math.sqrt(o[4].value))}function solveTan(e,t){const o=t.value;if(!isDimensionOrNumber(o))return-1;const r=o[4].value;let a=0,s=o[4].value;if(n.isTokenDimension(o))switch(toLowerCaseAZ(o[4].unit)){case"rad":a=f.get("deg")(r);break;case"deg":a=r,s=i.get("rad")(r);break;case"grad":a=u.get("deg")(r),s=u.get("rad")(r);break;case"turn":a=d.get("deg")(r),s=d.get("rad")(r);break;default:return-1}const l=a/90;return s=a%90==0&&l%2!=0?l>0?1/0:-1/0:Math.tan(s),numberToCalculation(e,s)}function subtraction(t){if(2!==t.length)return-1;const o=t[0].value;let r=t[1].value;if(n.isTokenNumber(o)&&n.isTokenNumber(r)){const t=o[4].value-r[4].value;return new e.TokenNode([n.TokenType.Number,t.toString(),o[2],r[3],{value:t,type:o[4].type===n.NumberType.Integer&&r[4].type===n.NumberType.Integer?n.NumberType.Integer:n.NumberType.Number}])}if(n.isTokenPercentage(o)&&n.isTokenPercentage(r)){const t=o[4].value-r[4].value;return new e.TokenNode([n.TokenType.Percentage,t.toString()+"%",o[2],r[3],{value:t}])}if(n.isTokenDimension(o)&&n.isTokenDimension(r)&&(r=convertUnit(o,r),toLowerCaseAZ(o[4].unit)===toLowerCaseAZ(r[4].unit))){const t=o[4].value-r[4].value;return new e.TokenNode([n.TokenType.Dimension,t.toString()+o[4].unit,o[2],r[3],{value:t,type:o[4].type===n.NumberType.Integer&&r[4].type===n.NumberType.Integer?n.NumberType.Integer:n.NumberType.Number,unit:o[4].unit}])}return-1}function solveLog(t,o){if(1===o.length){const r=o[0];if(!r||!e.isTokenNode(r))return-1;const i=r.value;if(!n.isTokenNumber(i))return-1;return numberToCalculation(t,Math.log(i[4].value))}if(2===o.length){const r=o[0];if(!r||!e.isTokenNode(r))return-1;const i=r.value;if(!n.isTokenNumber(i))return-1;const u=o[1];if(!u||!e.isTokenNode(u))return-1;const a=u.value;if(!n.isTokenNumber(a))return-1;return numberToCalculation(t,Math.log(i[4].value)/Math.log(a[4].value))}return-1}const g=/^none$/i;function isNone(t){if(Array.isArray(t)){const n=t.filter((n=>!(e.isWhitespaceNode(n)&&e.isCommentNode(n))));return 1===n.length&&isNone(n[0])}if(!e.isTokenNode(t))return!1;const o=t.value;return!!n.isTokenIdent(o)&&g.test(o[4].value)}function solveRandom(e,t,o,r,i,u){const a=o.value;if(!n.isTokenNumeric(a))return-1;const s=convertUnit(a,r.value);if(!twoOfSameNumeric(a,s))return-1;let l,c=null;if(i&&(c=convertUnit(a,i.value),!twoOfSameNumeric(a,c)))return-1;if(Number.isFinite(a[4].value))if(Number.isFinite(s[4].value))if(c&&(!Number.isFinite(c[4].value)||c[4].value<=0))l=a[4].value;else{const e=sfc32(crc32([t,n.stringify(a),n.stringify(s),i?`by ${i.toString()}`:""].join(",")),u.randomSeed);let o=a[4].value,r=s[4].value;if(o>r&&([o,r]=[r,o]),c){const n=Math.abs(o-r),t=e();l=o+Math.floor(n/c[4].value*t)*c[4].value}else{const n=e();l=Number((n*(r-o)+o).toFixed(5))}}else l=Number.NaN;else l=Number.NaN;return resultToCalculation(e,a,l)}function sfc32(e=.34944106645296036,n=.19228640875738723,t=.8784393832007205,o=.04850964319275053){return()=>{const r=((e|=0)+(n|=0)|0)+(o|=0)|0;return o=o+1|0,e=n^n>>>9,n=(t|=0)+(t<<3)|0,t=(t=t<<21|t>>>11)+r|0,(r>>>0)/4294967296}}function crc32(e){let n=0,t=0,o=0;n=~n;for(let r=0,i=e.length;r<i;r++)o=255&(n^e.charCodeAt(r)),t=Number("0x"+"00000000 77073096 EE0E612C 990951BA 076DC419 706AF48F E963A535 9E6495A3 0EDB8832 79DCB8A4 E0D5E91E 97D2D988 09B64C2B 7EB17CBD E7B82D07 90BF1D91 1DB71064 6AB020F2 F3B97148 84BE41DE 1ADAD47D 6DDDE4EB F4D4B551 83D385C7 136C9856 646BA8C0 FD62F97A 8A65C9EC 14015C4F 63066CD9 FA0F3D63 8D080DF5 3B6E20C8 4C69105E D56041E4 A2677172 3C03E4D1 4B04D447 D20D85FD A50AB56B 35B5A8FA 42B2986C DBBBC9D6 ACBCF940 32D86CE3 45DF5C75 DCD60DCF ABD13D59 26D930AC 51DE003A C8D75180 BFD06116 21B4F4B5 56B3C423 CFBA9599 B8BDA50F 2802B89E 5F058808 C60CD9B2 B10BE924 2F6F7C87 58684C11 C1611DAB B6662D3D 76DC4190 01DB7106 98D220BC EFD5102A 71B18589 06B6B51F 9FBFE4A5 E8B8D433 7807C9A2 0F00F934 9609A88E E10E9818 7F6A0DBB 086D3D2D 91646C97 E6635C01 6B6B51F4 1C6C6162 856530D8 F262004E 6C0695ED 1B01A57B 8208F4C1 F50FC457 65B0D9C6 12B7E950 8BBEB8EA FCB9887C 62DD1DDF 15DA2D49 8CD37CF3 FBD44C65 4DB26158 3AB551CE A3BC0074 D4BB30E2 4ADFA541 3DD895D7 A4D1C46D D3D6F4FB 4369E96A 346ED9FC AD678846 DA60B8D0 44042D73 33031DE5 AA0A4C5F DD0D7CC9 5005713C 270241AA BE0B1010 C90C2086 5768B525 206F85B3 B966D409 CE61E49F 5EDEF90E 29D9C998 B0D09822 C7D7A8B4 59B33D17 2EB40D81 B7BD5C3B C0BA6CAD EDB88320 9ABFB3B6 03B6E20C 74B1D29A EAD54739 9DD277AF 04DB2615 73DC1683 E3630B12 94643B84 0D6D6A3E 7A6A5AA8 E40ECF0B 9309FF9D 0A00AE27 7D079EB1 F00F9344 8708A3D2 1E01F268 6906C2FE F762575D 806567CB 196C3671 6E6B06E7 FED41B76 89D32BE0 10DA7A5A 67DD4ACC F9B9DF6F 8EBEEFF9 17B7BE43 60B08ED5 D6D6A3E8 A1D1937E 38D8C2C4 4FDFF252 D1BB67F1 A6BC5767 3FB506DD 48B2364B D80D2BDA AF0A1B4C 36034AF6 41047A60 DF60EFC3 A867DF55 316E8EEF 4669BE79 CB61B38C BC66831A 256FD2A0 5268E236 CC0C7795 BB0B4703 220216B9 5505262F C5BA3BBE B2BD0B28 2BB45A92 5CB36A04 C2D7FFA7 B5D0CF31 2CD99E8B 5BDEAE1D 9B64C2B0 EC63F226 756AA39C 026D930A 9C0906A9 EB0E363F 72076785 05005713 95BF4A82 E2B87A14 7BB12BAE 0CB61B38 92D28E9B E5D5BE0D 7CDCEFB7 0BDBDF21 86D3D2D4 F1D4E242 68DDB3F8 1FDA836E 81BE16CD F6B9265B 6FB077E1 18B74777 88085AE6 FF0F6A70 66063BCA 11010B5C 8F659EFF F862AE69 616BFFD3 166CCF45 A00AE278 D70DD2EE 4E048354 3903B3C2 A7672661 D06016F7 4969474D 3E6E77DB AED16A4A D9D65ADC 40DF0B66 37D83BF0 A9BCAE53 DEBB9EC5 47B2CF7F 30B5FFE9 BDBDF21C CABAC28A 53B39330 24B4A3A6 BAD03605 CDD70693 54DE5729 23D967BF B3667A2E C4614AB8 5D681B02 2A6F2B94 B40BBE37 C30C8EA1 5A05DF1B 2D02EF8D".substring(9*o,9*o+8)),n=n>>>8^t;return~n>>>0}const D=new Map([["abs",function abs(e,n,t){return singleNodeSolver(e,n,t,solveAbs)}],["acos",function acos(e,n,t){return singleNodeSolver(e,n,t,solveACos)}],["asin",function asin(e,n,t){return singleNodeSolver(e,n,t,solveASin)}],["atan",function atan(e,n,t){return singleNodeSolver(e,n,t,solveATan)}],["atan2",function atan2(e,n,t){return twoCommaSeparatedNodesSolver(e,n,t,solveATan2)}],["calc",calc$1],["clamp",function clamp(t,o,r){const i=resolveGlobalsAndConstants([...t.value.filter((n=>!e.isWhiteSpaceOrCommentNode(n)))],o),u=[],a=[],s=[];{let t=u;for(let o=0;o<i.length;o++){const r=i[o];if(e.isTokenNode(r)&&n.isTokenComma(r.value)){if(t===s)return-1;if(t===a){t=s;continue}if(t===u){t=a;continue}return-1}t.push(r)}}const l=isNone(u),c=isNone(s);if(l&&c)return calc$1(calcWrapper(a),o,r);const m=solve(calc$1(calcWrapper(a),o,r));if(-1===m)return-1;if(l){const t=solve(calc$1(calcWrapper(s),o,r));return-1===t?-1:solveMin((v=m,T=t,new e.FunctionNode([n.TokenType.Function,"min(",-1,-1,{value:"min"}],[n.TokenType.CloseParen,")",-1,-1,void 0],[v,new e.TokenNode([n.TokenType.Comma,",",-1,-1,void 0]),T])),[m,t],r)}if(c){const e=solve(calc$1(calcWrapper(u),o,r));return-1===e?-1:solveMax(maxWrapper(e,m),[e,m],r)}var v,T;const p=solve(calc$1(calcWrapper(u),o,r));if(-1===p)return-1;const N=solve(calc$1(calcWrapper(s),o,r));if(-1===N)return-1;return solveClamp(t,p,m,N,r)}],["cos",function cos(e,n,t){return singleNodeSolver(e,n,t,solveCos)}],["exp",function exp(e,n,t){return singleNodeSolver(e,n,t,solveExp)}],["hypot",function hypot(e,n,t){return variadicNodesSolver(e,e.value,n,t,solveHypot)}],["log",function log(e,n,t){return variadicNodesSolver(e,e.value,n,t,solveLog)}],["max",function max(e,n,t){return variadicNodesSolver(e,e.value,n,t,solveMax)}],["min",function min(e,n,t){return variadicNodesSolver(e,e.value,n,t,solveMin)}],["mod",function mod(e,n,t){return twoCommaSeparatedNodesSolver(e,n,t,solveMod)}],["pow",function pow(e,n,t){return twoCommaSeparatedNodesSolver(e,n,t,solvePow)}],["random",function random(t,o,r){const i=t.value.filter((n=>!e.isWhiteSpaceOrCommentNode(n)));let u="";const a=[],s=[];for(let t=0;t<i.length;t++){const o=i[t];if(!u&&0===s.length&&e.isTokenNode(o)&&n.isTokenIdent(o.value)){const r=o.value[4].value.toLowerCase();if("per-element"===r||r.startsWith("--")){u=r;const o=i[t+1];if(!e.isTokenNode(o)||!n.isTokenComma(o.value))return-1;t++;continue}}if(e.isTokenNode(o)&&n.isTokenComma(o.value)){const o=i[t+1];if(s.length>0&&e.isTokenNode(o)&&n.isTokenIdent(o.value)){const e=o.value[4].value.toLowerCase();if("by"===e||e.startsWith("--")){a.push(...i.slice(t+2));break}}}s.push(o)}const l=twoCommaSeparatedArguments(s,o,r);if(-1===l)return-1;const[c,m]=l;let v=null;if(a.length&&(v=singleArgument(a,o,r),-1===v))return-1;return solveRandom(t,u,c,m,v,r)}],["rem",function rem(e,n,t){return twoCommaSeparatedNodesSolver(e,n,t,solveRem)}],["round",function round(t,o,r){const i=resolveGlobalsAndConstants([...t.value.filter((n=>!e.isWhiteSpaceOrCommentNode(n)))],o);let u="",a=!1;const s=[],l=[];{let t=s;for(let o=0;o<i.length;o++){const r=i[o];if(!u&&0===s.length&&0===l.length&&e.isTokenNode(r)&&n.isTokenIdent(r.value)){const e=r.value[4].value.toLowerCase();if(b.has(e)){u=e;continue}}if(e.isTokenNode(r)&&n.isTokenComma(r.value)){if(t===l)return-1;if(t===s&&u&&0===s.length)continue;if(t===s){a=!0,t=l;continue}return-1}t.push(r)}}const c=solve(calc$1(calcWrapper(s),o,r));if(-1===c)return-1;a||0!==l.length||l.push(new e.TokenNode([n.TokenType.Number,"1",-1,-1,{value:1,type:n.NumberType.Integer}]));const m=solve(calc$1(calcWrapper(l),o,r));if(-1===m)return-1;u||(u="nearest");return solveRound(t,u,c,m,r)}],["sign",function sign(e,n,t){return singleNodeSolver(e,n,t,solveSign)}],["sin",function sin(e,n,t){return singleNodeSolver(e,n,t,solveSin)}],["sqrt",function sqrt(e,n,t){return singleNodeSolver(e,n,t,solveSqrt)}],["tan",function tan(e,n,t){return singleNodeSolver(e,n,t,solveTan)}]]);function calc$1(t,o,r){const i=resolveGlobalsAndConstants([...t.value.filter((n=>!e.isWhiteSpaceOrCommentNode(n)))],o);if(1===i.length&&e.isTokenNode(i[0]))return{inputs:[i[0]],operation:unary};let u=0;for(;u<i.length;){const t=i[u];if(e.isSimpleBlockNode(t)&&n.isTokenOpenParen(t.startToken)){const e=calc$1(t,o,r);if(-1===e)return-1;i.splice(u,1,e)}else if(e.isFunctionNode(t)){const e=D.get(t.getName().toLowerCase());if(!e)return-1;const n=e(t,o,r);if(-1===n)return-1;i.splice(u,1,n)}else u++}if(u=0,1===i.length&&isCalculation(i[0]))return i[0];for(;u<i.length;){const t=i[u];if(!t||!e.isTokenNode(t)&&!isCalculation(t)){u++;continue}const o=i[u+1];if(!o||!e.isTokenNode(o)){u++;continue}const r=o.value;if(!n.isTokenDelim(r)||"*"!==r[4].value&&"/"!==r[4].value){u++;continue}const a=i[u+2];if(!a||!e.isTokenNode(a)&&!isCalculation(a))return-1;"*"!==r[4].value?"/"!==r[4].value?u++:i.splice(u,3,{inputs:[t,a],operation:division}):i.splice(u,3,{inputs:[t,a],operation:multiplication})}if(u=0,1===i.length&&isCalculation(i[0]))return i[0];for(;u<i.length;){const t=i[u];if(!t||!e.isTokenNode(t)&&!isCalculation(t)){u++;continue}const o=i[u+1];if(!o||!e.isTokenNode(o)){u++;continue}const r=o.value;if(!n.isTokenDelim(r)||"+"!==r[4].value&&"-"!==r[4].value){u++;continue}const a=i[u+2];if(!a||!e.isTokenNode(a)&&!isCalculation(a))return-1;"+"!==r[4].value?"-"!==r[4].value?u++:i.splice(u,3,{inputs:[t,a],operation:subtraction}):i.splice(u,3,{inputs:[t,a],operation:addition})}return 1===i.length&&isCalculation(i[0])?i[0]:-1}function singleNodeSolver(e,n,t,o){const r=singleArgument(e.value,n,t);return-1===r?-1:o(e,r,t)}function singleArgument(n,t,o){const r=solve(calc$1(calcWrapper(resolveGlobalsAndConstants([...n.filter((n=>!e.isWhiteSpaceOrCommentNode(n)))],t)),t,o));return-1===r?-1:r}function twoCommaSeparatedNodesSolver(e,n,t,o){const r=twoCommaSeparatedArguments(e.value,n,t);if(-1===r)return-1;const[i,u]=r;return o(e,i,u,t)}function twoCommaSeparatedArguments(t,o,r){const i=resolveGlobalsAndConstants([...t.filter((n=>!e.isWhiteSpaceOrCommentNode(n)))],o),u=[],a=[];{let t=u;for(let o=0;o<i.length;o++){const r=i[o];if(e.isTokenNode(r)&&n.isTokenComma(r.value)){if(t===a)return-1;if(t===u){t=a;continue}return-1}t.push(r)}}const s=solve(calc$1(calcWrapper(u),o,r));if(-1===s)return-1;const l=solve(calc$1(calcWrapper(a),o,r));return-1===l?-1:[s,l]}function variadicNodesSolver(e,n,t,o,r){const i=variadicArguments(e.value,t,o);return-1===i?-1:r(e,i,o)}function variadicArguments(t,o,r){const i=resolveGlobalsAndConstants([...t.filter((n=>!e.isWhiteSpaceOrCommentNode(n)))],o),u=[];{const t=[];let a=[];for(let o=0;o<i.length;o++){const r=i[o];e.isTokenNode(r)&&n.isTokenComma(r.value)?(t.push(a),a=[]):a.push(r)}t.push(a);for(let e=0;e<t.length;e++){if(0===t[e].length)return-1;const n=solve(calc$1(calcWrapper(t[e]),o,r));if(-1===n)return-1;u.push(n)}}return u}const b=new Set(["nearest","up","down","to-zero"]);function calcWrapper(t){return new e.FunctionNode([n.TokenType.Function,"calc(",-1,-1,{value:"calc"}],[n.TokenType.CloseParen,")",-1,-1,void 0],t)}function maxWrapper(t,o){return new e.FunctionNode([n.TokenType.Function,"max(",-1,-1,{value:"max"}],[n.TokenType.CloseParen,")",-1,-1,void 0],[t,new e.TokenNode([n.TokenType.Comma,",",-1,-1,void 0]),o])}function patchNaN(t){if(-1===t)return-1;if(e.isFunctionNode(t))return t;const o=t.value;return n.isTokenNumeric(o)&&Number.isNaN(o[4].value)?n.isTokenNumber(o)?new e.FunctionNode([n.TokenType.Function,"calc(",o[2],o[3],{value:"calc"}],[n.TokenType.CloseParen,")",o[2],o[3],void 0],[new e.TokenNode([n.TokenType.Ident,"NaN",o[2],o[3],{value:"NaN"}])]):n.isTokenDimension(o)?new e.FunctionNode([n.TokenType.Function,"calc(",o[2],o[3],{value:"calc"}],[n.TokenType.CloseParen,")",o[2],o[3],void 0],[new e.TokenNode([n.TokenType.Ident,"NaN",o[2],o[3],{value:"NaN"}]),new e.WhitespaceNode([[n.TokenType.Whitespace," ",o[2],o[3],void 0]]),new e.TokenNode([n.TokenType.Delim,"*",o[2],o[3],{value:"*"}]),new e.WhitespaceNode([[n.TokenType.Whitespace," ",o[2],o[3],void 0]]),new e.TokenNode([n.TokenType.Dimension,"1"+o[4].unit,o[2],o[3],{value:1,type:n.NumberType.Integer,unit:o[4].unit}])]):n.isTokenPercentage(o)?new e.FunctionNode([n.TokenType.Function,"calc(",o[2],o[3],{value:"calc"}],[n.TokenType.CloseParen,")",o[2],o[3],void 0],[new e.TokenNode([n.TokenType.Ident,"NaN",o[2],o[3],{value:"NaN"}]),new e.WhitespaceNode([[n.TokenType.Whitespace," ",o[2],o[3],void 0]]),new e.TokenNode([n.TokenType.Delim,"*",o[2],o[3],{value:"*"}]),new e.WhitespaceNode([[n.TokenType.Whitespace," ",o[2],o[3],void 0]]),new e.TokenNode([n.TokenType.Percentage,"1%",o[2],o[3],{value:1}])]):-1:t}function patchInfinity(t){if(-1===t)return-1;if(e.isFunctionNode(t))return t;const o=t.value;if(!n.isTokenNumeric(o))return t;if(Number.isFinite(o[4].value)||Number.isNaN(o[4].value))return t;let r="";return Number.NEGATIVE_INFINITY===o[4].value&&(r="-"),n.isTokenNumber(o)?new e.FunctionNode([n.TokenType.Function,"calc(",o[2],o[3],{value:"calc"}],[n.TokenType.CloseParen,")",o[2],o[3],void 0],[new e.TokenNode([n.TokenType.Ident,r+"infinity",o[2],o[3],{value:r+"infinity"}])]):n.isTokenDimension(o)?new e.FunctionNode([n.TokenType.Function,"calc(",o[2],o[3],{value:"calc"}],[n.TokenType.CloseParen,")",o[2],o[3],void 0],[new e.TokenNode([n.TokenType.Ident,r+"infinity",o[2],o[3],{value:r+"infinity"}]),new e.WhitespaceNode([[n.TokenType.Whitespace," ",o[2],o[3],void 0]]),new e.TokenNode([n.TokenType.Delim,"*",o[2],o[3],{value:"*"}]),new e.WhitespaceNode([[n.TokenType.Whitespace," ",o[2],o[3],void 0]]),new e.TokenNode([n.TokenType.Dimension,"1"+o[4].unit,o[2],o[3],{value:1,type:n.NumberType.Integer,unit:o[4].unit}])]):new e.FunctionNode([n.TokenType.Function,"calc(",o[2],o[3],{value:"calc"}],[n.TokenType.CloseParen,")",o[2],o[3],void 0],[new e.TokenNode([n.TokenType.Ident,r+"infinity",o[2],o[3],{value:r+"infinity"}]),new e.WhitespaceNode([[n.TokenType.Whitespace," ",o[2],o[3],void 0]]),new e.TokenNode([n.TokenType.Delim,"*",o[2],o[3],{value:"*"}]),new e.WhitespaceNode([[n.TokenType.Whitespace," ",o[2],o[3],void 0]]),new e.TokenNode([n.TokenType.Percentage,"1%",o[2],o[3],{value:1}])])}function patchMinusZero(t){if(-1===t)return-1;if(e.isFunctionNode(t))return t;const o=t.value;return n.isTokenNumeric(o)&&Object.is(-0,o[4].value)?("-0"===o[1]||(n.isTokenPercentage(o)?o[1]="-0%":n.isTokenDimension(o)?o[1]="-0"+o[4].unit:o[1]="-0"),t):t}function patchPrecision(t,o=13){if(-1===t)return-1;if(o<=0)return t;if(e.isFunctionNode(t))return t;const r=t.value;if(!n.isTokenNumeric(r))return t;if(Number.isInteger(r[4].value))return t;const i=Number(r[4].value.toFixed(o)).toString();return n.isTokenNumber(r)?r[1]=i:n.isTokenPercentage(r)?r[1]=i+"%":n.isTokenDimension(r)&&(r[1]=i+r[4].unit),t}function patchCanonicalUnit(t){return-1===t?-1:e.isFunctionNode(t)?t:n.isTokenDimension(t.value)?(t.value=toCanonicalUnit(t.value),t):t}function patchCalcResult(e,n){let t=e;return n?.toCanonicalUnits&&(t=patchCanonicalUnit(t)),t=patchPrecision(t,n?.precision),t=patchMinusZero(t),n?.censorIntoStandardRepresentableValues||(t=patchNaN(t),t=patchInfinity(t)),t}function tokenizeGlobals(e){const t=new Map;if(!e)return t;for(const[o,r]of e)if(n.isToken(r))t.set(o,r);else if("string"!=typeof r);else{const e=n.tokenizer({css:r}),i=e.nextToken();if(e.nextToken(),!e.endOfFile())continue;if(!n.isTokenNumeric(i))continue;t.set(o,i)}return t}function calcFromComponentValues(n,t){const o=tokenizeGlobals(t?.globals);return e.replaceComponentValues(n,(n=>{if(!e.isFunctionNode(n))return;const r=D.get(n.getName().toLowerCase());if(!r)return;const i=patchCalcResult(solve(r(n,o,t??{})),t);return-1!==i?i:void 0}))}const y=new Set(D.keys());exports.calc=function calc(t,o){return calcFromComponentValues(e.parseCommaSeparatedListOfComponentValues(n.tokenize({css:t}),{}),o).map((e=>e.map((e=>n.stringify(...e.tokens()))).join(""))).join(",")},exports.calcFromComponentValues=calcFromComponentValues,exports.mathFunctionNames=y;
+var e=__nccwpck_require__(66500),n=__nccwpck_require__(10618);const t=/[A-Z]/g;function toLowerCaseAZ(e){return e.replace(t,(e=>String.fromCharCode(e.charCodeAt(0)+32)))}const o={cm:"px",in:"px",mm:"px",pc:"px",pt:"px",px:"px",q:"px",deg:"deg",grad:"deg",rad:"deg",turn:"deg",ms:"s",s:"s",hz:"hz",khz:"hz"},r=new Map([["cm",e=>e],["mm",e=>10*e],["q",e=>40*e],["in",e=>e/2.54],["pc",e=>e/2.54*6],["pt",e=>e/2.54*72],["px",e=>e/2.54*96]]),i=new Map([["deg",e=>e],["grad",e=>e/.9],["rad",e=>e/180*Math.PI],["turn",e=>e/360]]),u=new Map([["deg",e=>.9*e],["grad",e=>e],["rad",e=>.9*e/180*Math.PI],["turn",e=>.9*e/360]]),a=new Map([["hz",e=>e],["khz",e=>e/1e3]]),s=new Map([["cm",e=>2.54*e],["mm",e=>25.4*e],["q",e=>25.4*e*4],["in",e=>e],["pc",e=>6*e],["pt",e=>72*e],["px",e=>96*e]]),l=new Map([["hz",e=>1e3*e],["khz",e=>e]]),c=new Map([["cm",e=>e/10],["mm",e=>e],["q",e=>4*e],["in",e=>e/25.4],["pc",e=>e/25.4*6],["pt",e=>e/25.4*72],["px",e=>e/25.4*96]]),m=new Map([["ms",e=>e],["s",e=>e/1e3]]),v=new Map([["cm",e=>e/6*2.54],["mm",e=>e/6*25.4],["q",e=>e/6*25.4*4],["in",e=>e/6],["pc",e=>e],["pt",e=>e/6*72],["px",e=>e/6*96]]),T=new Map([["cm",e=>e/72*2.54],["mm",e=>e/72*25.4],["q",e=>e/72*25.4*4],["in",e=>e/72],["pc",e=>e/72*6],["pt",e=>e],["px",e=>e/72*96]]),p=new Map([["cm",e=>e/96*2.54],["mm",e=>e/96*25.4],["q",e=>e/96*25.4*4],["in",e=>e/96],["pc",e=>e/96*6],["pt",e=>e/96*72],["px",e=>e]]),N=new Map([["cm",e=>e/4/10],["mm",e=>e/4],["q",e=>e],["in",e=>e/4/25.4],["pc",e=>e/4/25.4*6],["pt",e=>e/4/25.4*72],["px",e=>e/4/25.4*96]]),f=new Map([["deg",e=>180*e/Math.PI],["grad",e=>180*e/Math.PI/.9],["rad",e=>e],["turn",e=>180*e/Math.PI/360]]),k=new Map([["ms",e=>1e3*e],["s",e=>e]]),d=new Map([["deg",e=>360*e],["grad",e=>360*e/.9],["rad",e=>360*e/180*Math.PI],["turn",e=>e]]),C=new Map([["cm",r],["mm",c],["q",N],["in",s],["pc",v],["pt",T],["px",p],["ms",m],["s",k],["deg",i],["grad",u],["rad",f],["turn",d],["hz",a],["khz",l]]);function convertUnit(e,t){if(!n.isTokenDimension(e))return t;if(!n.isTokenDimension(t))return t;const o=toLowerCaseAZ(e[4].unit),r=toLowerCaseAZ(t[4].unit);if(o===r)return t;const i=C.get(r);if(!i)return t;const u=i.get(o);if(!u)return t;const a=u(t[4].value),s=[n.TokenType.Dimension,"",t[2],t[3],{...t[4],signCharacter:a<0?"-":void 0,type:Number.isInteger(a)?n.NumberType.Integer:n.NumberType.Number,value:a}];return n.mutateUnit(s,e[4].unit),s}function toCanonicalUnit(e){if(!n.isTokenDimension(e))return e;const t=toLowerCaseAZ(e[4].unit),r=o[t];if(t===r)return e;const i=C.get(t);if(!i)return e;const u=i.get(r);if(!u)return e;const a=u(e[4].value),s=[n.TokenType.Dimension,"",e[2],e[3],{...e[4],signCharacter:a<0?"-":void 0,type:Number.isInteger(a)?n.NumberType.Integer:n.NumberType.Number,value:a}];return n.mutateUnit(s,r),s}function addition(t){if(2!==t.length)return-1;const o=t[0].value;let r=t[1].value;if(n.isTokenNumber(o)&&n.isTokenNumber(r)){const t=o[4].value+r[4].value;return new e.TokenNode([n.TokenType.Number,t.toString(),o[2],r[3],{value:t,type:o[4].type===n.NumberType.Integer&&r[4].type===n.NumberType.Integer?n.NumberType.Integer:n.NumberType.Number}])}if(n.isTokenPercentage(o)&&n.isTokenPercentage(r)){const t=o[4].value+r[4].value;return new e.TokenNode([n.TokenType.Percentage,t.toString()+"%",o[2],r[3],{value:t}])}if(n.isTokenDimension(o)&&n.isTokenDimension(r)&&(r=convertUnit(o,r),toLowerCaseAZ(o[4].unit)===toLowerCaseAZ(r[4].unit))){const t=o[4].value+r[4].value;return new e.TokenNode([n.TokenType.Dimension,t.toString()+o[4].unit,o[2],r[3],{value:t,type:o[4].type===n.NumberType.Integer&&r[4].type===n.NumberType.Integer?n.NumberType.Integer:n.NumberType.Number,unit:o[4].unit}])}return-1}function division(t){if(2!==t.length)return-1;const o=t[0].value,r=t[1].value;if(n.isTokenNumber(o)&&n.isTokenNumber(r)){const t=o[4].value/r[4].value;return new e.TokenNode([n.TokenType.Number,t.toString(),o[2],r[3],{value:t,type:Number.isInteger(t)?n.NumberType.Integer:n.NumberType.Number}])}if(n.isTokenPercentage(o)&&n.isTokenNumber(r)){const t=o[4].value/r[4].value;return new e.TokenNode([n.TokenType.Percentage,t.toString()+"%",o[2],r[3],{value:t}])}if(n.isTokenDimension(o)&&n.isTokenNumber(r)){const t=o[4].value/r[4].value;return new e.TokenNode([n.TokenType.Dimension,t.toString()+o[4].unit,o[2],r[3],{value:t,type:Number.isInteger(t)?n.NumberType.Integer:n.NumberType.Number,unit:o[4].unit}])}return-1}function isCalculation(e){return!!e&&"object"==typeof e&&"inputs"in e&&Array.isArray(e.inputs)&&"operation"in e}function solve(n){if(-1===n)return-1;const t=[];for(let o=0;o<n.inputs.length;o++){const r=n.inputs[o];if(e.isTokenNode(r)){t.push(r);continue}const i=solve(r);if(-1===i)return-1;t.push(i)}return n.operation(t)}function multiplication(t){if(2!==t.length)return-1;const o=t[0].value,r=t[1].value;if(n.isTokenNumber(o)&&n.isTokenNumber(r)){const t=o[4].value*r[4].value;return new e.TokenNode([n.TokenType.Number,t.toString(),o[2],r[3],{value:t,type:o[4].type===n.NumberType.Integer&&r[4].type===n.NumberType.Integer?n.NumberType.Integer:n.NumberType.Number}])}if(n.isTokenPercentage(o)&&n.isTokenNumber(r)){const t=o[4].value*r[4].value;return new e.TokenNode([n.TokenType.Percentage,t.toString()+"%",o[2],r[3],{value:t}])}if(n.isTokenNumber(o)&&n.isTokenPercentage(r)){const t=o[4].value*r[4].value;return new e.TokenNode([n.TokenType.Percentage,t.toString()+"%",o[2],r[3],{value:t}])}if(n.isTokenDimension(o)&&n.isTokenNumber(r)){const t=o[4].value*r[4].value;return new e.TokenNode([n.TokenType.Dimension,t.toString()+o[4].unit,o[2],r[3],{value:t,type:o[4].type===n.NumberType.Integer&&r[4].type===n.NumberType.Integer?n.NumberType.Integer:n.NumberType.Number,unit:o[4].unit}])}if(n.isTokenNumber(o)&&n.isTokenDimension(r)){const t=o[4].value*r[4].value;return new e.TokenNode([n.TokenType.Dimension,t.toString()+r[4].unit,o[2],r[3],{value:t,type:o[4].type===n.NumberType.Integer&&r[4].type===n.NumberType.Integer?n.NumberType.Integer:n.NumberType.Number,unit:r[4].unit}])}return-1}function resolveGlobalsAndConstants(t,o){for(let r=0;r<t.length;r++){const i=t[r];if(!e.isTokenNode(i))continue;const u=i.value;if(!n.isTokenIdent(u))continue;const a=toLowerCaseAZ(u[4].value);switch(a){case"e":t.splice(r,1,new e.TokenNode([n.TokenType.Number,Math.E.toString(),u[2],u[3],{value:Math.E,type:n.NumberType.Number}]));break;case"pi":t.splice(r,1,new e.TokenNode([n.TokenType.Number,Math.PI.toString(),u[2],u[3],{value:Math.PI,type:n.NumberType.Number}]));break;case"infinity":t.splice(r,1,new e.TokenNode([n.TokenType.Number,"infinity",u[2],u[3],{value:1/0,type:n.NumberType.Number}]));break;case"-infinity":t.splice(r,1,new e.TokenNode([n.TokenType.Number,"-infinity",u[2],u[3],{value:-1/0,type:n.NumberType.Number}]));break;case"nan":t.splice(r,1,new e.TokenNode([n.TokenType.Number,"NaN",u[2],u[3],{value:Number.NaN,type:n.NumberType.Number}]));break;default:if(o.has(a)){const n=o.get(a);t.splice(r,1,new e.TokenNode(n))}}}return t}function unary(e){if(1!==e.length)return-1;const t=e[0].value;return n.isTokenNumeric(t)?e[0]:-1}function resultToCalculation(e,t,o){return n.isTokenDimension(t)?dimensionToCalculation(e,t[4].unit,o):n.isTokenPercentage(t)?percentageToCalculation(e,o):n.isTokenNumber(t)?numberToCalculation(e,o):-1}function dimensionToCalculation(t,o,r){const i=t.tokens();return{inputs:[new e.TokenNode([n.TokenType.Dimension,r.toString()+o,i[0][2],i[i.length-1][3],{value:r,type:Number.isInteger(r)?n.NumberType.Integer:n.NumberType.Number,unit:o}])],operation:unary}}function percentageToCalculation(t,o){const r=t.tokens();return{inputs:[new e.TokenNode([n.TokenType.Percentage,o.toString()+"%",r[0][2],r[r.length-1][3],{value:o}])],operation:unary}}function numberToCalculation(t,o){const r=t.tokens();return{inputs:[new e.TokenNode([n.TokenType.Number,o.toString(),r[0][2],r[r.length-1][3],{value:o,type:Number.isInteger(o)?n.NumberType.Integer:n.NumberType.Number}])],operation:unary}}function solveACos(e,t){const o=t.value;if(!n.isTokenNumber(o))return-1;return dimensionToCalculation(e,"rad",Math.acos(o[4].value))}function solveASin(e,t){const o=t.value;if(!n.isTokenNumber(o))return-1;return dimensionToCalculation(e,"rad",Math.asin(o[4].value))}function solveATan(e,t){const o=t.value;if(!n.isTokenNumber(o))return-1;return dimensionToCalculation(e,"rad",Math.atan(o[4].value))}function isDimensionOrNumber(e){return n.isTokenDimension(e)||n.isTokenNumber(e)}function arrayOfSameNumeric(e){if(0===e.length)return!0;const t=e[0];if(!n.isTokenNumeric(t))return!1;if(1===e.length)return!0;if(n.isTokenDimension(t)){const n=toLowerCaseAZ(t[4].unit);for(let o=1;o<e.length;o++){const r=e[o];if(t[0]!==r[0])return!1;if(n!==toLowerCaseAZ(r[4].unit))return!1}return!0}for(let n=1;n<e.length;n++){const o=e[n];if(t[0]!==o[0])return!1}return!0}function twoOfSameNumeric(e,t){return!!n.isTokenNumeric(e)&&(n.isTokenDimension(e)?e[0]===t[0]&&toLowerCaseAZ(e[4].unit)===toLowerCaseAZ(t[4].unit):e[0]===t[0])}function solveATan2(e,n,t){const o=n.value;if(!isDimensionOrNumber(o))return-1;const r=convertUnit(o,t.value);if(!twoOfSameNumeric(o,r))return-1;return dimensionToCalculation(e,"rad",Math.atan2(o[4].value,r[4].value))}function solveAbs(e,t,o){const r=t.value;if(!n.isTokenNumeric(r))return-1;if(!o.rawPercentages&&n.isTokenPercentage(r))return-1;return resultToCalculation(e,r,Math.abs(r[4].value))}function solveClamp(t,o,r,i,u){if(!e.isTokenNode(o)||!e.isTokenNode(r)||!e.isTokenNode(i))return-1;const a=o.value;if(!n.isTokenNumeric(a))return-1;if(!u.rawPercentages&&n.isTokenPercentage(a))return-1;const s=convertUnit(a,r.value);if(!twoOfSameNumeric(a,s))return-1;const l=convertUnit(a,i.value);if(!twoOfSameNumeric(a,l))return-1;return resultToCalculation(t,a,Math.max(a[4].value,Math.min(s[4].value,l[4].value)))}function solveCos(e,t){const o=t.value;if(!isDimensionOrNumber(o))return-1;let r=o[4].value;if(n.isTokenDimension(o))switch(o[4].unit.toLowerCase()){case"rad":break;case"deg":r=i.get("rad")(o[4].value);break;case"grad":r=u.get("rad")(o[4].value);break;case"turn":r=d.get("rad")(o[4].value);break;default:return-1}return r=Math.cos(r),numberToCalculation(e,r)}function solveExp(e,t){const o=t.value;if(!n.isTokenNumber(o))return-1;return numberToCalculation(e,Math.exp(o[4].value))}function solveHypot(t,o,r){if(!o.every(e.isTokenNode))return-1;const i=o[0].value;if(!n.isTokenNumeric(i))return-1;if(!r.rawPercentages&&n.isTokenPercentage(i))return-1;const u=o.map((e=>convertUnit(i,e.value)));if(!arrayOfSameNumeric(u))return-1;const a=u.map((e=>e[4].value)),s=Math.hypot(...a);return resultToCalculation(t,i,s)}function solveMax(t,o,r){if(!o.every(e.isTokenNode))return-1;const i=o[0].value;if(!n.isTokenNumeric(i))return-1;if(!r.rawPercentages&&n.isTokenPercentage(i))return-1;const u=o.map((e=>convertUnit(i,e.value)));if(!arrayOfSameNumeric(u))return-1;const a=u.map((e=>e[4].value)),s=Math.max(...a);return resultToCalculation(t,i,s)}function solveMin(t,o,r){if(!o.every(e.isTokenNode))return-1;const i=o[0].value;if(!n.isTokenNumeric(i))return-1;if(!r.rawPercentages&&n.isTokenPercentage(i))return-1;const u=o.map((e=>convertUnit(i,e.value)));if(!arrayOfSameNumeric(u))return-1;const a=u.map((e=>e[4].value)),s=Math.min(...a);return resultToCalculation(t,i,s)}function solveMod(e,t,o){const r=t.value;if(!n.isTokenNumeric(r))return-1;const i=convertUnit(r,o.value);if(!twoOfSameNumeric(r,i))return-1;let u;return u=0===i[4].value?Number.NaN:Number.isFinite(r[4].value)&&(Number.isFinite(i[4].value)||(i[4].value!==Number.POSITIVE_INFINITY||r[4].value!==Number.NEGATIVE_INFINITY&&!Object.is(0*r[4].value,-0))&&(i[4].value!==Number.NEGATIVE_INFINITY||r[4].value!==Number.POSITIVE_INFINITY&&!Object.is(0*r[4].value,0)))?Number.isFinite(i[4].value)?(r[4].value%i[4].value+i[4].value)%i[4].value:r[4].value:Number.NaN,resultToCalculation(e,r,u)}function solvePow(e,t,o){const r=t.value,i=o.value;if(!n.isTokenNumber(r))return-1;if(!twoOfSameNumeric(r,i))return-1;return numberToCalculation(e,Math.pow(r[4].value,i[4].value))}function solveRem(e,t,o){const r=t.value;if(!n.isTokenNumeric(r))return-1;const i=convertUnit(r,o.value);if(!twoOfSameNumeric(r,i))return-1;let u;return u=0===i[4].value?Number.NaN:Number.isFinite(r[4].value)?Number.isFinite(i[4].value)?r[4].value%i[4].value:r[4].value:Number.NaN,resultToCalculation(e,r,u)}function solveRound(e,t,o,r,i){const u=o.value;if(!n.isTokenNumeric(u))return-1;if(!i.rawPercentages&&n.isTokenPercentage(u))return-1;const a=convertUnit(u,r.value);if(!twoOfSameNumeric(u,a))return-1;let s;if(0===a[4].value)s=Number.NaN;else if(Number.isFinite(u[4].value)||Number.isFinite(a[4].value))if(!Number.isFinite(u[4].value)&&Number.isFinite(a[4].value))s=u[4].value;else if(Number.isFinite(u[4].value)&&!Number.isFinite(a[4].value))switch(t){case"down":s=u[4].value<0?-1/0:Object.is(-0,0*u[4].value)?-0:0;break;case"up":s=u[4].value>0?1/0:Object.is(0,0*u[4].value)?0:-0;break;default:s=Object.is(0,0*u[4].value)?0:-0}else if(Number.isFinite(a[4].value))switch(t){case"down":s=Math.floor(u[4].value/a[4].value)*a[4].value;break;case"up":s=Math.ceil(u[4].value/a[4].value)*a[4].value;break;case"to-zero":s=Math.trunc(u[4].value/a[4].value)*a[4].value;break;default:{let e=Math.floor(u[4].value/a[4].value)*a[4].value,n=Math.ceil(u[4].value/a[4].value)*a[4].value;if(e>n){const t=e;e=n,n=t}const t=Math.abs(u[4].value-e),o=Math.abs(u[4].value-n);s=t===o?n:t<o?e:n;break}}else s=u[4].value;else s=Number.NaN;return resultToCalculation(e,u,s)}function solveSign(e,t,o){const r=t.value;if(!n.isTokenNumeric(r))return-1;if(!o.rawPercentages&&n.isTokenPercentage(r))return-1;return numberToCalculation(e,Math.sign(r[4].value))}function solveSin(e,t){const o=t.value;if(!isDimensionOrNumber(o))return-1;let r=o[4].value;if(n.isTokenDimension(o))switch(toLowerCaseAZ(o[4].unit)){case"rad":break;case"deg":r=i.get("rad")(o[4].value);break;case"grad":r=u.get("rad")(o[4].value);break;case"turn":r=d.get("rad")(o[4].value);break;default:return-1}return r=Math.sin(r),numberToCalculation(e,r)}function solveSqrt(e,t){const o=t.value;if(!n.isTokenNumber(o))return-1;return numberToCalculation(e,Math.sqrt(o[4].value))}function solveTan(e,t){const o=t.value;if(!isDimensionOrNumber(o))return-1;const r=o[4].value;let a=0,s=o[4].value;if(n.isTokenDimension(o))switch(toLowerCaseAZ(o[4].unit)){case"rad":a=f.get("deg")(r);break;case"deg":a=r,s=i.get("rad")(r);break;case"grad":a=u.get("deg")(r),s=u.get("rad")(r);break;case"turn":a=d.get("deg")(r),s=d.get("rad")(r);break;default:return-1}const l=a/90;return s=a%90==0&&l%2!=0?l>0?1/0:-1/0:Math.tan(s),numberToCalculation(e,s)}function subtraction(t){if(2!==t.length)return-1;const o=t[0].value;let r=t[1].value;if(n.isTokenNumber(o)&&n.isTokenNumber(r)){const t=o[4].value-r[4].value;return new e.TokenNode([n.TokenType.Number,t.toString(),o[2],r[3],{value:t,type:o[4].type===n.NumberType.Integer&&r[4].type===n.NumberType.Integer?n.NumberType.Integer:n.NumberType.Number}])}if(n.isTokenPercentage(o)&&n.isTokenPercentage(r)){const t=o[4].value-r[4].value;return new e.TokenNode([n.TokenType.Percentage,t.toString()+"%",o[2],r[3],{value:t}])}if(n.isTokenDimension(o)&&n.isTokenDimension(r)&&(r=convertUnit(o,r),toLowerCaseAZ(o[4].unit)===toLowerCaseAZ(r[4].unit))){const t=o[4].value-r[4].value;return new e.TokenNode([n.TokenType.Dimension,t.toString()+o[4].unit,o[2],r[3],{value:t,type:o[4].type===n.NumberType.Integer&&r[4].type===n.NumberType.Integer?n.NumberType.Integer:n.NumberType.Number,unit:o[4].unit}])}return-1}function solveLog(t,o){if(1===o.length){const r=o[0];if(!r||!e.isTokenNode(r))return-1;const i=r.value;if(!n.isTokenNumber(i))return-1;return numberToCalculation(t,Math.log(i[4].value))}if(2===o.length){const r=o[0];if(!r||!e.isTokenNode(r))return-1;const i=r.value;if(!n.isTokenNumber(i))return-1;const u=o[1];if(!u||!e.isTokenNode(u))return-1;const a=u.value;if(!n.isTokenNumber(a))return-1;return numberToCalculation(t,Math.log(i[4].value)/Math.log(a[4].value))}return-1}const g=/^none$/i;function isNone(t){if(Array.isArray(t)){const n=t.filter((n=>!(e.isWhitespaceNode(n)&&e.isCommentNode(n))));return 1===n.length&&isNone(n[0])}if(!e.isTokenNode(t))return!1;const o=t.value;return!!n.isTokenIdent(o)&&g.test(o[4].value)}function solveRandom(e,t,o,r,i,u){const a=o.value;if(!n.isTokenNumeric(a))return-1;const s=convertUnit(a,r.value);if(!twoOfSameNumeric(a,s))return-1;let l,c=null;if(i&&(c=convertUnit(a,i.value),!twoOfSameNumeric(a,c)))return-1;if(Number.isFinite(a[4].value))if(Number.isFinite(s[4].value))if(c&&(!Number.isFinite(c[4].value)||c[4].value<=0))l=a[4].value;else{const e=sfc32(crc32([t,n.stringify(a),n.stringify(s),i?`by ${i.toString()}`:""].join(",")),u.randomSeed);let o=a[4].value,r=s[4].value;if(o>r&&([o,r]=[r,o]),c){const n=Math.abs(o-r),t=e();l=o+Math.floor(n/c[4].value*t)*c[4].value}else{const n=e();l=Number((n*(r-o)+o).toFixed(5))}}else l=Number.NaN;else l=Number.NaN;return resultToCalculation(e,a,l)}function sfc32(e=.34944106645296036,n=.19228640875738723,t=.8784393832007205,o=.04850964319275053){return()=>{const r=((e|=0)+(n|=0)|0)+(o|=0)|0;return o=o+1|0,e=n^n>>>9,n=(t|=0)+(t<<3)|0,t=(t=t<<21|t>>>11)+r|0,(r>>>0)/4294967296}}function crc32(e){let n=0,t=0,o=0;n=~n;for(let r=0,i=e.length;r<i;r++)o=255&(n^e.charCodeAt(r)),t=Number("0x"+"00000000 77073096 EE0E612C 990951BA 076DC419 706AF48F E963A535 9E6495A3 0EDB8832 79DCB8A4 E0D5E91E 97D2D988 09B64C2B 7EB17CBD E7B82D07 90BF1D91 1DB71064 6AB020F2 F3B97148 84BE41DE 1ADAD47D 6DDDE4EB F4D4B551 83D385C7 136C9856 646BA8C0 FD62F97A 8A65C9EC 14015C4F 63066CD9 FA0F3D63 8D080DF5 3B6E20C8 4C69105E D56041E4 A2677172 3C03E4D1 4B04D447 D20D85FD A50AB56B 35B5A8FA 42B2986C DBBBC9D6 ACBCF940 32D86CE3 45DF5C75 DCD60DCF ABD13D59 26D930AC 51DE003A C8D75180 BFD06116 21B4F4B5 56B3C423 CFBA9599 B8BDA50F 2802B89E 5F058808 C60CD9B2 B10BE924 2F6F7C87 58684C11 C1611DAB B6662D3D 76DC4190 01DB7106 98D220BC EFD5102A 71B18589 06B6B51F 9FBFE4A5 E8B8D433 7807C9A2 0F00F934 9609A88E E10E9818 7F6A0DBB 086D3D2D 91646C97 E6635C01 6B6B51F4 1C6C6162 856530D8 F262004E 6C0695ED 1B01A57B 8208F4C1 F50FC457 65B0D9C6 12B7E950 8BBEB8EA FCB9887C 62DD1DDF 15DA2D49 8CD37CF3 FBD44C65 4DB26158 3AB551CE A3BC0074 D4BB30E2 4ADFA541 3DD895D7 A4D1C46D D3D6F4FB 4369E96A 346ED9FC AD678846 DA60B8D0 44042D73 33031DE5 AA0A4C5F DD0D7CC9 5005713C 270241AA BE0B1010 C90C2086 5768B525 206F85B3 B966D409 CE61E49F 5EDEF90E 29D9C998 B0D09822 C7D7A8B4 59B33D17 2EB40D81 B7BD5C3B C0BA6CAD EDB88320 9ABFB3B6 03B6E20C 74B1D29A EAD54739 9DD277AF 04DB2615 73DC1683 E3630B12 94643B84 0D6D6A3E 7A6A5AA8 E40ECF0B 9309FF9D 0A00AE27 7D079EB1 F00F9344 8708A3D2 1E01F268 6906C2FE F762575D 806567CB 196C3671 6E6B06E7 FED41B76 89D32BE0 10DA7A5A 67DD4ACC F9B9DF6F 8EBEEFF9 17B7BE43 60B08ED5 D6D6A3E8 A1D1937E 38D8C2C4 4FDFF252 D1BB67F1 A6BC5767 3FB506DD 48B2364B D80D2BDA AF0A1B4C 36034AF6 41047A60 DF60EFC3 A867DF55 316E8EEF 4669BE79 CB61B38C BC66831A 256FD2A0 5268E236 CC0C7795 BB0B4703 220216B9 5505262F C5BA3BBE B2BD0B28 2BB45A92 5CB36A04 C2D7FFA7 B5D0CF31 2CD99E8B 5BDEAE1D 9B64C2B0 EC63F226 756AA39C 026D930A 9C0906A9 EB0E363F 72076785 05005713 95BF4A82 E2B87A14 7BB12BAE 0CB61B38 92D28E9B E5D5BE0D 7CDCEFB7 0BDBDF21 86D3D2D4 F1D4E242 68DDB3F8 1FDA836E 81BE16CD F6B9265B 6FB077E1 18B74777 88085AE6 FF0F6A70 66063BCA 11010B5C 8F659EFF F862AE69 616BFFD3 166CCF45 A00AE278 D70DD2EE 4E048354 3903B3C2 A7672661 D06016F7 4969474D 3E6E77DB AED16A4A D9D65ADC 40DF0B66 37D83BF0 A9BCAE53 DEBB9EC5 47B2CF7F 30B5FFE9 BDBDF21C CABAC28A 53B39330 24B4A3A6 BAD03605 CDD70693 54DE5729 23D967BF B3667A2E C4614AB8 5D681B02 2A6F2B94 B40BBE37 C30C8EA1 5A05DF1B 2D02EF8D".substring(9*o,9*o+8)),n=n>>>8^t;return~n>>>0}const D=new Map([["abs",function abs(e,n,t){return singleNodeSolver(e,n,t,solveAbs)}],["acos",function acos(e,n,t){return singleNodeSolver(e,n,t,solveACos)}],["asin",function asin(e,n,t){return singleNodeSolver(e,n,t,solveASin)}],["atan",function atan(e,n,t){return singleNodeSolver(e,n,t,solveATan)}],["atan2",function atan2(e,n,t){return twoCommaSeparatedNodesSolver(e,n,t,solveATan2)}],["calc",calc$1],["clamp",function clamp(t,o,r){const i=resolveGlobalsAndConstants([...t.value.filter((n=>!e.isWhiteSpaceOrCommentNode(n)))],o),u=[],a=[],s=[];{let t=u;for(let o=0;o<i.length;o++){const r=i[o];if(e.isTokenNode(r)&&n.isTokenComma(r.value)){if(t===s)return-1;if(t===a){t=s;continue}if(t===u){t=a;continue}return-1}t.push(r)}}const l=isNone(u),c=isNone(s);if(l&&c)return calc$1(calcWrapper(a),o,r);const m=solve(calc$1(calcWrapper(a),o,r));if(-1===m)return-1;if(l){const t=solve(calc$1(calcWrapper(s),o,r));return-1===t?-1:solveMin((v=m,T=t,new e.FunctionNode([n.TokenType.Function,"min(",-1,-1,{value:"min"}],[n.TokenType.CloseParen,")",-1,-1,void 0],[v,new e.TokenNode([n.TokenType.Comma,",",-1,-1,void 0]),T])),[m,t],r)}if(c){const e=solve(calc$1(calcWrapper(u),o,r));return-1===e?-1:solveMax(maxWrapper(e,m),[e,m],r)}var v,T;const p=solve(calc$1(calcWrapper(u),o,r));if(-1===p)return-1;const N=solve(calc$1(calcWrapper(s),o,r));if(-1===N)return-1;return solveClamp(t,p,m,N,r)}],["cos",function cos(e,n,t){return singleNodeSolver(e,n,t,solveCos)}],["exp",function exp(e,n,t){return singleNodeSolver(e,n,t,solveExp)}],["hypot",function hypot(e,n,t){return variadicNodesSolver(e,e.value,n,t,solveHypot)}],["log",function log(e,n,t){return variadicNodesSolver(e,e.value,n,t,solveLog)}],["max",function max(e,n,t){return variadicNodesSolver(e,e.value,n,t,solveMax)}],["min",function min(e,n,t){return variadicNodesSolver(e,e.value,n,t,solveMin)}],["mod",function mod(e,n,t){return twoCommaSeparatedNodesSolver(e,n,t,solveMod)}],["pow",function pow(e,n,t){return twoCommaSeparatedNodesSolver(e,n,t,solvePow)}],["random",function random(t,o,r){const i=t.value.filter((n=>!e.isWhiteSpaceOrCommentNode(n)));let u="";const a=[],s=[];for(let t=0;t<i.length;t++){const o=i[t];if(!u&&0===s.length&&e.isTokenNode(o)&&n.isTokenIdent(o.value)){const r=o.value[4].value.toLowerCase();if("per-element"===r||r.startsWith("--")){u=r;const o=i[t+1];if(!e.isTokenNode(o)||!n.isTokenComma(o.value))return-1;t++;continue}}if(e.isTokenNode(o)&&n.isTokenComma(o.value)){const o=i[t+1];if(s.length>0&&e.isTokenNode(o)&&n.isTokenIdent(o.value)){const e=o.value[4].value.toLowerCase();if("by"===e||e.startsWith("--")){a.push(...i.slice(t+2));break}}}s.push(o)}const l=twoCommaSeparatedArguments(s,o,r);if(-1===l)return-1;const[c,m]=l;let v=null;if(a.length&&(v=singleArgument(a,o,r),-1===v))return-1;return solveRandom(t,u,c,m,v,r)}],["rem",function rem(e,n,t){return twoCommaSeparatedNodesSolver(e,n,t,solveRem)}],["round",function round(t,o,r){const i=resolveGlobalsAndConstants([...t.value.filter((n=>!e.isWhiteSpaceOrCommentNode(n)))],o);let u="",a=!1;const s=[],l=[];{let t=s;for(let o=0;o<i.length;o++){const r=i[o];if(!u&&0===s.length&&0===l.length&&e.isTokenNode(r)&&n.isTokenIdent(r.value)){const e=r.value[4].value.toLowerCase();if(b.has(e)){u=e;continue}}if(e.isTokenNode(r)&&n.isTokenComma(r.value)){if(t===l)return-1;if(t===s&&u&&0===s.length)continue;if(t===s){a=!0,t=l;continue}return-1}t.push(r)}}const c=solve(calc$1(calcWrapper(s),o,r));if(-1===c)return-1;a||0!==l.length||l.push(new e.TokenNode([n.TokenType.Number,"1",-1,-1,{value:1,type:n.NumberType.Integer}]));const m=solve(calc$1(calcWrapper(l),o,r));if(-1===m)return-1;u||(u="nearest");return solveRound(t,u,c,m,r)}],["sign",function sign(e,n,t){return singleNodeSolver(e,n,t,solveSign)}],["sin",function sin(e,n,t){return singleNodeSolver(e,n,t,solveSin)}],["sqrt",function sqrt(e,n,t){return singleNodeSolver(e,n,t,solveSqrt)}],["tan",function tan(e,n,t){return singleNodeSolver(e,n,t,solveTan)}]]);function calc$1(t,o,r){const i=resolveGlobalsAndConstants([...t.value.filter((n=>!e.isWhiteSpaceOrCommentNode(n)))],o);if(1===i.length&&e.isTokenNode(i[0]))return{inputs:[i[0]],operation:unary};let u=0;for(;u<i.length;){const t=i[u];if(e.isSimpleBlockNode(t)&&n.isTokenOpenParen(t.startToken)){const e=calc$1(t,o,r);if(-1===e)return-1;i.splice(u,1,e)}else if(e.isFunctionNode(t)){const e=D.get(t.getName().toLowerCase());if(!e)return-1;const n=e(t,o,r);if(-1===n)return-1;i.splice(u,1,n)}else u++}if(u=0,1===i.length&&isCalculation(i[0]))return i[0];for(;u<i.length;){const t=i[u];if(!t||!e.isTokenNode(t)&&!isCalculation(t)){u++;continue}const o=i[u+1];if(!o||!e.isTokenNode(o)){u++;continue}const r=o.value;if(!n.isTokenDelim(r)||"*"!==r[4].value&&"/"!==r[4].value){u++;continue}const a=i[u+2];if(!a||!e.isTokenNode(a)&&!isCalculation(a))return-1;"*"!==r[4].value?"/"!==r[4].value?u++:i.splice(u,3,{inputs:[t,a],operation:division}):i.splice(u,3,{inputs:[t,a],operation:multiplication})}if(u=0,1===i.length&&isCalculation(i[0]))return i[0];for(;u<i.length;){const t=i[u];if(!t||!e.isTokenNode(t)&&!isCalculation(t)){u++;continue}const o=i[u+1];if(!o||!e.isTokenNode(o)){u++;continue}const r=o.value;if(!n.isTokenDelim(r)||"+"!==r[4].value&&"-"!==r[4].value){u++;continue}const a=i[u+2];if(!a||!e.isTokenNode(a)&&!isCalculation(a))return-1;"+"!==r[4].value?"-"!==r[4].value?u++:i.splice(u,3,{inputs:[t,a],operation:subtraction}):i.splice(u,3,{inputs:[t,a],operation:addition})}return 1===i.length&&isCalculation(i[0])?i[0]:-1}function singleNodeSolver(e,n,t,o){const r=singleArgument(e.value,n,t);return-1===r?-1:o(e,r,t)}function singleArgument(n,t,o){const r=solve(calc$1(calcWrapper(resolveGlobalsAndConstants([...n.filter((n=>!e.isWhiteSpaceOrCommentNode(n)))],t)),t,o));return-1===r?-1:r}function twoCommaSeparatedNodesSolver(e,n,t,o){const r=twoCommaSeparatedArguments(e.value,n,t);if(-1===r)return-1;const[i,u]=r;return o(e,i,u,t)}function twoCommaSeparatedArguments(t,o,r){const i=resolveGlobalsAndConstants([...t.filter((n=>!e.isWhiteSpaceOrCommentNode(n)))],o),u=[],a=[];{let t=u;for(let o=0;o<i.length;o++){const r=i[o];if(e.isTokenNode(r)&&n.isTokenComma(r.value)){if(t===a)return-1;if(t===u){t=a;continue}return-1}t.push(r)}}const s=solve(calc$1(calcWrapper(u),o,r));if(-1===s)return-1;const l=solve(calc$1(calcWrapper(a),o,r));return-1===l?-1:[s,l]}function variadicNodesSolver(e,n,t,o,r){const i=variadicArguments(e.value,t,o);return-1===i?-1:r(e,i,o)}function variadicArguments(t,o,r){const i=resolveGlobalsAndConstants([...t.filter((n=>!e.isWhiteSpaceOrCommentNode(n)))],o),u=[];{const t=[];let a=[];for(let o=0;o<i.length;o++){const r=i[o];e.isTokenNode(r)&&n.isTokenComma(r.value)?(t.push(a),a=[]):a.push(r)}t.push(a);for(let e=0;e<t.length;e++){if(0===t[e].length)return-1;const n=solve(calc$1(calcWrapper(t[e]),o,r));if(-1===n)return-1;u.push(n)}}return u}const b=new Set(["nearest","up","down","to-zero"]);function calcWrapper(t){return new e.FunctionNode([n.TokenType.Function,"calc(",-1,-1,{value:"calc"}],[n.TokenType.CloseParen,")",-1,-1,void 0],t)}function maxWrapper(t,o){return new e.FunctionNode([n.TokenType.Function,"max(",-1,-1,{value:"max"}],[n.TokenType.CloseParen,")",-1,-1,void 0],[t,new e.TokenNode([n.TokenType.Comma,",",-1,-1,void 0]),o])}function patchNaN(t){if(-1===t)return-1;if(e.isFunctionNode(t))return t;const o=t.value;return n.isTokenNumeric(o)&&Number.isNaN(o[4].value)?n.isTokenNumber(o)?new e.FunctionNode([n.TokenType.Function,"calc(",o[2],o[3],{value:"calc"}],[n.TokenType.CloseParen,")",o[2],o[3],void 0],[new e.TokenNode([n.TokenType.Ident,"NaN",o[2],o[3],{value:"NaN"}])]):n.isTokenDimension(o)?new e.FunctionNode([n.TokenType.Function,"calc(",o[2],o[3],{value:"calc"}],[n.TokenType.CloseParen,")",o[2],o[3],void 0],[new e.TokenNode([n.TokenType.Ident,"NaN",o[2],o[3],{value:"NaN"}]),new e.WhitespaceNode([[n.TokenType.Whitespace," ",o[2],o[3],void 0]]),new e.TokenNode([n.TokenType.Delim,"*",o[2],o[3],{value:"*"}]),new e.WhitespaceNode([[n.TokenType.Whitespace," ",o[2],o[3],void 0]]),new e.TokenNode([n.TokenType.Dimension,"1"+o[4].unit,o[2],o[3],{value:1,type:n.NumberType.Integer,unit:o[4].unit}])]):n.isTokenPercentage(o)?new e.FunctionNode([n.TokenType.Function,"calc(",o[2],o[3],{value:"calc"}],[n.TokenType.CloseParen,")",o[2],o[3],void 0],[new e.TokenNode([n.TokenType.Ident,"NaN",o[2],o[3],{value:"NaN"}]),new e.WhitespaceNode([[n.TokenType.Whitespace," ",o[2],o[3],void 0]]),new e.TokenNode([n.TokenType.Delim,"*",o[2],o[3],{value:"*"}]),new e.WhitespaceNode([[n.TokenType.Whitespace," ",o[2],o[3],void 0]]),new e.TokenNode([n.TokenType.Percentage,"1%",o[2],o[3],{value:1}])]):-1:t}function patchInfinity(t){if(-1===t)return-1;if(e.isFunctionNode(t))return t;const o=t.value;if(!n.isTokenNumeric(o))return t;if(Number.isFinite(o[4].value)||Number.isNaN(o[4].value))return t;let r="";return Number.NEGATIVE_INFINITY===o[4].value&&(r="-"),n.isTokenNumber(o)?new e.FunctionNode([n.TokenType.Function,"calc(",o[2],o[3],{value:"calc"}],[n.TokenType.CloseParen,")",o[2],o[3],void 0],[new e.TokenNode([n.TokenType.Ident,r+"infinity",o[2],o[3],{value:r+"infinity"}])]):n.isTokenDimension(o)?new e.FunctionNode([n.TokenType.Function,"calc(",o[2],o[3],{value:"calc"}],[n.TokenType.CloseParen,")",o[2],o[3],void 0],[new e.TokenNode([n.TokenType.Ident,r+"infinity",o[2],o[3],{value:r+"infinity"}]),new e.WhitespaceNode([[n.TokenType.Whitespace," ",o[2],o[3],void 0]]),new e.TokenNode([n.TokenType.Delim,"*",o[2],o[3],{value:"*"}]),new e.WhitespaceNode([[n.TokenType.Whitespace," ",o[2],o[3],void 0]]),new e.TokenNode([n.TokenType.Dimension,"1"+o[4].unit,o[2],o[3],{value:1,type:n.NumberType.Integer,unit:o[4].unit}])]):new e.FunctionNode([n.TokenType.Function,"calc(",o[2],o[3],{value:"calc"}],[n.TokenType.CloseParen,")",o[2],o[3],void 0],[new e.TokenNode([n.TokenType.Ident,r+"infinity",o[2],o[3],{value:r+"infinity"}]),new e.WhitespaceNode([[n.TokenType.Whitespace," ",o[2],o[3],void 0]]),new e.TokenNode([n.TokenType.Delim,"*",o[2],o[3],{value:"*"}]),new e.WhitespaceNode([[n.TokenType.Whitespace," ",o[2],o[3],void 0]]),new e.TokenNode([n.TokenType.Percentage,"1%",o[2],o[3],{value:1}])])}function patchMinusZero(t){if(-1===t)return-1;if(e.isFunctionNode(t))return t;const o=t.value;return n.isTokenNumeric(o)&&Object.is(-0,o[4].value)?("-0"===o[1]||(n.isTokenPercentage(o)?o[1]="-0%":n.isTokenDimension(o)?o[1]="-0"+o[4].unit:o[1]="-0"),t):t}function patchPrecision(t,o=13){if(-1===t)return-1;if(o<=0)return t;if(e.isFunctionNode(t))return t;const r=t.value;if(!n.isTokenNumeric(r))return t;if(Number.isInteger(r[4].value))return t;const i=Number(r[4].value.toFixed(o)).toString();return n.isTokenNumber(r)?r[1]=i:n.isTokenPercentage(r)?r[1]=i+"%":n.isTokenDimension(r)&&(r[1]=i+r[4].unit),t}function patchCanonicalUnit(t){return-1===t?-1:e.isFunctionNode(t)?t:n.isTokenDimension(t.value)?(t.value=toCanonicalUnit(t.value),t):t}function patchCalcResult(e,n){let t=e;return n?.toCanonicalUnits&&(t=patchCanonicalUnit(t)),t=patchPrecision(t,n?.precision),t=patchMinusZero(t),n?.censorIntoStandardRepresentableValues||(t=patchNaN(t),t=patchInfinity(t)),t}function tokenizeGlobals(e){const t=new Map;if(!e)return t;for(const[o,r]of e)if(n.isToken(r))t.set(o,r);else if("string"!=typeof r);else{const e=n.tokenizer({css:r}),i=e.nextToken();if(e.nextToken(),!e.endOfFile())continue;if(!n.isTokenNumeric(i))continue;t.set(o,i)}return t}function calcFromComponentValues(n,t){const o=tokenizeGlobals(t?.globals);return e.replaceComponentValues(n,(n=>{if(!e.isFunctionNode(n))return;const r=D.get(n.getName().toLowerCase());if(!r)return;const i=patchCalcResult(solve(r(n,o,t??{})),t);return-1!==i?i:void 0}))}const y=new Set(D.keys());exports.calc=function calc(t,o){return calcFromComponentValues(e.parseCommaSeparatedListOfComponentValues(n.tokenize({css:t}),{}),o).map((e=>e.map((e=>n.stringify(...e.tokens()))).join(""))).join(",")},exports.calcFromComponentValues=calcFromComponentValues,exports.mathFunctionNames=y;
 
 
 /***/ }),
 
-/***/ 46921:
+/***/ 41735:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
-var e,o,a=__nccwpck_require__(10618),n=__nccwpck_require__(8942),t=__nccwpck_require__(46295),r=__nccwpck_require__(89253);function convertNaNToZero(e){return[Number.isNaN(e[0])?0:e[0],Number.isNaN(e[1])?0:e[1],Number.isNaN(e[2])?0:e[2]]}function colorData_to_XYZ_D50(e){switch(e.colorNotation){case exports.ColorNotation.HEX:case exports.ColorNotation.RGB:case exports.ColorNotation.sRGB:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.sRGB_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.Linear_sRGB:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.lin_sRGB_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.Display_P3:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.P3_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.Rec2020:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.rec_2020_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.A98_RGB:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.a98_RGB_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.ProPhoto_RGB:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.ProPhoto_RGB_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.HSL:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.HSL_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.HWB:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.HWB_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.Lab:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.Lab_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.OKLab:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.OKLab_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.LCH:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.LCH_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.OKLCH:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.OKLCH_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.XYZ_D50:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.XYZ_D50_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.XYZ_D65:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.XYZ_D65_to_XYZ_D50(convertNaNToZero(e.channels))};default:throw new Error("Unsupported color notation")}}exports.ColorNotation=void 0,(e=exports.ColorNotation||(exports.ColorNotation={})).A98_RGB="a98-rgb",e.Display_P3="display-p3",e.HEX="hex",e.HSL="hsl",e.HWB="hwb",e.LCH="lch",e.Lab="lab",e.Linear_sRGB="srgb-linear",e.OKLCH="oklch",e.OKLab="oklab",e.ProPhoto_RGB="prophoto-rgb",e.RGB="rgb",e.sRGB="srgb",e.Rec2020="rec2020",e.XYZ_D50="xyz-d50",e.XYZ_D65="xyz-d65",exports.SyntaxFlag=void 0,(o=exports.SyntaxFlag||(exports.SyntaxFlag={})).ColorKeyword="color-keyword",o.HasAlpha="has-alpha",o.HasDimensionValues="has-dimension-values",o.HasNoneKeywords="has-none-keywords",o.HasNumberValues="has-number-values",o.HasPercentageAlpha="has-percentage-alpha",o.HasPercentageValues="has-percentage-values",o.HasVariableAlpha="has-variable-alpha",o.Hex="hex",o.LegacyHSL="legacy-hsl",o.LegacyRGB="legacy-rgb",o.NamedColor="named-color",o.RelativeColorSyntax="relative-color-syntax",o.ColorMix="color-mix",o.ContrastColor="contrast-color",o.Experimental="experimental";const s=new Set([exports.ColorNotation.A98_RGB,exports.ColorNotation.Display_P3,exports.ColorNotation.HEX,exports.ColorNotation.Linear_sRGB,exports.ColorNotation.ProPhoto_RGB,exports.ColorNotation.RGB,exports.ColorNotation.sRGB,exports.ColorNotation.Rec2020,exports.ColorNotation.XYZ_D50,exports.ColorNotation.XYZ_D65]);function colorDataTo(e,o){const a={...e};if(e.colorNotation!==o){const e=colorData_to_XYZ_D50(a);switch(o){case exports.ColorNotation.HEX:case exports.ColorNotation.RGB:a.colorNotation=exports.ColorNotation.RGB,a.channels=n.XYZ_D50_to_sRGB(e.channels);break;case exports.ColorNotation.sRGB:a.colorNotation=exports.ColorNotation.sRGB,a.channels=n.XYZ_D50_to_sRGB(e.channels);break;case exports.ColorNotation.Linear_sRGB:a.colorNotation=exports.ColorNotation.Linear_sRGB,a.channels=n.XYZ_D50_to_lin_sRGB(e.channels);break;case exports.ColorNotation.Display_P3:a.colorNotation=exports.ColorNotation.Display_P3,a.channels=n.XYZ_D50_to_P3(e.channels);break;case exports.ColorNotation.Rec2020:a.colorNotation=exports.ColorNotation.Rec2020,a.channels=n.XYZ_D50_to_rec_2020(e.channels);break;case exports.ColorNotation.ProPhoto_RGB:a.colorNotation=exports.ColorNotation.ProPhoto_RGB,a.channels=n.XYZ_D50_to_ProPhoto(e.channels);break;case exports.ColorNotation.A98_RGB:a.colorNotation=exports.ColorNotation.A98_RGB,a.channels=n.XYZ_D50_to_a98_RGB(e.channels);break;case exports.ColorNotation.HSL:a.colorNotation=exports.ColorNotation.HSL,a.channels=n.XYZ_D50_to_HSL(e.channels);break;case exports.ColorNotation.HWB:a.colorNotation=exports.ColorNotation.HWB,a.channels=n.XYZ_D50_to_HWB(e.channels);break;case exports.ColorNotation.Lab:a.colorNotation=exports.ColorNotation.Lab,a.channels=n.XYZ_D50_to_Lab(e.channels);break;case exports.ColorNotation.LCH:a.colorNotation=exports.ColorNotation.LCH,a.channels=n.XYZ_D50_to_LCH(e.channels);break;case exports.ColorNotation.OKLCH:a.colorNotation=exports.ColorNotation.OKLCH,a.channels=n.XYZ_D50_to_OKLCH(e.channels);break;case exports.ColorNotation.OKLab:a.colorNotation=exports.ColorNotation.OKLab,a.channels=n.XYZ_D50_to_OKLab(e.channels);break;case exports.ColorNotation.XYZ_D50:a.colorNotation=exports.ColorNotation.XYZ_D50,a.channels=n.XYZ_D50_to_XYZ_D50(e.channels);break;case exports.ColorNotation.XYZ_D65:a.colorNotation=exports.ColorNotation.XYZ_D65,a.channels=n.XYZ_D50_to_XYZ_D65(e.channels);break;default:throw new Error("Unsupported color notation")}}else a.channels=convertNaNToZero(e.channels);if(o===e.colorNotation)a.channels=carryForwardMissingComponents(e.channels,[0,1,2],a.channels,[0,1,2]);else if(s.has(o)&&s.has(e.colorNotation))a.channels=carryForwardMissingComponents(e.channels,[0,1,2],a.channels,[0,1,2]);else switch(o){case exports.ColorNotation.HSL:switch(e.colorNotation){case exports.ColorNotation.HWB:a.channels=carryForwardMissingComponents(e.channels,[0],a.channels,[0]);break;case exports.ColorNotation.Lab:case exports.ColorNotation.OKLab:a.channels=carryForwardMissingComponents(e.channels,[2],a.channels,[0]);break;case exports.ColorNotation.LCH:case exports.ColorNotation.OKLCH:a.channels=carryForwardMissingComponents(e.channels,[0,1,2],a.channels,[2,1,0])}break;case exports.ColorNotation.HWB:switch(e.colorNotation){case exports.ColorNotation.HSL:a.channels=carryForwardMissingComponents(e.channels,[0],a.channels,[0]);break;case exports.ColorNotation.LCH:case exports.ColorNotation.OKLCH:a.channels=carryForwardMissingComponents(e.channels,[0],a.channels,[2])}break;case exports.ColorNotation.Lab:case exports.ColorNotation.OKLab:switch(e.colorNotation){case exports.ColorNotation.HSL:a.channels=carryForwardMissingComponents(e.channels,[0],a.channels,[2]);break;case exports.ColorNotation.Lab:case exports.ColorNotation.OKLab:a.channels=carryForwardMissingComponents(e.channels,[0,1,2],a.channels,[0,1,2]);break;case exports.ColorNotation.LCH:case exports.ColorNotation.OKLCH:a.channels=carryForwardMissingComponents(e.channels,[0],a.channels,[0])}break;case exports.ColorNotation.LCH:case exports.ColorNotation.OKLCH:switch(e.colorNotation){case exports.ColorNotation.HSL:a.channels=carryForwardMissingComponents(e.channels,[0,1,2],a.channels,[2,1,0]);break;case exports.ColorNotation.HWB:a.channels=carryForwardMissingComponents(e.channels,[0],a.channels,[2]);break;case exports.ColorNotation.Lab:case exports.ColorNotation.OKLab:a.channels=carryForwardMissingComponents(e.channels,[0],a.channels,[0]);break;case exports.ColorNotation.LCH:case exports.ColorNotation.OKLCH:a.channels=carryForwardMissingComponents(e.channels,[0,1,2],a.channels,[0,1,2])}}return a.channels=convertPowerlessComponentsToMissingComponents(a.channels,o),a}function convertPowerlessComponentsToMissingComponents(e,o){const a=[...e];switch(o){case exports.ColorNotation.HSL:!Number.isNaN(a[1])&&reducePrecision(a[1],4)<=0&&(a[0]=NaN);break;case exports.ColorNotation.HWB:Math.max(0,reducePrecision(a[1],4))+Math.max(0,reducePrecision(a[2],4))>=100&&(a[0]=NaN);break;case exports.ColorNotation.LCH:!Number.isNaN(a[1])&&reducePrecision(a[1],4)<=0&&(a[2]=NaN);break;case exports.ColorNotation.OKLCH:!Number.isNaN(a[1])&&reducePrecision(a[1],6)<=0&&(a[2]=NaN)}return a}function convertPowerlessComponentsToZeroValuesForDisplay(e,o){const a=[...e];switch(o){case exports.ColorNotation.HSL:(reducePrecision(a[2])<=0||reducePrecision(a[2])>=100)&&(a[0]=NaN,a[1]=NaN),reducePrecision(a[1])<=0&&(a[0]=NaN);break;case exports.ColorNotation.HWB:Math.max(0,reducePrecision(a[1]))+Math.max(0,reducePrecision(a[2]))>=100&&(a[0]=NaN);break;case exports.ColorNotation.Lab:(reducePrecision(a[0])<=0||reducePrecision(a[0])>=100)&&(a[1]=NaN,a[2]=NaN);break;case exports.ColorNotation.LCH:reducePrecision(a[1])<=0&&(a[2]=NaN),(reducePrecision(a[0])<=0||reducePrecision(a[0])>=100)&&(a[1]=NaN,a[2]=NaN);break;case exports.ColorNotation.OKLab:(reducePrecision(a[0])<=0||reducePrecision(a[0])>=1)&&(a[1]=NaN,a[2]=NaN);break;case exports.ColorNotation.OKLCH:reducePrecision(a[1])<=0&&(a[2]=NaN),(reducePrecision(a[0])<=0||reducePrecision(a[0])>=1)&&(a[1]=NaN,a[2]=NaN)}return a}function carryForwardMissingComponents(e,o,a,n){const t=[...a];for(const a of o)Number.isNaN(e[o[a]])&&(t[n[a]]=NaN);return t}function normalizeRelativeColorDataChannels(e){const o=new Map;switch(e.colorNotation){case exports.ColorNotation.RGB:case exports.ColorNotation.HEX:o.set("r",dummyNumberToken(255*e.channels[0])),o.set("g",dummyNumberToken(255*e.channels[1])),o.set("b",dummyNumberToken(255*e.channels[2])),"number"==typeof e.alpha&&o.set("alpha",dummyNumberToken(e.alpha));break;case exports.ColorNotation.HSL:o.set("h",dummyNumberToken(e.channels[0])),o.set("s",dummyNumberToken(e.channels[1])),o.set("l",dummyNumberToken(e.channels[2])),"number"==typeof e.alpha&&o.set("alpha",dummyNumberToken(e.alpha));break;case exports.ColorNotation.HWB:o.set("h",dummyNumberToken(e.channels[0])),o.set("w",dummyNumberToken(e.channels[1])),o.set("b",dummyNumberToken(e.channels[2])),"number"==typeof e.alpha&&o.set("alpha",dummyNumberToken(e.alpha));break;case exports.ColorNotation.Lab:case exports.ColorNotation.OKLab:o.set("l",dummyNumberToken(e.channels[0])),o.set("a",dummyNumberToken(e.channels[1])),o.set("b",dummyNumberToken(e.channels[2])),"number"==typeof e.alpha&&o.set("alpha",dummyNumberToken(e.alpha));break;case exports.ColorNotation.LCH:case exports.ColorNotation.OKLCH:o.set("l",dummyNumberToken(e.channels[0])),o.set("c",dummyNumberToken(e.channels[1])),o.set("h",dummyNumberToken(e.channels[2])),"number"==typeof e.alpha&&o.set("alpha",dummyNumberToken(e.alpha));break;case exports.ColorNotation.sRGB:case exports.ColorNotation.A98_RGB:case exports.ColorNotation.Display_P3:case exports.ColorNotation.Rec2020:case exports.ColorNotation.Linear_sRGB:case exports.ColorNotation.ProPhoto_RGB:o.set("r",dummyNumberToken(e.channels[0])),o.set("g",dummyNumberToken(e.channels[1])),o.set("b",dummyNumberToken(e.channels[2])),"number"==typeof e.alpha&&o.set("alpha",dummyNumberToken(e.alpha));break;case exports.ColorNotation.XYZ_D50:case exports.ColorNotation.XYZ_D65:o.set("x",dummyNumberToken(e.channels[0])),o.set("y",dummyNumberToken(e.channels[1])),o.set("z",dummyNumberToken(e.channels[2])),"number"==typeof e.alpha&&o.set("alpha",dummyNumberToken(e.alpha))}return o}function noneToZeroInRelativeColorDataChannels(e){const o=new Map(e);for(const[a,n]of e)Number.isNaN(n[4].value)&&o.set(a,dummyNumberToken(0));return o}function dummyNumberToken(e){return Number.isNaN(e)?[a.TokenType.Number,"none",-1,-1,{value:Number.NaN,type:a.NumberType.Number}]:[a.TokenType.Number,e.toString(),-1,-1,{value:e,type:a.NumberType.Number}]}function reducePrecision(e,o=7){if(Number.isNaN(e))return 0;const a=Math.pow(10,o);return Math.round(e*a)/a}function normalize(e,o,a,n){return Math.min(Math.max(e/o,a),n)}const l=/[A-Z]/g;function toLowerCaseAZ(e){return e.replace(l,(e=>String.fromCharCode(e.charCodeAt(0)+32)))}function normalize_Color_ChannelValues(e,o,n){if(a.isTokenIdent(e)&&"none"===toLowerCaseAZ(e[4].value))return n.syntaxFlags.add(exports.SyntaxFlag.HasNoneKeywords),[a.TokenType.Number,"none",e[2],e[3],{value:NaN,type:a.NumberType.Number}];if(a.isTokenPercentage(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageValues);let t=normalize(e[4].value,100,-2147483647,2147483647);return 3===o&&(t=normalize(e[4].value,100,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}if(a.isTokenNumber(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasNumberValues);let t=normalize(e[4].value,1,-2147483647,2147483647);return 3===o&&(t=normalize(e[4].value,1,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}return!1}const i=new Set(["srgb","srgb-linear","display-p3","a98-rgb","prophoto-rgb","rec2020","xyz","xyz-d50","xyz-d65"]);function color$1(e,o){const n=[],s=[],l=[],u=[];let c,p,N=!1,m=!1;const h={colorNotation:exports.ColorNotation.sRGB,channels:[0,0,0],alpha:1,syntaxFlags:new Set([])};let x=n;for(let y=0;y<e.value.length;y++){let b=e.value[y];if(t.isWhitespaceNode(b)||t.isCommentNode(b))for(;t.isWhitespaceNode(e.value[y+1])||t.isCommentNode(e.value[y+1]);)y++;else if(x===n&&n.length&&(x=s),x===s&&s.length&&(x=l),t.isTokenNode(b)&&a.isTokenDelim(b.value)&&"/"===b.value[4].value){if(x===u)return!1;x=u}else{if(t.isFunctionNode(b)){if(x===u&&"var"===toLowerCaseAZ(b.getName())){h.syntaxFlags.add(exports.SyntaxFlag.HasVariableAlpha),x.push(b);continue}if(!r.mathFunctionNames.has(toLowerCaseAZ(b.getName())))return!1;const[[e]]=r.calcFromComponentValues([[b]],{censorIntoStandardRepresentableValues:!0,globals:p,precision:-1,toCanonicalUnits:!0,rawPercentages:!0});if(!e||!t.isTokenNode(e)||!a.isTokenNumeric(e.value))return!1;Number.isNaN(e.value[4].value)&&(e.value[4].value=0),b=e}if(x===n&&0===n.length&&t.isTokenNode(b)&&a.isTokenIdent(b.value)&&i.has(toLowerCaseAZ(b.value[4].value))){if(N)return!1;N=toLowerCaseAZ(b.value[4].value),h.colorNotation=colorSpaceNameToColorNotation(N),m&&(m.colorNotation!==h.colorNotation&&(m=colorDataTo(m,h.colorNotation)),c=normalizeRelativeColorDataChannels(m),p=noneToZeroInRelativeColorDataChannels(c))}else if(x===n&&0===n.length&&t.isTokenNode(b)&&a.isTokenIdent(b.value)&&"from"===toLowerCaseAZ(b.value[4].value)){if(m)return!1;if(N)return!1;for(;t.isWhitespaceNode(e.value[y+1])||t.isCommentNode(e.value[y+1]);)y++;if(y++,b=e.value[y],m=o(b),!1===m)return!1;m.syntaxFlags.has(exports.SyntaxFlag.Experimental)&&h.syntaxFlags.add(exports.SyntaxFlag.Experimental),h.syntaxFlags.add(exports.SyntaxFlag.RelativeColorSyntax)}else{if(!t.isTokenNode(b))return!1;if(a.isTokenIdent(b.value)&&c&&c.has(toLowerCaseAZ(b.value[4].value))){x.push(new t.TokenNode(c.get(toLowerCaseAZ(b.value[4].value))));continue}x.push(b)}}}if(!N)return!1;if(1!==x.length)return!1;if(1!==n.length||1!==s.length||1!==l.length)return!1;if(!t.isTokenNode(n[0])||!t.isTokenNode(s[0])||!t.isTokenNode(l[0]))return!1;if(c&&!c.has("alpha"))return!1;const y=normalize_Color_ChannelValues(n[0].value,0,h);if(!y||!a.isTokenNumber(y))return!1;const b=normalize_Color_ChannelValues(s[0].value,1,h);if(!b||!a.isTokenNumber(b))return!1;const C=normalize_Color_ChannelValues(l[0].value,2,h);if(!C||!a.isTokenNumber(C))return!1;const d=[y,b,C];if(1===u.length)if(h.syntaxFlags.add(exports.SyntaxFlag.HasAlpha),t.isTokenNode(u[0])){const e=normalize_Color_ChannelValues(u[0].value,3,h);if(!e||!a.isTokenNumber(e))return!1;d.push(e)}else h.alpha=u[0];else if(c&&c.has("alpha")){const e=normalize_Color_ChannelValues(c.get("alpha"),3,h);if(!e||!a.isTokenNumber(e))return!1;d.push(e)}return h.channels=[d[0][4].value,d[1][4].value,d[2][4].value],4===d.length&&(h.alpha=d[3][4].value),h}function colorSpaceNameToColorNotation(e){switch(e){case"srgb":return exports.ColorNotation.sRGB;case"srgb-linear":return exports.ColorNotation.Linear_sRGB;case"display-p3":return exports.ColorNotation.Display_P3;case"a98-rgb":return exports.ColorNotation.A98_RGB;case"prophoto-rgb":return exports.ColorNotation.ProPhoto_RGB;case"rec2020":return exports.ColorNotation.Rec2020;case"xyz":case"xyz-d65":return exports.ColorNotation.XYZ_D65;case"xyz-d50":return exports.ColorNotation.XYZ_D50;default:throw new Error("Unknown color space name: "+e)}}const u=new Set(["srgb","srgb-linear","display-p3","a98-rgb","prophoto-rgb","rec2020","lab","oklab","xyz","xyz-d50","xyz-d65"]),c=new Set(["hsl","hwb","lch","oklch"]),p=new Set(["shorter","longer","increasing","decreasing"]);function colorMix(e,o){let n=null,r=null,s=null,l=!1;for(let i=0;i<e.value.length;i++){const N=e.value[i];if(!t.isWhitespaceNode(N)&&!t.isCommentNode(N)){if(t.isTokenNode(N)&&a.isTokenIdent(N.value)){if(!n&&"in"===toLowerCaseAZ(N.value[4].value)){n=N;continue}if(n&&!r){r=toLowerCaseAZ(N.value[4].value);continue}if(n&&r&&!s&&c.has(r)){s=toLowerCaseAZ(N.value[4].value);continue}if(n&&r&&s&&!l&&"hue"===toLowerCaseAZ(N.value[4].value)){l=!0;continue}return!1}return!(!t.isTokenNode(N)||!a.isTokenComma(N.value))&&(!!r&&(s||l?!!(r&&s&&l&&c.has(r)&&p.has(s))&&colorMixPolar(r,s,colorMixComponents(e.value.slice(i+1),o)):u.has(r)?colorMixRectangular(r,colorMixComponents(e.value.slice(i+1),o)):!!c.has(r)&&colorMixPolar(r,"shorter",colorMixComponents(e.value.slice(i+1),o))))}}return!1}function colorMixComponents(e,o){const n=[];let s=1,l=!1,i=!1;for(let s=0;s<e.length;s++){let u=e[s];if(!t.isWhitespaceNode(u)&&!t.isCommentNode(u)){if(!t.isTokenNode(u)||!a.isTokenComma(u.value)){if(!l){const e=o(u);if(e){l=e;continue}}if(!i){if(t.isFunctionNode(u)&&r.mathFunctionNames.has(toLowerCaseAZ(u.getName()))){if([[u]]=r.calcFromComponentValues([[u]],{censorIntoStandardRepresentableValues:!0,precision:-1,toCanonicalUnits:!0,rawPercentages:!0}),!u||!t.isTokenNode(u)||!a.isTokenNumeric(u.value))return!1;Number.isNaN(u.value[4].value)&&(u.value[4].value=0)}if(t.isTokenNode(u)&&a.isTokenPercentage(u.value)&&u.value[4].value>=0){i=u.value[4].value;continue}}return!1}if(!l)return!1;n.push({color:l,percentage:i}),l=!1,i=!1}}if(l&&n.push({color:l,percentage:i}),2!==n.length)return!1;let u=n[0].percentage,c=n[1].percentage;return(!1===u||!(u<0||u>100))&&((!1===c||!(c<0||c>100))&&(!1===u&&!1===c?(u=50,c=50):!1!==u&&!1===c?c=100-u:!1===u&&!1!==c&&(u=100-c),(0!==u||0!==c)&&(!1!==u&&!1!==c&&(u+c>100&&(u=u/(u+c)*100,c=c/(u+c)*100),u+c<100&&(s=(u+c)/100,u=u/(u+c)*100,c=c/(u+c)*100),{a:{color:n[0].color,percentage:u},b:{color:n[1].color,percentage:c},alphaMultiplier:s}))))}function colorMixRectangular(e,o){if(!o)return!1;const a=o.a.color,n=o.b.color,t=o.a.percentage/100;let r=a.channels,s=n.channels,l=exports.ColorNotation.RGB,i=a.alpha;if("number"!=typeof i)return!1;let u=n.alpha;if("number"!=typeof u)return!1;switch(i=Number.isNaN(i)?u:i,u=Number.isNaN(u)?i:u,e){case"srgb":l=exports.ColorNotation.RGB;break;case"srgb-linear":l=exports.ColorNotation.Linear_sRGB;break;case"display-p3":l=exports.ColorNotation.Display_P3;break;case"a98-rgb":l=exports.ColorNotation.A98_RGB;break;case"prophoto-rgb":l=exports.ColorNotation.ProPhoto_RGB;break;case"rec2020":l=exports.ColorNotation.Rec2020;break;case"lab":l=exports.ColorNotation.Lab;break;case"oklab":l=exports.ColorNotation.OKLab;break;case"xyz-d50":l=exports.ColorNotation.XYZ_D50;break;case"xyz":case"xyz-d65":l=exports.ColorNotation.XYZ_D65}r=colorDataTo(a,l).channels,s=colorDataTo(n,l).channels,r[0]=fillInMissingComponent(r[0],s[0]),s[0]=fillInMissingComponent(s[0],r[0]),r[1]=fillInMissingComponent(r[1],s[1]),s[1]=fillInMissingComponent(s[1],r[1]),r[2]=fillInMissingComponent(r[2],s[2]),s[2]=fillInMissingComponent(s[2],r[2]),r[0]=premultiply(r[0],i),r[1]=premultiply(r[1],i),r[2]=premultiply(r[2],i),s[0]=premultiply(s[0],u),s[1]=premultiply(s[1],u),s[2]=premultiply(s[2],u);const c=interpolate(i,u,t),p={colorNotation:l,channels:[un_premultiply(interpolate(r[0],s[0],t),c),un_premultiply(interpolate(r[1],s[1],t),c),un_premultiply(interpolate(r[2],s[2],t),c)],alpha:c*o.alphaMultiplier,syntaxFlags:new Set([exports.SyntaxFlag.ColorMix])};return(o.a.color.syntaxFlags.has(exports.SyntaxFlag.Experimental)||o.b.color.syntaxFlags.has(exports.SyntaxFlag.Experimental))&&p.syntaxFlags.add(exports.SyntaxFlag.Experimental),p}function colorMixPolar(e,o,a){if(!a)return!1;const n=a.a.color,t=a.b.color,r=a.a.percentage/100;let s=n.channels,l=t.channels,i=0,u=0,c=0,p=0,N=0,m=0,h=exports.ColorNotation.RGB,x=n.alpha;if("number"!=typeof x)return!1;let y=t.alpha;if("number"!=typeof y)return!1;switch(x=Number.isNaN(x)?y:x,y=Number.isNaN(y)?x:y,e){case"hsl":h=exports.ColorNotation.HSL;break;case"hwb":h=exports.ColorNotation.HWB;break;case"lch":h=exports.ColorNotation.LCH;break;case"oklch":h=exports.ColorNotation.OKLCH}switch(s=colorDataTo(n,h).channels,l=colorDataTo(t,h).channels,e){case"hsl":case"hwb":i=s[0],u=l[0],c=s[1],p=l[1],N=s[2],m=l[2];break;case"lch":case"oklch":c=s[0],p=l[0],N=s[1],m=l[1],i=s[2],u=l[2]}i=fillInMissingComponent(i,u),Number.isNaN(i)&&(i=0),u=fillInMissingComponent(u,i),Number.isNaN(u)&&(u=0),c=fillInMissingComponent(c,p),p=fillInMissingComponent(p,c),N=fillInMissingComponent(N,m),m=fillInMissingComponent(m,N);const b=u-i;switch(o){case"shorter":b>180?i+=360:b<-180&&(u+=360);break;case"longer":-180<b&&b<180&&(b>0?i+=360:u+=360);break;case"increasing":b<0&&(u+=360);break;case"decreasing":b>0&&(i+=360);break;default:throw new Error("Unknown hue interpolation method")}c=premultiply(c,x),N=premultiply(N,x),p=premultiply(p,y),m=premultiply(m,y);let C=[0,0,0];const d=interpolate(x,y,r);switch(e){case"hsl":case"hwb":C=[interpolate(i,u,r),un_premultiply(interpolate(c,p,r),d),un_premultiply(interpolate(N,m,r),d)];break;case"lch":case"oklch":C=[un_premultiply(interpolate(c,p,r),d),un_premultiply(interpolate(N,m,r),d),interpolate(i,u,r)]}const T={colorNotation:h,channels:C,alpha:d*a.alphaMultiplier,syntaxFlags:new Set([exports.SyntaxFlag.ColorMix])};return(a.a.color.syntaxFlags.has(exports.SyntaxFlag.Experimental)||a.b.color.syntaxFlags.has(exports.SyntaxFlag.Experimental))&&T.syntaxFlags.add(exports.SyntaxFlag.Experimental),T}function fillInMissingComponent(e,o){return Number.isNaN(e)?o:e}function interpolate(e,o,a){return e*a+o*(1-a)}function premultiply(e,o){return Number.isNaN(o)?e:Number.isNaN(e)?NaN:e*o}function un_premultiply(e,o){return 0===o||Number.isNaN(o)?e:Number.isNaN(e)?NaN:e/o}function hex(e){const o=toLowerCaseAZ(e[4].value);if(o.match(/[^a-f0-9]/))return!1;const a={colorNotation:exports.ColorNotation.HEX,channels:[0,0,0],alpha:1,syntaxFlags:new Set([exports.SyntaxFlag.Hex])},n=o.length;if(3===n){const e=o[0],n=o[1],t=o[2];return a.channels=[parseInt(e+e,16)/255,parseInt(n+n,16)/255,parseInt(t+t,16)/255],a}if(6===n){const e=o[0]+o[1],n=o[2]+o[3],t=o[4]+o[5];return a.channels=[parseInt(e,16)/255,parseInt(n,16)/255,parseInt(t,16)/255],a}if(4===n){const e=o[0],n=o[1],t=o[2],r=o[3];return a.channels=[parseInt(e+e,16)/255,parseInt(n+n,16)/255,parseInt(t+t,16)/255],a.alpha=parseInt(r+r,16)/255,a.syntaxFlags.add(exports.SyntaxFlag.HasAlpha),a}if(8===n){const e=o[0]+o[1],n=o[2]+o[3],t=o[4]+o[5],r=o[6]+o[7];return a.channels=[parseInt(e,16)/255,parseInt(n,16)/255,parseInt(t,16)/255],a.alpha=parseInt(r,16)/255,a.syntaxFlags.add(exports.SyntaxFlag.HasAlpha),a}return!1}function normalizeHue(e){if(a.isTokenNumber(e))return e[4].value=e[4].value%360,e[1]=e[4].value.toString(),e;if(a.isTokenDimension(e)){let o=e[4].value;switch(toLowerCaseAZ(e[4].unit)){case"deg":break;case"rad":o=180*e[4].value/Math.PI;break;case"grad":o=.9*e[4].value;break;case"turn":o=360*e[4].value;break;default:return!1}return o%=360,[a.TokenType.Number,o.toString(),e[2],e[3],{value:o,type:a.NumberType.Number}]}return!1}function normalize_legacy_HSL_ChannelValues(e,o,n){if(0===o){const o=normalizeHue(e);return!1!==o&&(a.isTokenDimension(e)&&n.syntaxFlags.add(exports.SyntaxFlag.HasDimensionValues),o)}if(a.isTokenPercentage(e)){3===o?n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageAlpha):n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageValues);let t=normalize(e[4].value,1,0,100);return 3===o&&(t=normalize(e[4].value,100,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}if(a.isTokenNumber(e)){if(3!==o)return!1;let n=normalize(e[4].value,1,0,100);return 3===o&&(n=normalize(e[4].value,1,0,1)),[a.TokenType.Number,n.toString(),e[2],e[3],{value:n,type:a.NumberType.Number}]}return!1}function normalize_modern_HSL_ChannelValues(e,o,n){if(a.isTokenIdent(e)&&"none"===toLowerCaseAZ(e[4].value))return n.syntaxFlags.add(exports.SyntaxFlag.HasNoneKeywords),[a.TokenType.Number,"none",e[2],e[3],{value:NaN,type:a.NumberType.Number}];if(0===o){const o=normalizeHue(e);return!1!==o&&(a.isTokenDimension(e)&&n.syntaxFlags.add(exports.SyntaxFlag.HasDimensionValues),o)}if(a.isTokenPercentage(e)){3===o?n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageAlpha):n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageValues);let t=e[4].value;return 3===o?t=normalize(e[4].value,100,0,1):1===o&&(t=normalize(e[4].value,1,0,2147483647)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}if(a.isTokenNumber(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasNumberValues);let t=e[4].value;return 3===o?t=normalize(e[4].value,1,0,1):1===o&&(t=normalize(e[4].value,1,0,2147483647)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}return!1}function threeChannelLegacySyntax(e,o,n,s){const l=[],i=[],u=[],c=[],p={colorNotation:n,channels:[0,0,0],alpha:1,syntaxFlags:new Set(s)};let N=l;for(let o=0;o<e.value.length;o++){let n=e.value[o];if(!t.isWhitespaceNode(n)&&!t.isCommentNode(n)){if(t.isTokenNode(n)&&a.isTokenComma(n.value)){if(N===l){N=i;continue}if(N===i){N=u;continue}if(N===u){N=c;continue}if(N===c)return!1}if(t.isFunctionNode(n)){if(N===c&&"var"===n.getName().toLowerCase()){p.syntaxFlags.add(exports.SyntaxFlag.HasVariableAlpha),N.push(n);continue}if(!r.mathFunctionNames.has(n.getName().toLowerCase()))return!1;const[[e]]=r.calcFromComponentValues([[n]],{censorIntoStandardRepresentableValues:!0,precision:-1,toCanonicalUnits:!0,rawPercentages:!0});if(!e||!t.isTokenNode(e)||!a.isTokenNumeric(e.value))return!1;Number.isNaN(e.value[4].value)&&(e.value[4].value=0),n=e}if(!t.isTokenNode(n))return!1;N.push(n)}}if(1!==N.length)return!1;if(1!==l.length||1!==i.length||1!==u.length)return!1;if(!t.isTokenNode(l[0])||!t.isTokenNode(i[0])||!t.isTokenNode(u[0]))return!1;const m=o(l[0].value,0,p);if(!m||!a.isTokenNumber(m))return!1;const h=o(i[0].value,1,p);if(!h||!a.isTokenNumber(h))return!1;const x=o(u[0].value,2,p);if(!x||!a.isTokenNumber(x))return!1;const y=[m,h,x];if(1===c.length)if(p.syntaxFlags.add(exports.SyntaxFlag.HasAlpha),t.isTokenNode(c[0])){const e=o(c[0].value,3,p);if(!e||!a.isTokenNumber(e))return!1;y.push(e)}else p.alpha=c[0];return p.channels=[y[0][4].value,y[1][4].value,y[2][4].value],4===y.length&&(p.alpha=y[3][4].value),p}function threeChannelSpaceSeparated(e,o,n,s,l){const i=[],u=[],c=[],p=[];let N,m,h=!1;const x={colorNotation:n,channels:[0,0,0],alpha:1,syntaxFlags:new Set(s)};let y=i;for(let o=0;o<e.value.length;o++){let s=e.value[o];if(t.isWhitespaceNode(s)||t.isCommentNode(s))for(;t.isWhitespaceNode(e.value[o+1])||t.isCommentNode(e.value[o+1]);)o++;else if(y===i&&i.length&&(y=u),y===u&&u.length&&(y=c),t.isTokenNode(s)&&a.isTokenDelim(s.value)&&"/"===s.value[4].value){if(y===p)return!1;y=p}else{if(t.isFunctionNode(s)){if(y===p&&"var"===s.getName().toLowerCase()){x.syntaxFlags.add(exports.SyntaxFlag.HasVariableAlpha),y.push(s);continue}if(!r.mathFunctionNames.has(s.getName().toLowerCase()))return!1;const[[e]]=r.calcFromComponentValues([[s]],{censorIntoStandardRepresentableValues:!0,globals:m,precision:-1,toCanonicalUnits:!0,rawPercentages:!0});if(!e||!t.isTokenNode(e)||!a.isTokenNumeric(e.value))return!1;Number.isNaN(e.value[4].value)&&(e.value[4].value=0),s=e}if(y===i&&0===i.length&&t.isTokenNode(s)&&a.isTokenIdent(s.value)&&"from"===s.value[4].value.toLowerCase()){if(h)return!1;for(;t.isWhitespaceNode(e.value[o+1])||t.isCommentNode(e.value[o+1]);)o++;if(o++,s=e.value[o],h=l(s),!1===h)return!1;h.syntaxFlags.has(exports.SyntaxFlag.Experimental)&&x.syntaxFlags.add(exports.SyntaxFlag.Experimental),x.syntaxFlags.add(exports.SyntaxFlag.RelativeColorSyntax),h.colorNotation!==n&&(h=colorDataTo(h,n)),N=normalizeRelativeColorDataChannels(h),m=noneToZeroInRelativeColorDataChannels(N)}else{if(!t.isTokenNode(s))return!1;if(a.isTokenIdent(s.value)&&N){const e=s.value[4].value.toLowerCase();if(N.has(e)){y.push(new t.TokenNode(N.get(e)));continue}}y.push(s)}}}if(1!==y.length)return!1;if(1!==i.length||1!==u.length||1!==c.length)return!1;if(!t.isTokenNode(i[0])||!t.isTokenNode(u[0])||!t.isTokenNode(c[0]))return!1;if(N&&!N.has("alpha"))return!1;const b=o(i[0].value,0,x);if(!b||!a.isTokenNumber(b))return!1;const C=o(u[0].value,1,x);if(!C||!a.isTokenNumber(C))return!1;const d=o(c[0].value,2,x);if(!d||!a.isTokenNumber(d))return!1;const T=[b,C,d];if(1===p.length)if(x.syntaxFlags.add(exports.SyntaxFlag.HasAlpha),t.isTokenNode(p[0])){const e=o(p[0].value,3,x);if(!e||!a.isTokenNumber(e))return!1;T.push(e)}else x.alpha=p[0];else if(N&&N.has("alpha")){const e=o(N.get("alpha"),3,x);if(!e||!a.isTokenNumber(e))return!1;T.push(e)}return x.channels=[T[0][4].value,T[1][4].value,T[2][4].value],4===T.length&&(x.alpha=T[3][4].value),x}function hsl(e,o){if(e.value.some((e=>t.isTokenNode(e)&&a.isTokenComma(e.value)))){const o=hslCommaSeparated(e);if(!1!==o)return o}{const a=hslSpaceSeparated(e,o);if(!1!==a)return a}return!1}function hslCommaSeparated(e){return threeChannelLegacySyntax(e,normalize_legacy_HSL_ChannelValues,exports.ColorNotation.HSL,[exports.SyntaxFlag.LegacyHSL])}function hslSpaceSeparated(e,o){return threeChannelSpaceSeparated(e,normalize_modern_HSL_ChannelValues,exports.ColorNotation.HSL,[],o)}function normalize_HWB_ChannelValues(e,o,n){if(a.isTokenIdent(e)&&"none"===toLowerCaseAZ(e[4].value))return n.syntaxFlags.add(exports.SyntaxFlag.HasNoneKeywords),[a.TokenType.Number,"none",e[2],e[3],{value:NaN,type:a.NumberType.Number}];if(0===o){const o=normalizeHue(e);return!1!==o&&(a.isTokenDimension(e)&&n.syntaxFlags.add(exports.SyntaxFlag.HasDimensionValues),o)}if(a.isTokenPercentage(e)){3===o?n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageAlpha):n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageValues);let t=e[4].value;return 3===o&&(t=normalize(e[4].value,100,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}if(a.isTokenNumber(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasNumberValues);let t=e[4].value;return 3===o&&(t=normalize(e[4].value,1,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}return!1}function normalize_Lab_ChannelValues(e,o,n){if(a.isTokenIdent(e)&&"none"===toLowerCaseAZ(e[4].value))return n.syntaxFlags.add(exports.SyntaxFlag.HasNoneKeywords),[a.TokenType.Number,"none",e[2],e[3],{value:NaN,type:a.NumberType.Number}];if(a.isTokenPercentage(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageValues);let t=normalize(e[4].value,1,0,100);return 1===o||2===o?t=normalize(e[4].value,.8,-2147483647,2147483647):3===o&&(t=normalize(e[4].value,100,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}if(a.isTokenNumber(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasNumberValues);let t=normalize(e[4].value,1,0,100);return 1===o||2===o?t=normalize(e[4].value,1,-2147483647,2147483647):3===o&&(t=normalize(e[4].value,1,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}return!1}function lab(e,o){return threeChannelSpaceSeparated(e,normalize_Lab_ChannelValues,exports.ColorNotation.Lab,[],o)}function normalize_LCH_ChannelValues(e,o,n){if(a.isTokenIdent(e)&&"none"===toLowerCaseAZ(e[4].value))return n.syntaxFlags.add(exports.SyntaxFlag.HasNoneKeywords),[a.TokenType.Number,"none",e[2],e[3],{value:NaN,type:a.NumberType.Number}];if(2===o){const o=normalizeHue(e);return!1!==o&&(a.isTokenDimension(e)&&n.syntaxFlags.add(exports.SyntaxFlag.HasDimensionValues),o)}if(a.isTokenPercentage(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageValues);let t=normalize(e[4].value,1,0,100);return 1===o?t=normalize(e[4].value,100/150,0,2147483647):3===o&&(t=normalize(e[4].value,100,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}if(a.isTokenNumber(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasNumberValues);let t=normalize(e[4].value,1,0,100);return 1===o?t=normalize(e[4].value,1,0,2147483647):3===o&&(t=normalize(e[4].value,1,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}return!1}function lch(e,o){return threeChannelSpaceSeparated(e,normalize_LCH_ChannelValues,exports.ColorNotation.LCH,[],o)}const N=new Map;for(const[e,o]of Object.entries(n.namedColors))N.set(e,o);function namedColor(e){const o=N.get(toLowerCaseAZ(e));return!!o&&{colorNotation:exports.ColorNotation.RGB,channels:[o[0]/255,o[1]/255,o[2]/255],alpha:1,syntaxFlags:new Set([exports.SyntaxFlag.ColorKeyword,exports.SyntaxFlag.NamedColor])}}function normalize_OKLab_ChannelValues(e,o,n){if(a.isTokenIdent(e)&&"none"===toLowerCaseAZ(e[4].value))return n.syntaxFlags.add(exports.SyntaxFlag.HasNoneKeywords),[a.TokenType.Number,"none",e[2],e[3],{value:NaN,type:a.NumberType.Number}];if(a.isTokenPercentage(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageValues);let t=normalize(e[4].value,100,0,1);return 1===o||2===o?t=normalize(e[4].value,250,-2147483647,2147483647):3===o&&(t=normalize(e[4].value,100,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}if(a.isTokenNumber(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasNumberValues);let t=normalize(e[4].value,1,0,1);return 1===o||2===o?t=normalize(e[4].value,1,-2147483647,2147483647):3===o&&(t=normalize(e[4].value,1,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}return!1}function oklab(e,o){return threeChannelSpaceSeparated(e,normalize_OKLab_ChannelValues,exports.ColorNotation.OKLab,[],o)}function normalize_OKLCH_ChannelValues(e,o,n){if(a.isTokenIdent(e)&&"none"===toLowerCaseAZ(e[4].value))return n.syntaxFlags.add(exports.SyntaxFlag.HasNoneKeywords),[a.TokenType.Number,"none",e[2],e[3],{value:NaN,type:a.NumberType.Number}];if(2===o){const o=normalizeHue(e);return!1!==o&&(a.isTokenDimension(e)&&n.syntaxFlags.add(exports.SyntaxFlag.HasDimensionValues),o)}if(a.isTokenPercentage(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageValues);let t=normalize(e[4].value,100,0,1);return 1===o?t=normalize(e[4].value,250,0,2147483647):3===o&&(t=normalize(e[4].value,100,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}if(a.isTokenNumber(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasNumberValues);let t=normalize(e[4].value,1,0,1);return 1===o?t=normalize(e[4].value,1,0,2147483647):3===o&&(t=normalize(e[4].value,1,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}return!1}function oklch(e,o){return threeChannelSpaceSeparated(e,normalize_OKLCH_ChannelValues,exports.ColorNotation.OKLCH,[],o)}function normalize_legacy_sRGB_ChannelValues(e,o,n){if(a.isTokenPercentage(e)){3===o?n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageAlpha):n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageValues);const t=normalize(e[4].value,100,0,1);return[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}if(a.isTokenNumber(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasNumberValues);let t=normalize(e[4].value,255,0,1);return 3===o&&(t=normalize(e[4].value,1,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}return!1}function normalize_modern_sRGB_ChannelValues(e,o,n){if(a.isTokenIdent(e)&&"none"===e[4].value.toLowerCase())return n.syntaxFlags.add(exports.SyntaxFlag.HasNoneKeywords),[a.TokenType.Number,"none",e[2],e[3],{value:NaN,type:a.NumberType.Number}];if(a.isTokenPercentage(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageValues);let t=normalize(e[4].value,100,-2147483647,2147483647);return 3===o&&(t=normalize(e[4].value,100,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}if(a.isTokenNumber(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasNumberValues);let t=normalize(e[4].value,255,-2147483647,2147483647);return 3===o&&(t=normalize(e[4].value,1,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}return!1}function rgb(e,o){if(e.value.some((e=>t.isTokenNode(e)&&a.isTokenComma(e.value)))){const o=rgbCommaSeparated(e);if(!1!==o)return(!o.syntaxFlags.has(exports.SyntaxFlag.HasNumberValues)||!o.syntaxFlags.has(exports.SyntaxFlag.HasPercentageValues))&&o}else{const a=rgbSpaceSeparated(e,o);if(!1!==a)return a}return!1}function rgbCommaSeparated(e){return threeChannelLegacySyntax(e,normalize_legacy_sRGB_ChannelValues,exports.ColorNotation.RGB,[exports.SyntaxFlag.LegacyRGB])}function rgbSpaceSeparated(e,o){return threeChannelSpaceSeparated(e,normalize_modern_sRGB_ChannelValues,exports.ColorNotation.RGB,[],o)}function XYZ_D50_to_sRGB_Gamut(e){const o=n.XYZ_D50_to_sRGB(e);if(n.inGamut(o))return n.clip(o);let a=e;return a=n.XYZ_D50_to_OKLCH(a),a[0]<1e-6&&(a=[0,0,0]),a[0]>.999999&&(a=[1,0,0]),n.gam_sRGB(n.mapGamutRayTrace(a,oklch_to_lin_srgb,lin_srgb_to_oklch))}function oklch_to_lin_srgb(e){return e=n.OKLCH_to_OKLab(e),e=n.OKLab_to_XYZ(e),n.XYZ_to_lin_sRGB(e)}function lin_srgb_to_oklch(e){return e=n.lin_sRGB_to_XYZ(e),e=n.XYZ_to_OKLab(e),n.OKLab_to_OKLCH(e)}function contrastColor(e,o){let r=!1,s=!1;for(let n=0;n<e.value.length;n++){const l=e.value[n];if(!t.isWhitespaceNode(l)&&!t.isCommentNode(l)&&(r||(r=o(l),!r))){if(!r||s||!t.isTokenNode(l)||!a.isTokenIdent(l.value)||"max"!==toLowerCaseAZ(l.value[4].value))return!1;s=!0}}if(!r||!s)return!1;r.channels=convertNaNToZero(r.channels),r.channels=XYZ_D50_to_sRGB_Gamut(colorData_to_XYZ_D50(r).channels),r.colorNotation=exports.ColorNotation.sRGB;const l={colorNotation:exports.ColorNotation.sRGB,channels:[0,0,0],alpha:1,syntaxFlags:new Set([exports.SyntaxFlag.ContrastColor,exports.SyntaxFlag.Experimental])},i=n.contrast_ratio_wcag_2_1(r.channels,[1,1,1]),u=n.contrast_ratio_wcag_2_1(r.channels,[0,0,0]);return l.channels=i>u?[1,1,1]:[0,0,0],l}function XYZ_D50_to_P3_Gamut(e){const o=n.XYZ_D50_to_P3(e);if(n.inGamut(o))return n.clip(o);let a=e;return a=n.XYZ_D50_to_OKLCH(a),a[0]<1e-6&&(a=[0,0,0]),a[0]>.999999&&(a=[1,0,0]),n.gam_P3(n.mapGamutRayTrace(a,oklch_to_lin_p3,lin_p3_to_oklch))}function oklch_to_lin_p3(e){return e=n.OKLCH_to_OKLab(e),e=n.OKLab_to_XYZ(e),n.XYZ_to_lin_P3(e)}function lin_p3_to_oklch(e){return e=n.lin_P3_to_XYZ(e),e=n.XYZ_to_OKLab(e),n.OKLab_to_OKLCH(e)}function toPrecision(e,o=7){e=+e,o=+o;const a=(Math.floor(Math.abs(e))+"").length;if(o>a)return+e.toFixed(o-a);{const n=10**(a-o);return Math.round(e/n)*n}}function serializeWithAlpha(e,o,n,r){const s=[a.TokenType.CloseParen,")",-1,-1,void 0];if("number"==typeof e.alpha){const l=Math.min(1,Math.max(0,toPrecision(Number.isNaN(e.alpha)?0:e.alpha)));return 1===toPrecision(l,4)?new t.FunctionNode(o,s,r):new t.FunctionNode(o,s,[...r,new t.WhitespaceNode([n]),new t.TokenNode([a.TokenType.Delim,"/",-1,-1,{value:"/"}]),new t.WhitespaceNode([n]),new t.TokenNode([a.TokenType.Number,toPrecision(l,4).toString(),-1,-1,{value:e.alpha,type:a.NumberType.Integer}])])}return new t.FunctionNode(o,s,[...r,new t.WhitespaceNode([n]),new t.TokenNode([a.TokenType.Delim,"/",-1,-1,{value:"/"}]),new t.WhitespaceNode([n]),e.alpha])}exports.color=function color(e){if(t.isFunctionNode(e)){switch(toLowerCaseAZ(e.getName())){case"rgb":case"rgba":return rgb(e,color);case"hsl":case"hsla":return hsl(e,color);case"hwb":return o=color,threeChannelSpaceSeparated(e,normalize_HWB_ChannelValues,exports.ColorNotation.HWB,[],o);case"lab":return lab(e,color);case"lch":return lch(e,color);case"oklab":return oklab(e,color);case"oklch":return oklch(e,color);case"color":return color$1(e,color);case"color-mix":return colorMix(e,color);case"contrast-color":return contrastColor(e,color)}}var o;if(t.isTokenNode(e)){if(a.isTokenHash(e.value))return hex(e.value);if(a.isTokenIdent(e.value)){const o=namedColor(e.value[4].value);return!1!==o?o:"transparent"===toLowerCaseAZ(e.value[4].value)&&{colorNotation:exports.ColorNotation.RGB,channels:[0,0,0],alpha:0,syntaxFlags:new Set([exports.SyntaxFlag.ColorKeyword])}}}return!1},exports.colorDataFitsDisplayP3_Gamut=function colorDataFitsDisplayP3_Gamut(e){const o={...e,channels:[...e.channels]};return o.channels=convertPowerlessComponentsToZeroValuesForDisplay(o.channels,o.colorNotation),!colorDataTo(o,exports.ColorNotation.Display_P3).channels.find((e=>e<-1e-5||e>1.00001))},exports.colorDataFitsRGB_Gamut=function colorDataFitsRGB_Gamut(e){const o={...e,channels:[...e.channels]};return o.channels=convertPowerlessComponentsToZeroValuesForDisplay(o.channels,o.colorNotation),!colorDataTo(o,exports.ColorNotation.RGB).channels.find((e=>e<-1e-5||e>1.00001))},exports.serializeHSL=function serializeHSL(e,o=!0){e.channels=convertPowerlessComponentsToZeroValuesForDisplay(e.channels,e.colorNotation);let r=e.channels.map((e=>Number.isNaN(e)?0:e));r=o?n.XYZ_D50_to_HSL(n.sRGB_to_XYZ_D50(XYZ_D50_to_sRGB_Gamut(colorData_to_XYZ_D50(e).channels))):n.XYZ_D50_to_HSL(colorData_to_XYZ_D50(e).channels),r=r.map((e=>Number.isNaN(e)?0:e));const s=Math.min(360,Math.max(0,Math.round(toPrecision(r[0])))),l=Math.min(100,Math.max(0,Math.round(toPrecision(r[1])))),i=Math.min(100,Math.max(0,Math.round(toPrecision(r[2])))),u=[a.TokenType.CloseParen,")",-1,-1,void 0],c=[a.TokenType.Whitespace," ",-1,-1,void 0],p=[a.TokenType.Comma,",",-1,-1,void 0],N=[new t.TokenNode([a.TokenType.Number,s.toString(),-1,-1,{value:r[0],type:a.NumberType.Integer}]),new t.TokenNode(p),new t.WhitespaceNode([c]),new t.TokenNode([a.TokenType.Percentage,l.toString()+"%",-1,-1,{value:r[1]}]),new t.TokenNode(p),new t.WhitespaceNode([c]),new t.TokenNode([a.TokenType.Percentage,i.toString()+"%",-1,-1,{value:r[2]}])];if("number"==typeof e.alpha){const o=Math.min(1,Math.max(0,toPrecision(Number.isNaN(e.alpha)?0:e.alpha)));return 1===toPrecision(o,4)?new t.FunctionNode([a.TokenType.Function,"hsl(",-1,-1,{value:"hsl"}],u,N):new t.FunctionNode([a.TokenType.Function,"hsla(",-1,-1,{value:"hsla"}],u,[...N,new t.TokenNode(p),new t.WhitespaceNode([c]),new t.TokenNode([a.TokenType.Number,toPrecision(o,4).toString(),-1,-1,{value:e.alpha,type:a.NumberType.Number}])])}return new t.FunctionNode([a.TokenType.Function,"hsla(",-1,-1,{value:"hsla"}],u,[...N,new t.TokenNode(p),new t.WhitespaceNode([c]),e.alpha])},exports.serializeOKLCH=function serializeOKLCH(e){e.channels=convertPowerlessComponentsToZeroValuesForDisplay(e.channels,e.colorNotation);let o=e.channels.map((e=>Number.isNaN(e)?0:e));e.colorNotation!==exports.ColorNotation.OKLCH&&(o=n.XYZ_D50_to_OKLCH(colorData_to_XYZ_D50(e).channels));const r=toPrecision(o[0],6),s=toPrecision(o[1],6),l=toPrecision(o[2],6),i=[a.TokenType.Function,"oklch(",-1,-1,{value:"oklch"}],u=[a.TokenType.Whitespace," ",-1,-1,void 0];return serializeWithAlpha(e,i,u,[new t.TokenNode([a.TokenType.Number,r.toString(),-1,-1,{value:o[0],type:a.NumberType.Number}]),new t.WhitespaceNode([u]),new t.TokenNode([a.TokenType.Number,s.toString(),-1,-1,{value:o[1],type:a.NumberType.Number}]),new t.WhitespaceNode([u]),new t.TokenNode([a.TokenType.Number,l.toString(),-1,-1,{value:o[2],type:a.NumberType.Number}])])},exports.serializeP3=function serializeP3(e,o=!0){e.channels=convertPowerlessComponentsToZeroValuesForDisplay(e.channels,e.colorNotation);let r=e.channels.map((e=>Number.isNaN(e)?0:e));o?r=XYZ_D50_to_P3_Gamut(colorData_to_XYZ_D50(e).channels):e.colorNotation!==exports.ColorNotation.Display_P3&&(r=n.XYZ_D50_to_P3(colorData_to_XYZ_D50(e).channels));const s=o?Math.min(1,Math.max(0,toPrecision(r[0],6))):toPrecision(r[0],6),l=o?Math.min(1,Math.max(0,toPrecision(r[1],6))):toPrecision(r[1],6),i=o?Math.min(1,Math.max(0,toPrecision(r[2],6))):toPrecision(r[2],6),u=[a.TokenType.Function,"color(",-1,-1,{value:"color"}],c=[a.TokenType.Whitespace," ",-1,-1,void 0];return serializeWithAlpha(e,u,c,[new t.TokenNode([a.TokenType.Ident,"display-p3",-1,-1,{value:"display-p3"}]),new t.WhitespaceNode([c]),new t.TokenNode([a.TokenType.Number,s.toString(),-1,-1,{value:r[0],type:a.NumberType.Number}]),new t.WhitespaceNode([c]),new t.TokenNode([a.TokenType.Number,l.toString(),-1,-1,{value:r[1],type:a.NumberType.Number}]),new t.WhitespaceNode([c]),new t.TokenNode([a.TokenType.Number,i.toString(),-1,-1,{value:r[2],type:a.NumberType.Number}])])},exports.serializeRGB=function serializeRGB(e,o=!0){e.channels=convertPowerlessComponentsToZeroValuesForDisplay(e.channels,e.colorNotation);let r=e.channels.map((e=>Number.isNaN(e)?0:e));r=o?XYZ_D50_to_sRGB_Gamut(colorData_to_XYZ_D50(e).channels):n.XYZ_D50_to_sRGB(colorData_to_XYZ_D50(e).channels);const s=Math.min(255,Math.max(0,Math.round(255*toPrecision(r[0])))),l=Math.min(255,Math.max(0,Math.round(255*toPrecision(r[1])))),i=Math.min(255,Math.max(0,Math.round(255*toPrecision(r[2])))),u=[a.TokenType.CloseParen,")",-1,-1,void 0],c=[a.TokenType.Whitespace," ",-1,-1,void 0],p=[a.TokenType.Comma,",",-1,-1,void 0],N=[new t.TokenNode([a.TokenType.Number,s.toString(),-1,-1,{value:Math.min(255,255*Math.max(0,r[0])),type:a.NumberType.Integer}]),new t.TokenNode(p),new t.WhitespaceNode([c]),new t.TokenNode([a.TokenType.Number,l.toString(),-1,-1,{value:Math.min(255,255*Math.max(0,r[1])),type:a.NumberType.Integer}]),new t.TokenNode(p),new t.WhitespaceNode([c]),new t.TokenNode([a.TokenType.Number,i.toString(),-1,-1,{value:Math.min(255,255*Math.max(0,r[2])),type:a.NumberType.Integer}])];if("number"==typeof e.alpha){const o=Math.min(1,Math.max(0,toPrecision(Number.isNaN(e.alpha)?0:e.alpha)));return 1===toPrecision(o,4)?new t.FunctionNode([a.TokenType.Function,"rgb(",-1,-1,{value:"rgb"}],u,N):new t.FunctionNode([a.TokenType.Function,"rgba(",-1,-1,{value:"rgba"}],u,[...N,new t.TokenNode(p),new t.WhitespaceNode([c]),new t.TokenNode([a.TokenType.Number,toPrecision(o,4).toString(),-1,-1,{value:e.alpha,type:a.NumberType.Number}])])}return new t.FunctionNode([a.TokenType.Function,"rgba(",-1,-1,{value:"rgba"}],u,[...N,new t.TokenNode(p),new t.WhitespaceNode([c]),e.alpha])};
+var e,o,a=__nccwpck_require__(10618),n=__nccwpck_require__(8942),t=__nccwpck_require__(66500),r=__nccwpck_require__(83177);function convertNaNToZero(e){return[Number.isNaN(e[0])?0:e[0],Number.isNaN(e[1])?0:e[1],Number.isNaN(e[2])?0:e[2]]}function colorData_to_XYZ_D50(e){switch(e.colorNotation){case exports.ColorNotation.HEX:case exports.ColorNotation.RGB:case exports.ColorNotation.sRGB:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.sRGB_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.Linear_sRGB:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.lin_sRGB_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.Display_P3:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.P3_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.Rec2020:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.rec_2020_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.A98_RGB:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.a98_RGB_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.ProPhoto_RGB:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.ProPhoto_RGB_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.HSL:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.HSL_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.HWB:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.HWB_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.Lab:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.Lab_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.OKLab:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.OKLab_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.LCH:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.LCH_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.OKLCH:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.OKLCH_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.XYZ_D50:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.XYZ_D50_to_XYZ_D50(convertNaNToZero(e.channels))};case exports.ColorNotation.XYZ_D65:return{...e,colorNotation:exports.ColorNotation.XYZ_D50,channels:n.XYZ_D65_to_XYZ_D50(convertNaNToZero(e.channels))};default:throw new Error("Unsupported color notation")}}exports.ColorNotation=void 0,(e=exports.ColorNotation||(exports.ColorNotation={})).A98_RGB="a98-rgb",e.Display_P3="display-p3",e.HEX="hex",e.HSL="hsl",e.HWB="hwb",e.LCH="lch",e.Lab="lab",e.Linear_sRGB="srgb-linear",e.OKLCH="oklch",e.OKLab="oklab",e.ProPhoto_RGB="prophoto-rgb",e.RGB="rgb",e.sRGB="srgb",e.Rec2020="rec2020",e.XYZ_D50="xyz-d50",e.XYZ_D65="xyz-d65",exports.SyntaxFlag=void 0,(o=exports.SyntaxFlag||(exports.SyntaxFlag={})).ColorKeyword="color-keyword",o.HasAlpha="has-alpha",o.HasDimensionValues="has-dimension-values",o.HasNoneKeywords="has-none-keywords",o.HasNumberValues="has-number-values",o.HasPercentageAlpha="has-percentage-alpha",o.HasPercentageValues="has-percentage-values",o.HasVariableAlpha="has-variable-alpha",o.Hex="hex",o.LegacyHSL="legacy-hsl",o.LegacyRGB="legacy-rgb",o.NamedColor="named-color",o.RelativeColorSyntax="relative-color-syntax",o.ColorMix="color-mix",o.ContrastColor="contrast-color",o.Experimental="experimental";const s=new Set([exports.ColorNotation.A98_RGB,exports.ColorNotation.Display_P3,exports.ColorNotation.HEX,exports.ColorNotation.Linear_sRGB,exports.ColorNotation.ProPhoto_RGB,exports.ColorNotation.RGB,exports.ColorNotation.sRGB,exports.ColorNotation.Rec2020,exports.ColorNotation.XYZ_D50,exports.ColorNotation.XYZ_D65]);function colorDataTo(e,o){const a={...e};if(e.colorNotation!==o){const e=colorData_to_XYZ_D50(a);switch(o){case exports.ColorNotation.HEX:case exports.ColorNotation.RGB:a.colorNotation=exports.ColorNotation.RGB,a.channels=n.XYZ_D50_to_sRGB(e.channels);break;case exports.ColorNotation.sRGB:a.colorNotation=exports.ColorNotation.sRGB,a.channels=n.XYZ_D50_to_sRGB(e.channels);break;case exports.ColorNotation.Linear_sRGB:a.colorNotation=exports.ColorNotation.Linear_sRGB,a.channels=n.XYZ_D50_to_lin_sRGB(e.channels);break;case exports.ColorNotation.Display_P3:a.colorNotation=exports.ColorNotation.Display_P3,a.channels=n.XYZ_D50_to_P3(e.channels);break;case exports.ColorNotation.Rec2020:a.colorNotation=exports.ColorNotation.Rec2020,a.channels=n.XYZ_D50_to_rec_2020(e.channels);break;case exports.ColorNotation.ProPhoto_RGB:a.colorNotation=exports.ColorNotation.ProPhoto_RGB,a.channels=n.XYZ_D50_to_ProPhoto(e.channels);break;case exports.ColorNotation.A98_RGB:a.colorNotation=exports.ColorNotation.A98_RGB,a.channels=n.XYZ_D50_to_a98_RGB(e.channels);break;case exports.ColorNotation.HSL:a.colorNotation=exports.ColorNotation.HSL,a.channels=n.XYZ_D50_to_HSL(e.channels);break;case exports.ColorNotation.HWB:a.colorNotation=exports.ColorNotation.HWB,a.channels=n.XYZ_D50_to_HWB(e.channels);break;case exports.ColorNotation.Lab:a.colorNotation=exports.ColorNotation.Lab,a.channels=n.XYZ_D50_to_Lab(e.channels);break;case exports.ColorNotation.LCH:a.colorNotation=exports.ColorNotation.LCH,a.channels=n.XYZ_D50_to_LCH(e.channels);break;case exports.ColorNotation.OKLCH:a.colorNotation=exports.ColorNotation.OKLCH,a.channels=n.XYZ_D50_to_OKLCH(e.channels);break;case exports.ColorNotation.OKLab:a.colorNotation=exports.ColorNotation.OKLab,a.channels=n.XYZ_D50_to_OKLab(e.channels);break;case exports.ColorNotation.XYZ_D50:a.colorNotation=exports.ColorNotation.XYZ_D50,a.channels=n.XYZ_D50_to_XYZ_D50(e.channels);break;case exports.ColorNotation.XYZ_D65:a.colorNotation=exports.ColorNotation.XYZ_D65,a.channels=n.XYZ_D50_to_XYZ_D65(e.channels);break;default:throw new Error("Unsupported color notation")}}else a.channels=convertNaNToZero(e.channels);if(o===e.colorNotation)a.channels=carryForwardMissingComponents(e.channels,[0,1,2],a.channels,[0,1,2]);else if(s.has(o)&&s.has(e.colorNotation))a.channels=carryForwardMissingComponents(e.channels,[0,1,2],a.channels,[0,1,2]);else switch(o){case exports.ColorNotation.HSL:switch(e.colorNotation){case exports.ColorNotation.HWB:a.channels=carryForwardMissingComponents(e.channels,[0],a.channels,[0]);break;case exports.ColorNotation.Lab:case exports.ColorNotation.OKLab:a.channels=carryForwardMissingComponents(e.channels,[2],a.channels,[0]);break;case exports.ColorNotation.LCH:case exports.ColorNotation.OKLCH:a.channels=carryForwardMissingComponents(e.channels,[0,1,2],a.channels,[2,1,0])}break;case exports.ColorNotation.HWB:switch(e.colorNotation){case exports.ColorNotation.HSL:a.channels=carryForwardMissingComponents(e.channels,[0],a.channels,[0]);break;case exports.ColorNotation.LCH:case exports.ColorNotation.OKLCH:a.channels=carryForwardMissingComponents(e.channels,[0],a.channels,[2])}break;case exports.ColorNotation.Lab:case exports.ColorNotation.OKLab:switch(e.colorNotation){case exports.ColorNotation.HSL:a.channels=carryForwardMissingComponents(e.channels,[0],a.channels,[2]);break;case exports.ColorNotation.Lab:case exports.ColorNotation.OKLab:a.channels=carryForwardMissingComponents(e.channels,[0,1,2],a.channels,[0,1,2]);break;case exports.ColorNotation.LCH:case exports.ColorNotation.OKLCH:a.channels=carryForwardMissingComponents(e.channels,[0],a.channels,[0])}break;case exports.ColorNotation.LCH:case exports.ColorNotation.OKLCH:switch(e.colorNotation){case exports.ColorNotation.HSL:a.channels=carryForwardMissingComponents(e.channels,[0,1,2],a.channels,[2,1,0]);break;case exports.ColorNotation.HWB:a.channels=carryForwardMissingComponents(e.channels,[0],a.channels,[2]);break;case exports.ColorNotation.Lab:case exports.ColorNotation.OKLab:a.channels=carryForwardMissingComponents(e.channels,[0],a.channels,[0]);break;case exports.ColorNotation.LCH:case exports.ColorNotation.OKLCH:a.channels=carryForwardMissingComponents(e.channels,[0,1,2],a.channels,[0,1,2])}}return a.channels=convertPowerlessComponentsToMissingComponents(a.channels,o),a}function convertPowerlessComponentsToMissingComponents(e,o){const a=[...e];switch(o){case exports.ColorNotation.HSL:!Number.isNaN(a[1])&&reducePrecision(a[1],4)<=0&&(a[0]=NaN);break;case exports.ColorNotation.HWB:Math.max(0,reducePrecision(a[1],4))+Math.max(0,reducePrecision(a[2],4))>=100&&(a[0]=NaN);break;case exports.ColorNotation.LCH:!Number.isNaN(a[1])&&reducePrecision(a[1],4)<=0&&(a[2]=NaN);break;case exports.ColorNotation.OKLCH:!Number.isNaN(a[1])&&reducePrecision(a[1],6)<=0&&(a[2]=NaN)}return a}function convertPowerlessComponentsToZeroValuesForDisplay(e,o){const a=[...e];switch(o){case exports.ColorNotation.HSL:(reducePrecision(a[2])<=0||reducePrecision(a[2])>=100)&&(a[0]=NaN,a[1]=NaN),reducePrecision(a[1])<=0&&(a[0]=NaN);break;case exports.ColorNotation.HWB:Math.max(0,reducePrecision(a[1]))+Math.max(0,reducePrecision(a[2]))>=100&&(a[0]=NaN);break;case exports.ColorNotation.Lab:(reducePrecision(a[0])<=0||reducePrecision(a[0])>=100)&&(a[1]=NaN,a[2]=NaN);break;case exports.ColorNotation.LCH:reducePrecision(a[1])<=0&&(a[2]=NaN),(reducePrecision(a[0])<=0||reducePrecision(a[0])>=100)&&(a[1]=NaN,a[2]=NaN);break;case exports.ColorNotation.OKLab:(reducePrecision(a[0])<=0||reducePrecision(a[0])>=1)&&(a[1]=NaN,a[2]=NaN);break;case exports.ColorNotation.OKLCH:reducePrecision(a[1])<=0&&(a[2]=NaN),(reducePrecision(a[0])<=0||reducePrecision(a[0])>=1)&&(a[1]=NaN,a[2]=NaN)}return a}function carryForwardMissingComponents(e,o,a,n){const t=[...a];for(const a of o)Number.isNaN(e[o[a]])&&(t[n[a]]=NaN);return t}function normalizeRelativeColorDataChannels(e){const o=new Map;switch(e.colorNotation){case exports.ColorNotation.RGB:case exports.ColorNotation.HEX:o.set("r",dummyNumberToken(255*e.channels[0])),o.set("g",dummyNumberToken(255*e.channels[1])),o.set("b",dummyNumberToken(255*e.channels[2])),"number"==typeof e.alpha&&o.set("alpha",dummyNumberToken(e.alpha));break;case exports.ColorNotation.HSL:o.set("h",dummyNumberToken(e.channels[0])),o.set("s",dummyNumberToken(e.channels[1])),o.set("l",dummyNumberToken(e.channels[2])),"number"==typeof e.alpha&&o.set("alpha",dummyNumberToken(e.alpha));break;case exports.ColorNotation.HWB:o.set("h",dummyNumberToken(e.channels[0])),o.set("w",dummyNumberToken(e.channels[1])),o.set("b",dummyNumberToken(e.channels[2])),"number"==typeof e.alpha&&o.set("alpha",dummyNumberToken(e.alpha));break;case exports.ColorNotation.Lab:case exports.ColorNotation.OKLab:o.set("l",dummyNumberToken(e.channels[0])),o.set("a",dummyNumberToken(e.channels[1])),o.set("b",dummyNumberToken(e.channels[2])),"number"==typeof e.alpha&&o.set("alpha",dummyNumberToken(e.alpha));break;case exports.ColorNotation.LCH:case exports.ColorNotation.OKLCH:o.set("l",dummyNumberToken(e.channels[0])),o.set("c",dummyNumberToken(e.channels[1])),o.set("h",dummyNumberToken(e.channels[2])),"number"==typeof e.alpha&&o.set("alpha",dummyNumberToken(e.alpha));break;case exports.ColorNotation.sRGB:case exports.ColorNotation.A98_RGB:case exports.ColorNotation.Display_P3:case exports.ColorNotation.Rec2020:case exports.ColorNotation.Linear_sRGB:case exports.ColorNotation.ProPhoto_RGB:o.set("r",dummyNumberToken(e.channels[0])),o.set("g",dummyNumberToken(e.channels[1])),o.set("b",dummyNumberToken(e.channels[2])),"number"==typeof e.alpha&&o.set("alpha",dummyNumberToken(e.alpha));break;case exports.ColorNotation.XYZ_D50:case exports.ColorNotation.XYZ_D65:o.set("x",dummyNumberToken(e.channels[0])),o.set("y",dummyNumberToken(e.channels[1])),o.set("z",dummyNumberToken(e.channels[2])),"number"==typeof e.alpha&&o.set("alpha",dummyNumberToken(e.alpha))}return o}function noneToZeroInRelativeColorDataChannels(e){const o=new Map(e);for(const[a,n]of e)Number.isNaN(n[4].value)&&o.set(a,dummyNumberToken(0));return o}function dummyNumberToken(e){return Number.isNaN(e)?[a.TokenType.Number,"none",-1,-1,{value:Number.NaN,type:a.NumberType.Number}]:[a.TokenType.Number,e.toString(),-1,-1,{value:e,type:a.NumberType.Number}]}function reducePrecision(e,o=7){if(Number.isNaN(e))return 0;const a=Math.pow(10,o);return Math.round(e*a)/a}function normalize(e,o,a,n){return Math.min(Math.max(e/o,a),n)}const l=/[A-Z]/g;function toLowerCaseAZ(e){return e.replace(l,(e=>String.fromCharCode(e.charCodeAt(0)+32)))}function normalize_Color_ChannelValues(e,o,n){if(a.isTokenIdent(e)&&"none"===toLowerCaseAZ(e[4].value))return n.syntaxFlags.add(exports.SyntaxFlag.HasNoneKeywords),[a.TokenType.Number,"none",e[2],e[3],{value:NaN,type:a.NumberType.Number}];if(a.isTokenPercentage(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageValues);let t=normalize(e[4].value,100,-2147483647,2147483647);return 3===o&&(t=normalize(e[4].value,100,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}if(a.isTokenNumber(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasNumberValues);let t=normalize(e[4].value,1,-2147483647,2147483647);return 3===o&&(t=normalize(e[4].value,1,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}return!1}const i=new Set(["srgb","srgb-linear","display-p3","a98-rgb","prophoto-rgb","rec2020","xyz","xyz-d50","xyz-d65"]);function color$1(e,o){const n=[],s=[],l=[],u=[];let c,p,N=!1,m=!1;const h={colorNotation:exports.ColorNotation.sRGB,channels:[0,0,0],alpha:1,syntaxFlags:new Set([])};let x=n;for(let y=0;y<e.value.length;y++){let b=e.value[y];if(t.isWhitespaceNode(b)||t.isCommentNode(b))for(;t.isWhitespaceNode(e.value[y+1])||t.isCommentNode(e.value[y+1]);)y++;else if(x===n&&n.length&&(x=s),x===s&&s.length&&(x=l),t.isTokenNode(b)&&a.isTokenDelim(b.value)&&"/"===b.value[4].value){if(x===u)return!1;x=u}else{if(t.isFunctionNode(b)){if(x===u&&"var"===toLowerCaseAZ(b.getName())){h.syntaxFlags.add(exports.SyntaxFlag.HasVariableAlpha),x.push(b);continue}if(!r.mathFunctionNames.has(toLowerCaseAZ(b.getName())))return!1;const[[e]]=r.calcFromComponentValues([[b]],{censorIntoStandardRepresentableValues:!0,globals:p,precision:-1,toCanonicalUnits:!0,rawPercentages:!0});if(!e||!t.isTokenNode(e)||!a.isTokenNumeric(e.value))return!1;Number.isNaN(e.value[4].value)&&(e.value[4].value=0),b=e}if(x===n&&0===n.length&&t.isTokenNode(b)&&a.isTokenIdent(b.value)&&i.has(toLowerCaseAZ(b.value[4].value))){if(N)return!1;N=toLowerCaseAZ(b.value[4].value),h.colorNotation=colorSpaceNameToColorNotation(N),m&&(m.colorNotation!==h.colorNotation&&(m=colorDataTo(m,h.colorNotation)),c=normalizeRelativeColorDataChannels(m),p=noneToZeroInRelativeColorDataChannels(c))}else if(x===n&&0===n.length&&t.isTokenNode(b)&&a.isTokenIdent(b.value)&&"from"===toLowerCaseAZ(b.value[4].value)){if(m)return!1;if(N)return!1;for(;t.isWhitespaceNode(e.value[y+1])||t.isCommentNode(e.value[y+1]);)y++;if(y++,b=e.value[y],m=o(b),!1===m)return!1;m.syntaxFlags.has(exports.SyntaxFlag.Experimental)&&h.syntaxFlags.add(exports.SyntaxFlag.Experimental),h.syntaxFlags.add(exports.SyntaxFlag.RelativeColorSyntax)}else{if(!t.isTokenNode(b))return!1;if(a.isTokenIdent(b.value)&&c&&c.has(toLowerCaseAZ(b.value[4].value))){x.push(new t.TokenNode(c.get(toLowerCaseAZ(b.value[4].value))));continue}x.push(b)}}}if(!N)return!1;if(1!==x.length)return!1;if(1!==n.length||1!==s.length||1!==l.length)return!1;if(!t.isTokenNode(n[0])||!t.isTokenNode(s[0])||!t.isTokenNode(l[0]))return!1;if(c&&!c.has("alpha"))return!1;const y=normalize_Color_ChannelValues(n[0].value,0,h);if(!y||!a.isTokenNumber(y))return!1;const b=normalize_Color_ChannelValues(s[0].value,1,h);if(!b||!a.isTokenNumber(b))return!1;const C=normalize_Color_ChannelValues(l[0].value,2,h);if(!C||!a.isTokenNumber(C))return!1;const d=[y,b,C];if(1===u.length)if(h.syntaxFlags.add(exports.SyntaxFlag.HasAlpha),t.isTokenNode(u[0])){const e=normalize_Color_ChannelValues(u[0].value,3,h);if(!e||!a.isTokenNumber(e))return!1;d.push(e)}else h.alpha=u[0];else if(c&&c.has("alpha")){const e=normalize_Color_ChannelValues(c.get("alpha"),3,h);if(!e||!a.isTokenNumber(e))return!1;d.push(e)}return h.channels=[d[0][4].value,d[1][4].value,d[2][4].value],4===d.length&&(h.alpha=d[3][4].value),h}function colorSpaceNameToColorNotation(e){switch(e){case"srgb":return exports.ColorNotation.sRGB;case"srgb-linear":return exports.ColorNotation.Linear_sRGB;case"display-p3":return exports.ColorNotation.Display_P3;case"a98-rgb":return exports.ColorNotation.A98_RGB;case"prophoto-rgb":return exports.ColorNotation.ProPhoto_RGB;case"rec2020":return exports.ColorNotation.Rec2020;case"xyz":case"xyz-d65":return exports.ColorNotation.XYZ_D65;case"xyz-d50":return exports.ColorNotation.XYZ_D50;default:throw new Error("Unknown color space name: "+e)}}const u=new Set(["srgb","srgb-linear","display-p3","a98-rgb","prophoto-rgb","rec2020","lab","oklab","xyz","xyz-d50","xyz-d65"]),c=new Set(["hsl","hwb","lch","oklch"]),p=new Set(["shorter","longer","increasing","decreasing"]);function colorMix(e,o){let n=null,r=null,s=null,l=!1;for(let i=0;i<e.value.length;i++){const N=e.value[i];if(!t.isWhitespaceNode(N)&&!t.isCommentNode(N)){if(t.isTokenNode(N)&&a.isTokenIdent(N.value)){if(!n&&"in"===toLowerCaseAZ(N.value[4].value)){n=N;continue}if(n&&!r){r=toLowerCaseAZ(N.value[4].value);continue}if(n&&r&&!s&&c.has(r)){s=toLowerCaseAZ(N.value[4].value);continue}if(n&&r&&s&&!l&&"hue"===toLowerCaseAZ(N.value[4].value)){l=!0;continue}return!1}return!(!t.isTokenNode(N)||!a.isTokenComma(N.value))&&(!!r&&(s||l?!!(r&&s&&l&&c.has(r)&&p.has(s))&&colorMixPolar(r,s,colorMixComponents(e.value.slice(i+1),o)):u.has(r)?colorMixRectangular(r,colorMixComponents(e.value.slice(i+1),o)):!!c.has(r)&&colorMixPolar(r,"shorter",colorMixComponents(e.value.slice(i+1),o))))}}return!1}function colorMixComponents(e,o){const n=[];let s=1,l=!1,i=!1;for(let s=0;s<e.length;s++){let u=e[s];if(!t.isWhitespaceNode(u)&&!t.isCommentNode(u)){if(!t.isTokenNode(u)||!a.isTokenComma(u.value)){if(!l){const e=o(u);if(e){l=e;continue}}if(!i){if(t.isFunctionNode(u)&&r.mathFunctionNames.has(toLowerCaseAZ(u.getName()))){if([[u]]=r.calcFromComponentValues([[u]],{censorIntoStandardRepresentableValues:!0,precision:-1,toCanonicalUnits:!0,rawPercentages:!0}),!u||!t.isTokenNode(u)||!a.isTokenNumeric(u.value))return!1;Number.isNaN(u.value[4].value)&&(u.value[4].value=0)}if(t.isTokenNode(u)&&a.isTokenPercentage(u.value)&&u.value[4].value>=0){i=u.value[4].value;continue}}return!1}if(!l)return!1;n.push({color:l,percentage:i}),l=!1,i=!1}}if(l&&n.push({color:l,percentage:i}),2!==n.length)return!1;let u=n[0].percentage,c=n[1].percentage;return(!1===u||!(u<0||u>100))&&((!1===c||!(c<0||c>100))&&(!1===u&&!1===c?(u=50,c=50):!1!==u&&!1===c?c=100-u:!1===u&&!1!==c&&(u=100-c),(0!==u||0!==c)&&(!1!==u&&!1!==c&&(u+c>100&&(u=u/(u+c)*100,c=c/(u+c)*100),u+c<100&&(s=(u+c)/100,u=u/(u+c)*100,c=c/(u+c)*100),{a:{color:n[0].color,percentage:u},b:{color:n[1].color,percentage:c},alphaMultiplier:s}))))}function colorMixRectangular(e,o){if(!o)return!1;const a=o.a.color,n=o.b.color,t=o.a.percentage/100;let r=a.channels,s=n.channels,l=exports.ColorNotation.RGB,i=a.alpha;if("number"!=typeof i)return!1;let u=n.alpha;if("number"!=typeof u)return!1;switch(i=Number.isNaN(i)?u:i,u=Number.isNaN(u)?i:u,e){case"srgb":l=exports.ColorNotation.RGB;break;case"srgb-linear":l=exports.ColorNotation.Linear_sRGB;break;case"display-p3":l=exports.ColorNotation.Display_P3;break;case"a98-rgb":l=exports.ColorNotation.A98_RGB;break;case"prophoto-rgb":l=exports.ColorNotation.ProPhoto_RGB;break;case"rec2020":l=exports.ColorNotation.Rec2020;break;case"lab":l=exports.ColorNotation.Lab;break;case"oklab":l=exports.ColorNotation.OKLab;break;case"xyz-d50":l=exports.ColorNotation.XYZ_D50;break;case"xyz":case"xyz-d65":l=exports.ColorNotation.XYZ_D65}r=colorDataTo(a,l).channels,s=colorDataTo(n,l).channels,r[0]=fillInMissingComponent(r[0],s[0]),s[0]=fillInMissingComponent(s[0],r[0]),r[1]=fillInMissingComponent(r[1],s[1]),s[1]=fillInMissingComponent(s[1],r[1]),r[2]=fillInMissingComponent(r[2],s[2]),s[2]=fillInMissingComponent(s[2],r[2]),r[0]=premultiply(r[0],i),r[1]=premultiply(r[1],i),r[2]=premultiply(r[2],i),s[0]=premultiply(s[0],u),s[1]=premultiply(s[1],u),s[2]=premultiply(s[2],u);const c=interpolate(i,u,t),p={colorNotation:l,channels:[un_premultiply(interpolate(r[0],s[0],t),c),un_premultiply(interpolate(r[1],s[1],t),c),un_premultiply(interpolate(r[2],s[2],t),c)],alpha:c*o.alphaMultiplier,syntaxFlags:new Set([exports.SyntaxFlag.ColorMix])};return(o.a.color.syntaxFlags.has(exports.SyntaxFlag.Experimental)||o.b.color.syntaxFlags.has(exports.SyntaxFlag.Experimental))&&p.syntaxFlags.add(exports.SyntaxFlag.Experimental),p}function colorMixPolar(e,o,a){if(!a)return!1;const n=a.a.color,t=a.b.color,r=a.a.percentage/100;let s=n.channels,l=t.channels,i=0,u=0,c=0,p=0,N=0,m=0,h=exports.ColorNotation.RGB,x=n.alpha;if("number"!=typeof x)return!1;let y=t.alpha;if("number"!=typeof y)return!1;switch(x=Number.isNaN(x)?y:x,y=Number.isNaN(y)?x:y,e){case"hsl":h=exports.ColorNotation.HSL;break;case"hwb":h=exports.ColorNotation.HWB;break;case"lch":h=exports.ColorNotation.LCH;break;case"oklch":h=exports.ColorNotation.OKLCH}switch(s=colorDataTo(n,h).channels,l=colorDataTo(t,h).channels,e){case"hsl":case"hwb":i=s[0],u=l[0],c=s[1],p=l[1],N=s[2],m=l[2];break;case"lch":case"oklch":c=s[0],p=l[0],N=s[1],m=l[1],i=s[2],u=l[2]}i=fillInMissingComponent(i,u),Number.isNaN(i)&&(i=0),u=fillInMissingComponent(u,i),Number.isNaN(u)&&(u=0),c=fillInMissingComponent(c,p),p=fillInMissingComponent(p,c),N=fillInMissingComponent(N,m),m=fillInMissingComponent(m,N);const b=u-i;switch(o){case"shorter":b>180?i+=360:b<-180&&(u+=360);break;case"longer":-180<b&&b<180&&(b>0?i+=360:u+=360);break;case"increasing":b<0&&(u+=360);break;case"decreasing":b>0&&(i+=360);break;default:throw new Error("Unknown hue interpolation method")}c=premultiply(c,x),N=premultiply(N,x),p=premultiply(p,y),m=premultiply(m,y);let C=[0,0,0];const d=interpolate(x,y,r);switch(e){case"hsl":case"hwb":C=[interpolate(i,u,r),un_premultiply(interpolate(c,p,r),d),un_premultiply(interpolate(N,m,r),d)];break;case"lch":case"oklch":C=[un_premultiply(interpolate(c,p,r),d),un_premultiply(interpolate(N,m,r),d),interpolate(i,u,r)]}const T={colorNotation:h,channels:C,alpha:d*a.alphaMultiplier,syntaxFlags:new Set([exports.SyntaxFlag.ColorMix])};return(a.a.color.syntaxFlags.has(exports.SyntaxFlag.Experimental)||a.b.color.syntaxFlags.has(exports.SyntaxFlag.Experimental))&&T.syntaxFlags.add(exports.SyntaxFlag.Experimental),T}function fillInMissingComponent(e,o){return Number.isNaN(e)?o:e}function interpolate(e,o,a){return e*a+o*(1-a)}function premultiply(e,o){return Number.isNaN(o)?e:Number.isNaN(e)?NaN:e*o}function un_premultiply(e,o){return 0===o||Number.isNaN(o)?e:Number.isNaN(e)?NaN:e/o}function hex(e){const o=toLowerCaseAZ(e[4].value);if(o.match(/[^a-f0-9]/))return!1;const a={colorNotation:exports.ColorNotation.HEX,channels:[0,0,0],alpha:1,syntaxFlags:new Set([exports.SyntaxFlag.Hex])},n=o.length;if(3===n){const e=o[0],n=o[1],t=o[2];return a.channels=[parseInt(e+e,16)/255,parseInt(n+n,16)/255,parseInt(t+t,16)/255],a}if(6===n){const e=o[0]+o[1],n=o[2]+o[3],t=o[4]+o[5];return a.channels=[parseInt(e,16)/255,parseInt(n,16)/255,parseInt(t,16)/255],a}if(4===n){const e=o[0],n=o[1],t=o[2],r=o[3];return a.channels=[parseInt(e+e,16)/255,parseInt(n+n,16)/255,parseInt(t+t,16)/255],a.alpha=parseInt(r+r,16)/255,a.syntaxFlags.add(exports.SyntaxFlag.HasAlpha),a}if(8===n){const e=o[0]+o[1],n=o[2]+o[3],t=o[4]+o[5],r=o[6]+o[7];return a.channels=[parseInt(e,16)/255,parseInt(n,16)/255,parseInt(t,16)/255],a.alpha=parseInt(r,16)/255,a.syntaxFlags.add(exports.SyntaxFlag.HasAlpha),a}return!1}function normalizeHue(e){if(a.isTokenNumber(e))return e[4].value=e[4].value%360,e[1]=e[4].value.toString(),e;if(a.isTokenDimension(e)){let o=e[4].value;switch(toLowerCaseAZ(e[4].unit)){case"deg":break;case"rad":o=180*e[4].value/Math.PI;break;case"grad":o=.9*e[4].value;break;case"turn":o=360*e[4].value;break;default:return!1}return o%=360,[a.TokenType.Number,o.toString(),e[2],e[3],{value:o,type:a.NumberType.Number}]}return!1}function normalize_legacy_HSL_ChannelValues(e,o,n){if(0===o){const o=normalizeHue(e);return!1!==o&&(a.isTokenDimension(e)&&n.syntaxFlags.add(exports.SyntaxFlag.HasDimensionValues),o)}if(a.isTokenPercentage(e)){3===o?n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageAlpha):n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageValues);let t=normalize(e[4].value,1,0,100);return 3===o&&(t=normalize(e[4].value,100,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}if(a.isTokenNumber(e)){if(3!==o)return!1;let n=normalize(e[4].value,1,0,100);return 3===o&&(n=normalize(e[4].value,1,0,1)),[a.TokenType.Number,n.toString(),e[2],e[3],{value:n,type:a.NumberType.Number}]}return!1}function normalize_modern_HSL_ChannelValues(e,o,n){if(a.isTokenIdent(e)&&"none"===toLowerCaseAZ(e[4].value))return n.syntaxFlags.add(exports.SyntaxFlag.HasNoneKeywords),[a.TokenType.Number,"none",e[2],e[3],{value:NaN,type:a.NumberType.Number}];if(0===o){const o=normalizeHue(e);return!1!==o&&(a.isTokenDimension(e)&&n.syntaxFlags.add(exports.SyntaxFlag.HasDimensionValues),o)}if(a.isTokenPercentage(e)){3===o?n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageAlpha):n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageValues);let t=e[4].value;return 3===o?t=normalize(e[4].value,100,0,1):1===o&&(t=normalize(e[4].value,1,0,2147483647)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}if(a.isTokenNumber(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasNumberValues);let t=e[4].value;return 3===o?t=normalize(e[4].value,1,0,1):1===o&&(t=normalize(e[4].value,1,0,2147483647)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}return!1}function threeChannelLegacySyntax(e,o,n,s){const l=[],i=[],u=[],c=[],p={colorNotation:n,channels:[0,0,0],alpha:1,syntaxFlags:new Set(s)};let N=l;for(let o=0;o<e.value.length;o++){let n=e.value[o];if(!t.isWhitespaceNode(n)&&!t.isCommentNode(n)){if(t.isTokenNode(n)&&a.isTokenComma(n.value)){if(N===l){N=i;continue}if(N===i){N=u;continue}if(N===u){N=c;continue}if(N===c)return!1}if(t.isFunctionNode(n)){if(N===c&&"var"===n.getName().toLowerCase()){p.syntaxFlags.add(exports.SyntaxFlag.HasVariableAlpha),N.push(n);continue}if(!r.mathFunctionNames.has(n.getName().toLowerCase()))return!1;const[[e]]=r.calcFromComponentValues([[n]],{censorIntoStandardRepresentableValues:!0,precision:-1,toCanonicalUnits:!0,rawPercentages:!0});if(!e||!t.isTokenNode(e)||!a.isTokenNumeric(e.value))return!1;Number.isNaN(e.value[4].value)&&(e.value[4].value=0),n=e}if(!t.isTokenNode(n))return!1;N.push(n)}}if(1!==N.length)return!1;if(1!==l.length||1!==i.length||1!==u.length)return!1;if(!t.isTokenNode(l[0])||!t.isTokenNode(i[0])||!t.isTokenNode(u[0]))return!1;const m=o(l[0].value,0,p);if(!m||!a.isTokenNumber(m))return!1;const h=o(i[0].value,1,p);if(!h||!a.isTokenNumber(h))return!1;const x=o(u[0].value,2,p);if(!x||!a.isTokenNumber(x))return!1;const y=[m,h,x];if(1===c.length)if(p.syntaxFlags.add(exports.SyntaxFlag.HasAlpha),t.isTokenNode(c[0])){const e=o(c[0].value,3,p);if(!e||!a.isTokenNumber(e))return!1;y.push(e)}else p.alpha=c[0];return p.channels=[y[0][4].value,y[1][4].value,y[2][4].value],4===y.length&&(p.alpha=y[3][4].value),p}function threeChannelSpaceSeparated(e,o,n,s,l){const i=[],u=[],c=[],p=[];let N,m,h=!1;const x={colorNotation:n,channels:[0,0,0],alpha:1,syntaxFlags:new Set(s)};let y=i;for(let o=0;o<e.value.length;o++){let s=e.value[o];if(t.isWhitespaceNode(s)||t.isCommentNode(s))for(;t.isWhitespaceNode(e.value[o+1])||t.isCommentNode(e.value[o+1]);)o++;else if(y===i&&i.length&&(y=u),y===u&&u.length&&(y=c),t.isTokenNode(s)&&a.isTokenDelim(s.value)&&"/"===s.value[4].value){if(y===p)return!1;y=p}else{if(t.isFunctionNode(s)){if(y===p&&"var"===s.getName().toLowerCase()){x.syntaxFlags.add(exports.SyntaxFlag.HasVariableAlpha),y.push(s);continue}if(!r.mathFunctionNames.has(s.getName().toLowerCase()))return!1;const[[e]]=r.calcFromComponentValues([[s]],{censorIntoStandardRepresentableValues:!0,globals:m,precision:-1,toCanonicalUnits:!0,rawPercentages:!0});if(!e||!t.isTokenNode(e)||!a.isTokenNumeric(e.value))return!1;Number.isNaN(e.value[4].value)&&(e.value[4].value=0),s=e}if(y===i&&0===i.length&&t.isTokenNode(s)&&a.isTokenIdent(s.value)&&"from"===s.value[4].value.toLowerCase()){if(h)return!1;for(;t.isWhitespaceNode(e.value[o+1])||t.isCommentNode(e.value[o+1]);)o++;if(o++,s=e.value[o],h=l(s),!1===h)return!1;h.syntaxFlags.has(exports.SyntaxFlag.Experimental)&&x.syntaxFlags.add(exports.SyntaxFlag.Experimental),x.syntaxFlags.add(exports.SyntaxFlag.RelativeColorSyntax),h.colorNotation!==n&&(h=colorDataTo(h,n)),N=normalizeRelativeColorDataChannels(h),m=noneToZeroInRelativeColorDataChannels(N)}else{if(!t.isTokenNode(s))return!1;if(a.isTokenIdent(s.value)&&N){const e=s.value[4].value.toLowerCase();if(N.has(e)){y.push(new t.TokenNode(N.get(e)));continue}}y.push(s)}}}if(1!==y.length)return!1;if(1!==i.length||1!==u.length||1!==c.length)return!1;if(!t.isTokenNode(i[0])||!t.isTokenNode(u[0])||!t.isTokenNode(c[0]))return!1;if(N&&!N.has("alpha"))return!1;const b=o(i[0].value,0,x);if(!b||!a.isTokenNumber(b))return!1;const C=o(u[0].value,1,x);if(!C||!a.isTokenNumber(C))return!1;const d=o(c[0].value,2,x);if(!d||!a.isTokenNumber(d))return!1;const T=[b,C,d];if(1===p.length)if(x.syntaxFlags.add(exports.SyntaxFlag.HasAlpha),t.isTokenNode(p[0])){const e=o(p[0].value,3,x);if(!e||!a.isTokenNumber(e))return!1;T.push(e)}else x.alpha=p[0];else if(N&&N.has("alpha")){const e=o(N.get("alpha"),3,x);if(!e||!a.isTokenNumber(e))return!1;T.push(e)}return x.channels=[T[0][4].value,T[1][4].value,T[2][4].value],4===T.length&&(x.alpha=T[3][4].value),x}function hsl(e,o){if(e.value.some((e=>t.isTokenNode(e)&&a.isTokenComma(e.value)))){const o=hslCommaSeparated(e);if(!1!==o)return o}{const a=hslSpaceSeparated(e,o);if(!1!==a)return a}return!1}function hslCommaSeparated(e){return threeChannelLegacySyntax(e,normalize_legacy_HSL_ChannelValues,exports.ColorNotation.HSL,[exports.SyntaxFlag.LegacyHSL])}function hslSpaceSeparated(e,o){return threeChannelSpaceSeparated(e,normalize_modern_HSL_ChannelValues,exports.ColorNotation.HSL,[],o)}function normalize_HWB_ChannelValues(e,o,n){if(a.isTokenIdent(e)&&"none"===toLowerCaseAZ(e[4].value))return n.syntaxFlags.add(exports.SyntaxFlag.HasNoneKeywords),[a.TokenType.Number,"none",e[2],e[3],{value:NaN,type:a.NumberType.Number}];if(0===o){const o=normalizeHue(e);return!1!==o&&(a.isTokenDimension(e)&&n.syntaxFlags.add(exports.SyntaxFlag.HasDimensionValues),o)}if(a.isTokenPercentage(e)){3===o?n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageAlpha):n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageValues);let t=e[4].value;return 3===o&&(t=normalize(e[4].value,100,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}if(a.isTokenNumber(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasNumberValues);let t=e[4].value;return 3===o&&(t=normalize(e[4].value,1,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}return!1}function normalize_Lab_ChannelValues(e,o,n){if(a.isTokenIdent(e)&&"none"===toLowerCaseAZ(e[4].value))return n.syntaxFlags.add(exports.SyntaxFlag.HasNoneKeywords),[a.TokenType.Number,"none",e[2],e[3],{value:NaN,type:a.NumberType.Number}];if(a.isTokenPercentage(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageValues);let t=normalize(e[4].value,1,0,100);return 1===o||2===o?t=normalize(e[4].value,.8,-2147483647,2147483647):3===o&&(t=normalize(e[4].value,100,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}if(a.isTokenNumber(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasNumberValues);let t=normalize(e[4].value,1,0,100);return 1===o||2===o?t=normalize(e[4].value,1,-2147483647,2147483647):3===o&&(t=normalize(e[4].value,1,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}return!1}function lab(e,o){return threeChannelSpaceSeparated(e,normalize_Lab_ChannelValues,exports.ColorNotation.Lab,[],o)}function normalize_LCH_ChannelValues(e,o,n){if(a.isTokenIdent(e)&&"none"===toLowerCaseAZ(e[4].value))return n.syntaxFlags.add(exports.SyntaxFlag.HasNoneKeywords),[a.TokenType.Number,"none",e[2],e[3],{value:NaN,type:a.NumberType.Number}];if(2===o){const o=normalizeHue(e);return!1!==o&&(a.isTokenDimension(e)&&n.syntaxFlags.add(exports.SyntaxFlag.HasDimensionValues),o)}if(a.isTokenPercentage(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageValues);let t=normalize(e[4].value,1,0,100);return 1===o?t=normalize(e[4].value,100/150,0,2147483647):3===o&&(t=normalize(e[4].value,100,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}if(a.isTokenNumber(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasNumberValues);let t=normalize(e[4].value,1,0,100);return 1===o?t=normalize(e[4].value,1,0,2147483647):3===o&&(t=normalize(e[4].value,1,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}return!1}function lch(e,o){return threeChannelSpaceSeparated(e,normalize_LCH_ChannelValues,exports.ColorNotation.LCH,[],o)}const N=new Map;for(const[e,o]of Object.entries(n.namedColors))N.set(e,o);function namedColor(e){const o=N.get(toLowerCaseAZ(e));return!!o&&{colorNotation:exports.ColorNotation.RGB,channels:[o[0]/255,o[1]/255,o[2]/255],alpha:1,syntaxFlags:new Set([exports.SyntaxFlag.ColorKeyword,exports.SyntaxFlag.NamedColor])}}function normalize_OKLab_ChannelValues(e,o,n){if(a.isTokenIdent(e)&&"none"===toLowerCaseAZ(e[4].value))return n.syntaxFlags.add(exports.SyntaxFlag.HasNoneKeywords),[a.TokenType.Number,"none",e[2],e[3],{value:NaN,type:a.NumberType.Number}];if(a.isTokenPercentage(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageValues);let t=normalize(e[4].value,100,0,1);return 1===o||2===o?t=normalize(e[4].value,250,-2147483647,2147483647):3===o&&(t=normalize(e[4].value,100,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}if(a.isTokenNumber(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasNumberValues);let t=normalize(e[4].value,1,0,1);return 1===o||2===o?t=normalize(e[4].value,1,-2147483647,2147483647):3===o&&(t=normalize(e[4].value,1,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}return!1}function oklab(e,o){return threeChannelSpaceSeparated(e,normalize_OKLab_ChannelValues,exports.ColorNotation.OKLab,[],o)}function normalize_OKLCH_ChannelValues(e,o,n){if(a.isTokenIdent(e)&&"none"===toLowerCaseAZ(e[4].value))return n.syntaxFlags.add(exports.SyntaxFlag.HasNoneKeywords),[a.TokenType.Number,"none",e[2],e[3],{value:NaN,type:a.NumberType.Number}];if(2===o){const o=normalizeHue(e);return!1!==o&&(a.isTokenDimension(e)&&n.syntaxFlags.add(exports.SyntaxFlag.HasDimensionValues),o)}if(a.isTokenPercentage(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageValues);let t=normalize(e[4].value,100,0,1);return 1===o?t=normalize(e[4].value,250,0,2147483647):3===o&&(t=normalize(e[4].value,100,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}if(a.isTokenNumber(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasNumberValues);let t=normalize(e[4].value,1,0,1);return 1===o?t=normalize(e[4].value,1,0,2147483647):3===o&&(t=normalize(e[4].value,1,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}return!1}function oklch(e,o){return threeChannelSpaceSeparated(e,normalize_OKLCH_ChannelValues,exports.ColorNotation.OKLCH,[],o)}function normalize_legacy_sRGB_ChannelValues(e,o,n){if(a.isTokenPercentage(e)){3===o?n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageAlpha):n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageValues);const t=normalize(e[4].value,100,0,1);return[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}if(a.isTokenNumber(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasNumberValues);let t=normalize(e[4].value,255,0,1);return 3===o&&(t=normalize(e[4].value,1,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}return!1}function normalize_modern_sRGB_ChannelValues(e,o,n){if(a.isTokenIdent(e)&&"none"===e[4].value.toLowerCase())return n.syntaxFlags.add(exports.SyntaxFlag.HasNoneKeywords),[a.TokenType.Number,"none",e[2],e[3],{value:NaN,type:a.NumberType.Number}];if(a.isTokenPercentage(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasPercentageValues);let t=normalize(e[4].value,100,-2147483647,2147483647);return 3===o&&(t=normalize(e[4].value,100,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}if(a.isTokenNumber(e)){3!==o&&n.syntaxFlags.add(exports.SyntaxFlag.HasNumberValues);let t=normalize(e[4].value,255,-2147483647,2147483647);return 3===o&&(t=normalize(e[4].value,1,0,1)),[a.TokenType.Number,t.toString(),e[2],e[3],{value:t,type:a.NumberType.Number}]}return!1}function rgb(e,o){if(e.value.some((e=>t.isTokenNode(e)&&a.isTokenComma(e.value)))){const o=rgbCommaSeparated(e);if(!1!==o)return(!o.syntaxFlags.has(exports.SyntaxFlag.HasNumberValues)||!o.syntaxFlags.has(exports.SyntaxFlag.HasPercentageValues))&&o}else{const a=rgbSpaceSeparated(e,o);if(!1!==a)return a}return!1}function rgbCommaSeparated(e){return threeChannelLegacySyntax(e,normalize_legacy_sRGB_ChannelValues,exports.ColorNotation.RGB,[exports.SyntaxFlag.LegacyRGB])}function rgbSpaceSeparated(e,o){return threeChannelSpaceSeparated(e,normalize_modern_sRGB_ChannelValues,exports.ColorNotation.RGB,[],o)}function XYZ_D50_to_sRGB_Gamut(e){const o=n.XYZ_D50_to_sRGB(e);if(n.inGamut(o))return n.clip(o);let a=e;return a=n.XYZ_D50_to_OKLCH(a),a[0]<1e-6&&(a=[0,0,0]),a[0]>.999999&&(a=[1,0,0]),n.gam_sRGB(n.mapGamutRayTrace(a,oklch_to_lin_srgb,lin_srgb_to_oklch))}function oklch_to_lin_srgb(e){return e=n.OKLCH_to_OKLab(e),e=n.OKLab_to_XYZ(e),n.XYZ_to_lin_sRGB(e)}function lin_srgb_to_oklch(e){return e=n.lin_sRGB_to_XYZ(e),e=n.XYZ_to_OKLab(e),n.OKLab_to_OKLCH(e)}function contrastColor(e,o){let r=!1,s=!1;for(let n=0;n<e.value.length;n++){const l=e.value[n];if(!t.isWhitespaceNode(l)&&!t.isCommentNode(l)&&(r||(r=o(l),!r))){if(!r||s||!t.isTokenNode(l)||!a.isTokenIdent(l.value)||"max"!==toLowerCaseAZ(l.value[4].value))return!1;s=!0}}if(!r||!s)return!1;r.channels=convertNaNToZero(r.channels),r.channels=XYZ_D50_to_sRGB_Gamut(colorData_to_XYZ_D50(r).channels),r.colorNotation=exports.ColorNotation.sRGB;const l={colorNotation:exports.ColorNotation.sRGB,channels:[0,0,0],alpha:1,syntaxFlags:new Set([exports.SyntaxFlag.ContrastColor,exports.SyntaxFlag.Experimental])},i=n.contrast_ratio_wcag_2_1(r.channels,[1,1,1]),u=n.contrast_ratio_wcag_2_1(r.channels,[0,0,0]);return l.channels=i>u?[1,1,1]:[0,0,0],l}function XYZ_D50_to_P3_Gamut(e){const o=n.XYZ_D50_to_P3(e);if(n.inGamut(o))return n.clip(o);let a=e;return a=n.XYZ_D50_to_OKLCH(a),a[0]<1e-6&&(a=[0,0,0]),a[0]>.999999&&(a=[1,0,0]),n.gam_P3(n.mapGamutRayTrace(a,oklch_to_lin_p3,lin_p3_to_oklch))}function oklch_to_lin_p3(e){return e=n.OKLCH_to_OKLab(e),e=n.OKLab_to_XYZ(e),n.XYZ_to_lin_P3(e)}function lin_p3_to_oklch(e){return e=n.lin_P3_to_XYZ(e),e=n.XYZ_to_OKLab(e),n.OKLab_to_OKLCH(e)}function toPrecision(e,o=7){e=+e,o=+o;const a=(Math.floor(Math.abs(e))+"").length;if(o>a)return+e.toFixed(o-a);{const n=10**(a-o);return Math.round(e/n)*n}}function serializeWithAlpha(e,o,n,r){const s=[a.TokenType.CloseParen,")",-1,-1,void 0];if("number"==typeof e.alpha){const l=Math.min(1,Math.max(0,toPrecision(Number.isNaN(e.alpha)?0:e.alpha)));return 1===toPrecision(l,4)?new t.FunctionNode(o,s,r):new t.FunctionNode(o,s,[...r,new t.WhitespaceNode([n]),new t.TokenNode([a.TokenType.Delim,"/",-1,-1,{value:"/"}]),new t.WhitespaceNode([n]),new t.TokenNode([a.TokenType.Number,toPrecision(l,4).toString(),-1,-1,{value:e.alpha,type:a.NumberType.Integer}])])}return new t.FunctionNode(o,s,[...r,new t.WhitespaceNode([n]),new t.TokenNode([a.TokenType.Delim,"/",-1,-1,{value:"/"}]),new t.WhitespaceNode([n]),e.alpha])}exports.color=function color(e){if(t.isFunctionNode(e)){switch(toLowerCaseAZ(e.getName())){case"rgb":case"rgba":return rgb(e,color);case"hsl":case"hsla":return hsl(e,color);case"hwb":return o=color,threeChannelSpaceSeparated(e,normalize_HWB_ChannelValues,exports.ColorNotation.HWB,[],o);case"lab":return lab(e,color);case"lch":return lch(e,color);case"oklab":return oklab(e,color);case"oklch":return oklch(e,color);case"color":return color$1(e,color);case"color-mix":return colorMix(e,color);case"contrast-color":return contrastColor(e,color)}}var o;if(t.isTokenNode(e)){if(a.isTokenHash(e.value))return hex(e.value);if(a.isTokenIdent(e.value)){const o=namedColor(e.value[4].value);return!1!==o?o:"transparent"===toLowerCaseAZ(e.value[4].value)&&{colorNotation:exports.ColorNotation.RGB,channels:[0,0,0],alpha:0,syntaxFlags:new Set([exports.SyntaxFlag.ColorKeyword])}}}return!1},exports.colorDataFitsDisplayP3_Gamut=function colorDataFitsDisplayP3_Gamut(e){const o={...e,channels:[...e.channels]};return o.channels=convertPowerlessComponentsToZeroValuesForDisplay(o.channels,o.colorNotation),!colorDataTo(o,exports.ColorNotation.Display_P3).channels.find((e=>e<-1e-5||e>1.00001))},exports.colorDataFitsRGB_Gamut=function colorDataFitsRGB_Gamut(e){const o={...e,channels:[...e.channels]};return o.channels=convertPowerlessComponentsToZeroValuesForDisplay(o.channels,o.colorNotation),!colorDataTo(o,exports.ColorNotation.RGB).channels.find((e=>e<-1e-5||e>1.00001))},exports.serializeHSL=function serializeHSL(e,o=!0){e.channels=convertPowerlessComponentsToZeroValuesForDisplay(e.channels,e.colorNotation);let r=e.channels.map((e=>Number.isNaN(e)?0:e));r=o?n.XYZ_D50_to_HSL(n.sRGB_to_XYZ_D50(XYZ_D50_to_sRGB_Gamut(colorData_to_XYZ_D50(e).channels))):n.XYZ_D50_to_HSL(colorData_to_XYZ_D50(e).channels),r=r.map((e=>Number.isNaN(e)?0:e));const s=Math.min(360,Math.max(0,Math.round(toPrecision(r[0])))),l=Math.min(100,Math.max(0,Math.round(toPrecision(r[1])))),i=Math.min(100,Math.max(0,Math.round(toPrecision(r[2])))),u=[a.TokenType.CloseParen,")",-1,-1,void 0],c=[a.TokenType.Whitespace," ",-1,-1,void 0],p=[a.TokenType.Comma,",",-1,-1,void 0],N=[new t.TokenNode([a.TokenType.Number,s.toString(),-1,-1,{value:r[0],type:a.NumberType.Integer}]),new t.TokenNode(p),new t.WhitespaceNode([c]),new t.TokenNode([a.TokenType.Percentage,l.toString()+"%",-1,-1,{value:r[1]}]),new t.TokenNode(p),new t.WhitespaceNode([c]),new t.TokenNode([a.TokenType.Percentage,i.toString()+"%",-1,-1,{value:r[2]}])];if("number"==typeof e.alpha){const o=Math.min(1,Math.max(0,toPrecision(Number.isNaN(e.alpha)?0:e.alpha)));return 1===toPrecision(o,4)?new t.FunctionNode([a.TokenType.Function,"hsl(",-1,-1,{value:"hsl"}],u,N):new t.FunctionNode([a.TokenType.Function,"hsla(",-1,-1,{value:"hsla"}],u,[...N,new t.TokenNode(p),new t.WhitespaceNode([c]),new t.TokenNode([a.TokenType.Number,toPrecision(o,4).toString(),-1,-1,{value:e.alpha,type:a.NumberType.Number}])])}return new t.FunctionNode([a.TokenType.Function,"hsla(",-1,-1,{value:"hsla"}],u,[...N,new t.TokenNode(p),new t.WhitespaceNode([c]),e.alpha])},exports.serializeOKLCH=function serializeOKLCH(e){e.channels=convertPowerlessComponentsToZeroValuesForDisplay(e.channels,e.colorNotation);let o=e.channels.map((e=>Number.isNaN(e)?0:e));e.colorNotation!==exports.ColorNotation.OKLCH&&(o=n.XYZ_D50_to_OKLCH(colorData_to_XYZ_D50(e).channels));const r=toPrecision(o[0],6),s=toPrecision(o[1],6),l=toPrecision(o[2],6),i=[a.TokenType.Function,"oklch(",-1,-1,{value:"oklch"}],u=[a.TokenType.Whitespace," ",-1,-1,void 0];return serializeWithAlpha(e,i,u,[new t.TokenNode([a.TokenType.Number,r.toString(),-1,-1,{value:o[0],type:a.NumberType.Number}]),new t.WhitespaceNode([u]),new t.TokenNode([a.TokenType.Number,s.toString(),-1,-1,{value:o[1],type:a.NumberType.Number}]),new t.WhitespaceNode([u]),new t.TokenNode([a.TokenType.Number,l.toString(),-1,-1,{value:o[2],type:a.NumberType.Number}])])},exports.serializeP3=function serializeP3(e,o=!0){e.channels=convertPowerlessComponentsToZeroValuesForDisplay(e.channels,e.colorNotation);let r=e.channels.map((e=>Number.isNaN(e)?0:e));o?r=XYZ_D50_to_P3_Gamut(colorData_to_XYZ_D50(e).channels):e.colorNotation!==exports.ColorNotation.Display_P3&&(r=n.XYZ_D50_to_P3(colorData_to_XYZ_D50(e).channels));const s=o?Math.min(1,Math.max(0,toPrecision(r[0],6))):toPrecision(r[0],6),l=o?Math.min(1,Math.max(0,toPrecision(r[1],6))):toPrecision(r[1],6),i=o?Math.min(1,Math.max(0,toPrecision(r[2],6))):toPrecision(r[2],6),u=[a.TokenType.Function,"color(",-1,-1,{value:"color"}],c=[a.TokenType.Whitespace," ",-1,-1,void 0];return serializeWithAlpha(e,u,c,[new t.TokenNode([a.TokenType.Ident,"display-p3",-1,-1,{value:"display-p3"}]),new t.WhitespaceNode([c]),new t.TokenNode([a.TokenType.Number,s.toString(),-1,-1,{value:r[0],type:a.NumberType.Number}]),new t.WhitespaceNode([c]),new t.TokenNode([a.TokenType.Number,l.toString(),-1,-1,{value:r[1],type:a.NumberType.Number}]),new t.WhitespaceNode([c]),new t.TokenNode([a.TokenType.Number,i.toString(),-1,-1,{value:r[2],type:a.NumberType.Number}])])},exports.serializeRGB=function serializeRGB(e,o=!0){e.channels=convertPowerlessComponentsToZeroValuesForDisplay(e.channels,e.colorNotation);let r=e.channels.map((e=>Number.isNaN(e)?0:e));r=o?XYZ_D50_to_sRGB_Gamut(colorData_to_XYZ_D50(e).channels):n.XYZ_D50_to_sRGB(colorData_to_XYZ_D50(e).channels);const s=Math.min(255,Math.max(0,Math.round(255*toPrecision(r[0])))),l=Math.min(255,Math.max(0,Math.round(255*toPrecision(r[1])))),i=Math.min(255,Math.max(0,Math.round(255*toPrecision(r[2])))),u=[a.TokenType.CloseParen,")",-1,-1,void 0],c=[a.TokenType.Whitespace," ",-1,-1,void 0],p=[a.TokenType.Comma,",",-1,-1,void 0],N=[new t.TokenNode([a.TokenType.Number,s.toString(),-1,-1,{value:Math.min(255,255*Math.max(0,r[0])),type:a.NumberType.Integer}]),new t.TokenNode(p),new t.WhitespaceNode([c]),new t.TokenNode([a.TokenType.Number,l.toString(),-1,-1,{value:Math.min(255,255*Math.max(0,r[1])),type:a.NumberType.Integer}]),new t.TokenNode(p),new t.WhitespaceNode([c]),new t.TokenNode([a.TokenType.Number,i.toString(),-1,-1,{value:Math.min(255,255*Math.max(0,r[2])),type:a.NumberType.Integer}])];if("number"==typeof e.alpha){const o=Math.min(1,Math.max(0,toPrecision(Number.isNaN(e.alpha)?0:e.alpha)));return 1===toPrecision(o,4)?new t.FunctionNode([a.TokenType.Function,"rgb(",-1,-1,{value:"rgb"}],u,N):new t.FunctionNode([a.TokenType.Function,"rgba(",-1,-1,{value:"rgba"}],u,[...N,new t.TokenNode(p),new t.WhitespaceNode([c]),new t.TokenNode([a.TokenType.Number,toPrecision(o,4).toString(),-1,-1,{value:e.alpha,type:a.NumberType.Number}])])}return new t.FunctionNode([a.TokenType.Function,"rgba(",-1,-1,{value:"rgba"}],u,[...N,new t.TokenNode(p),new t.WhitespaceNode([c]),e.alpha])};
 
 
 /***/ }),
 
-/***/ 46295:
+/***/ 66500:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 var e,n=__nccwpck_require__(10618);function walkerIndexGenerator(e){let n=e.slice();return(e,o,t)=>{let s=-1;for(let i=n.indexOf(o);i<n.length&&(s=e.indexOf(n[i]),-1===s||s<t);i++);return-1===s||s===t&&o===e[t]&&(s++,s>=e.length)?-1:(n=e.slice(),s)}}function consumeComponentValue(e,o){const t=o[0];if(n.isTokenOpenParen(t)||n.isTokenOpenCurly(t)||n.isTokenOpenSquare(t)){const n=consumeSimpleBlock(e,o);return{advance:n.advance,node:n.node}}if(n.isTokenFunction(t)){const n=consumeFunction(e,o);return{advance:n.advance,node:n.node}}if(n.isTokenWhitespace(t)){const n=consumeWhitespace(e,o);return{advance:n.advance,node:n.node}}if(n.isTokenComment(t)){const n=consumeComment(e,o);return{advance:n.advance,node:n.node}}return{advance:1,node:new TokenNode(t)}}exports.ComponentValueType=void 0,(e=exports.ComponentValueType||(exports.ComponentValueType={})).Function="function",e.SimpleBlock="simple-block",e.Whitespace="whitespace",e.Comment="comment",e.Token="token";class ContainerNodeBaseClass{value=[];indexOf(e){return this.value.indexOf(e)}at(e){if("number"==typeof e)return e<0&&(e=this.value.length+e),this.value[e]}forEach(e,n){if(0===this.value.length)return;const o=walkerIndexGenerator(this.value);let t=0;for(;t<this.value.length;){const s=this.value[t];let i;if(n&&(i={...n}),!1===e({node:s,parent:this,state:i},t))return!1;if(t=o(this.value,s,t),-1===t)break}}walk(e,n){0!==this.value.length&&this.forEach(((n,o)=>!1!==e(n,o)&&((!("walk"in n.node)||!this.value.includes(n.node)||!1!==n.node.walk(e,n.state))&&void 0)),n)}}class FunctionNode extends ContainerNodeBaseClass{type=exports.ComponentValueType.Function;name;endToken;constructor(e,n,o){super(),this.name=e,this.endToken=n,this.value=o}getName(){return this.name[4].value}normalize(){n.isTokenEOF(this.endToken)&&(this.endToken=[n.TokenType.CloseParen,")",-1,-1,void 0])}tokens(){return n.isTokenEOF(this.endToken)?[this.name,...this.value.flatMap((e=>e.tokens()))]:[this.name,...this.value.flatMap((e=>e.tokens())),this.endToken]}toString(){const e=this.value.map((e=>n.isToken(e)?n.stringify(e):e.toString())).join("");return n.stringify(this.name)+e+n.stringify(this.endToken)}toJSON(){return{type:this.type,name:this.getName(),tokens:this.tokens(),value:this.value.map((e=>e.toJSON()))}}isFunctionNode(){return FunctionNode.isFunctionNode(this)}static isFunctionNode(e){return!!e&&(e instanceof FunctionNode&&e.type===exports.ComponentValueType.Function)}}function consumeFunction(e,o){const t=[];let s=1;for(;;){const i=o[s];if(!i||n.isTokenEOF(i))return e.onParseError(new n.ParseError("Unexpected EOF while consuming a function.",o[0][2],o[o.length-1][3],["5.4.9. Consume a function","Unexpected EOF"])),{advance:o.length,node:new FunctionNode(o[0],i,t)};if(n.isTokenCloseParen(i))return{advance:s+1,node:new FunctionNode(o[0],i,t)};if(n.isTokenWhiteSpaceOrComment(i)){const n=consumeAllCommentsAndWhitespace(e,o.slice(s));s+=n.advance,t.push(...n.nodes);continue}const r=consumeComponentValue(e,o.slice(s));s+=r.advance,t.push(r.node)}}class SimpleBlockNode extends ContainerNodeBaseClass{type=exports.ComponentValueType.SimpleBlock;startToken;endToken;constructor(e,n,o){super(),this.startToken=e,this.endToken=n,this.value=o}normalize(){if(n.isTokenEOF(this.endToken)){const e=n.mirrorVariant(this.startToken);e&&(this.endToken=e)}}tokens(){return n.isTokenEOF(this.endToken)?[this.startToken,...this.value.flatMap((e=>e.tokens()))]:[this.startToken,...this.value.flatMap((e=>e.tokens())),this.endToken]}toString(){const e=this.value.map((e=>n.isToken(e)?n.stringify(e):e.toString())).join("");return n.stringify(this.startToken)+e+n.stringify(this.endToken)}toJSON(){return{type:this.type,startToken:this.startToken,tokens:this.tokens(),value:this.value.map((e=>e.toJSON()))}}isSimpleBlockNode(){return SimpleBlockNode.isSimpleBlockNode(this)}static isSimpleBlockNode(e){return!!e&&(e instanceof SimpleBlockNode&&e.type===exports.ComponentValueType.SimpleBlock)}}function consumeSimpleBlock(e,o){const t=n.mirrorVariantType(o[0][0]);if(!t)throw new Error("Failed to parse, a mirror variant must exist for all block open tokens.");const s=[];let i=1;for(;;){const r=o[i];if(!r||n.isTokenEOF(r))return e.onParseError(new n.ParseError("Unexpected EOF while consuming a simple block.",o[0][2],o[o.length-1][3],["5.4.8. Consume a simple block","Unexpected EOF"])),{advance:o.length,node:new SimpleBlockNode(o[0],r,s)};if(r[0]===t)return{advance:i+1,node:new SimpleBlockNode(o[0],r,s)};if(n.isTokenWhiteSpaceOrComment(r)){const n=consumeAllCommentsAndWhitespace(e,o.slice(i));i+=n.advance,s.push(...n.nodes);continue}const a=consumeComponentValue(e,o.slice(i));i+=a.advance,s.push(a.node)}}class WhitespaceNode{type=exports.ComponentValueType.Whitespace;value;constructor(e){this.value=e}tokens(){return this.value}toString(){return n.stringify(...this.value)}toJSON(){return{type:this.type,tokens:this.tokens()}}isWhitespaceNode(){return WhitespaceNode.isWhitespaceNode(this)}static isWhitespaceNode(e){return!!e&&(e instanceof WhitespaceNode&&e.type===exports.ComponentValueType.Whitespace)}}function consumeWhitespace(e,o){let t=0;for(;;){const e=o[t];if(!n.isTokenWhitespace(e))return{advance:t,node:new WhitespaceNode(o.slice(0,t))};t++}}class CommentNode{type=exports.ComponentValueType.Comment;value;constructor(e){this.value=e}tokens(){return[this.value]}toString(){return n.stringify(this.value)}toJSON(){return{type:this.type,tokens:this.tokens()}}isCommentNode(){return CommentNode.isCommentNode(this)}static isCommentNode(e){return!!e&&(e instanceof CommentNode&&e.type===exports.ComponentValueType.Comment)}}function consumeComment(e,n){return{advance:1,node:new CommentNode(n[0])}}function consumeAllCommentsAndWhitespace(e,o){const t=[];let s=0;for(;;)if(n.isTokenWhitespace(o[s])){const e=consumeWhitespace(0,o.slice(s));s+=e.advance,t.push(e.node)}else{if(!n.isTokenComment(o[s]))return{advance:s,nodes:t};t.push(new CommentNode(o[s])),s++}}class TokenNode{type=exports.ComponentValueType.Token;value;constructor(e){this.value=e}tokens(){return[this.value]}toString(){return this.value[1]}toJSON(){return{type:this.type,tokens:this.tokens()}}isTokenNode(){return TokenNode.isTokenNode(this)}static isTokenNode(e){return!!e&&(e instanceof TokenNode&&e.type===exports.ComponentValueType.Token)}}function forEach(e,n,o){if(0===e.length)return;const t=walkerIndexGenerator(e);let s=0;for(;s<e.length;){const i=e[s];let r;if(o&&(r={...o}),!1===n({node:i,parent:{value:e},state:r},s))return!1;if(s=t(e,i,s),-1===s)break}}function walk(e,n,o){0!==e.length&&forEach(e,((o,t)=>!1!==n(o,t)&&((!("walk"in o.node)||!e.includes(o.node)||!1!==o.node.walk(n,o.state))&&void 0)),o)}function isWhitespaceNode(e){return WhitespaceNode.isWhitespaceNode(e)}function isCommentNode(e){return CommentNode.isCommentNode(e)}exports.CommentNode=CommentNode,exports.ContainerNodeBaseClass=ContainerNodeBaseClass,exports.FunctionNode=FunctionNode,exports.SimpleBlockNode=SimpleBlockNode,exports.TokenNode=TokenNode,exports.WhitespaceNode=WhitespaceNode,exports.forEach=forEach,exports.gatherNodeAncestry=function gatherNodeAncestry(e){const n=new Map;return e.walk((e=>{Array.isArray(e.node)?e.node.forEach((o=>{n.set(o,e.parent)})):n.set(e.node,e.parent)})),n},exports.isCommentNode=isCommentNode,exports.isFunctionNode=function isFunctionNode(e){return FunctionNode.isFunctionNode(e)},exports.isSimpleBlockNode=function isSimpleBlockNode(e){return SimpleBlockNode.isSimpleBlockNode(e)},exports.isTokenNode=function isTokenNode(e){return TokenNode.isTokenNode(e)},exports.isWhiteSpaceOrCommentNode=function isWhiteSpaceOrCommentNode(e){return isWhitespaceNode(e)||isCommentNode(e)},exports.isWhitespaceNode=isWhitespaceNode,exports.parseCommaSeparatedListOfComponentValues=function parseCommaSeparatedListOfComponentValues(e,o){const t={onParseError:o?.onParseError??(()=>{})},s=[...e];if(0===e.length)return[];n.isTokenEOF(s[s.length-1])&&s.push([n.TokenType.EOF,"",s[s.length-1][2],s[s.length-1][3],void 0]);const i=[];let r=[],a=0;for(;;){if(!s[a]||n.isTokenEOF(s[a]))return r.length&&i.push(r),i;if(n.isTokenComma(s[a])){i.push(r),r=[],a++;continue}const o=consumeComponentValue(t,e.slice(a));r.push(o.node),a+=o.advance}},exports.parseComponentValue=function parseComponentValue(e,o){const t={onParseError:o?.onParseError??(()=>{})},s=[...e];n.isTokenEOF(s[s.length-1])&&s.push([n.TokenType.EOF,"",s[s.length-1][2],s[s.length-1][3],void 0]);const i=consumeComponentValue(t,s);if(n.isTokenEOF(s[Math.min(i.advance,s.length-1)]))return i.node;t.onParseError(new n.ParseError("Expected EOF after parsing a component value.",e[0][2],e[e.length-1][3],["5.3.9. Parse a component value","Expected EOF"]))},exports.parseListOfComponentValues=function parseListOfComponentValues(e,o){const t={onParseError:o?.onParseError??(()=>{})},s=[...e];n.isTokenEOF(s[s.length-1])&&s.push([n.TokenType.EOF,"",s[s.length-1][2],s[s.length-1][3],void 0]);const i=[];let r=0;for(;;){if(!s[r]||n.isTokenEOF(s[r]))return i;const e=consumeComponentValue(t,s.slice(r));i.push(e.node),r+=e.advance}},exports.replaceComponentValues=function replaceComponentValues(e,n){for(let o=0;o<e.length;o++){walk(e[o],((e,o)=>{if("number"!=typeof o)return;const t=n(e.node);t&&(Array.isArray(t)?e.parent.value.splice(o,1,...t):e.parent.value.splice(o,1,t))}))}return e},exports.sourceIndices=function sourceIndices(e){if(Array.isArray(e)){const n=e[0];if(!n)return[0,0];const o=e[e.length-1]||n;return[sourceIndices(n)[0],sourceIndices(o)[1]]}const n=e.tokens(),o=n[0],t=n[n.length-1];return o&&t?[o[2],t[3]]:[0,0]},exports.stringify=function stringify(e){return e.map((e=>e.map((e=>n.stringify(...e.tokens()))).join(""))).join(",")},exports.walk=walk,exports.walkerIndexGenerator=walkerIndexGenerator;
@@ -227323,13 +228355,14 @@ class ParseError extends Error{sourceStart;sourceEnd;parserState;constructor(e,n
 
 /***/ }),
 
-/***/ 93694:
+/***/ 92244:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-// Axios v1.7.7 Copyright (c) 2024 Matt Zabriskie and contributors
+/*! Axios v1.12.1 Copyright (c) 2025 Matt Zabriskie and contributors */
 
 
-const FormData$1 = __nccwpck_require__(3006);
+const FormData$1 = __nccwpck_require__(34455);
+const crypto = __nccwpck_require__(76982);
 const url = __nccwpck_require__(87016);
 const proxyFromEnv = __nccwpck_require__(20330);
 const http = __nccwpck_require__(58611);
@@ -227343,7 +228376,9 @@ const events = __nccwpck_require__(24434);
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 const FormData__default = /*#__PURE__*/_interopDefaultLegacy(FormData$1);
+const crypto__default = /*#__PURE__*/_interopDefaultLegacy(crypto);
 const url__default = /*#__PURE__*/_interopDefaultLegacy(url);
+const proxyFromEnv__default = /*#__PURE__*/_interopDefaultLegacy(proxyFromEnv);
 const http__default = /*#__PURE__*/_interopDefaultLegacy(http);
 const https__default = /*#__PURE__*/_interopDefaultLegacy(https);
 const util__default = /*#__PURE__*/_interopDefaultLegacy(util);
@@ -227361,6 +228396,7 @@ function bind(fn, thisArg) {
 
 const {toString} = Object.prototype;
 const {getPrototypeOf} = Object;
+const {iterator, toStringTag} = Symbol;
 
 const kindOf = (cache => thing => {
     const str = toString.call(thing);
@@ -227401,7 +228437,7 @@ const isUndefined = typeOfTest('undefined');
  */
 function isBuffer(val) {
   return val !== null && !isUndefined(val) && val.constructor !== null && !isUndefined(val.constructor)
-    && isFunction(val.constructor.isBuffer) && val.constructor.isBuffer(val);
+    && isFunction$1(val.constructor.isBuffer) && val.constructor.isBuffer(val);
 }
 
 /**
@@ -227446,7 +228482,7 @@ const isString = typeOfTest('string');
  * @param {*} val The value to test
  * @returns {boolean} True if value is a Function, otherwise false
  */
-const isFunction = typeOfTest('function');
+const isFunction$1 = typeOfTest('function');
 
 /**
  * Determine if a value is a Number
@@ -227487,7 +228523,28 @@ const isPlainObject = (val) => {
   }
 
   const prototype = getPrototypeOf(val);
-  return (prototype === null || prototype === Object.prototype || Object.getPrototypeOf(prototype) === null) && !(Symbol.toStringTag in val) && !(Symbol.iterator in val);
+  return (prototype === null || prototype === Object.prototype || Object.getPrototypeOf(prototype) === null) && !(toStringTag in val) && !(iterator in val);
+};
+
+/**
+ * Determine if a value is an empty object (safely handles Buffers)
+ *
+ * @param {*} val The value to test
+ *
+ * @returns {boolean} True if value is an empty object, otherwise false
+ */
+const isEmptyObject = (val) => {
+  // Early return for non-objects or Buffers to prevent RangeError
+  if (!isObject(val) || isBuffer(val)) {
+    return false;
+  }
+
+  try {
+    return Object.keys(val).length === 0 && Object.getPrototypeOf(val) === Object.prototype;
+  } catch (e) {
+    // Fallback for any other objects that might cause RangeError with Object.keys()
+    return false;
+  }
 };
 
 /**
@@ -227533,7 +228590,7 @@ const isFileList = kindOfTest('FileList');
  *
  * @returns {boolean} True if value is a Stream, otherwise false
  */
-const isStream = (val) => isObject(val) && isFunction(val.pipe);
+const isStream = (val) => isObject(val) && isFunction$1(val.pipe);
 
 /**
  * Determine if a value is a FormData
@@ -227546,10 +228603,10 @@ const isFormData = (thing) => {
   let kind;
   return thing && (
     (typeof FormData === 'function' && thing instanceof FormData) || (
-      isFunction(thing.append) && (
+      isFunction$1(thing.append) && (
         (kind = kindOf(thing)) === 'formdata' ||
         // detect form-data instance
-        (kind === 'object' && isFunction(thing.toString) && thing.toString() === '[object FormData]')
+        (kind === 'object' && isFunction$1(thing.toString) && thing.toString() === '[object FormData]')
       )
     )
   )
@@ -227612,6 +228669,11 @@ function forEach(obj, fn, {allOwnKeys = false} = {}) {
       fn.call(null, obj[i], i, obj);
     }
   } else {
+    // Buffer check
+    if (isBuffer(obj)) {
+      return;
+    }
+
     // Iterate over object keys
     const keys = allOwnKeys ? Object.getOwnPropertyNames(obj) : Object.keys(obj);
     const len = keys.length;
@@ -227625,6 +228687,10 @@ function forEach(obj, fn, {allOwnKeys = false} = {}) {
 }
 
 function findKey(obj, key) {
+  if (isBuffer(obj)){
+    return null;
+  }
+
   key = key.toLowerCase();
   const keys = Object.keys(obj);
   let i = keys.length;
@@ -227665,7 +228731,7 @@ const isContextDefined = (context) => !isUndefined(context) && context !== _glob
  * @returns {Object} Result of all merge properties
  */
 function merge(/* obj1, obj2, obj3, ... */) {
-  const {caseless} = isContextDefined(this) && this || {};
+  const {caseless, skipUndefined} = isContextDefined(this) && this || {};
   const result = {};
   const assignValue = (val, key) => {
     const targetKey = caseless && findKey(result, key) || key;
@@ -227676,7 +228742,9 @@ function merge(/* obj1, obj2, obj3, ... */) {
     } else if (isArray(val)) {
       result[targetKey] = val.slice();
     } else {
-      result[targetKey] = val;
+      if (!skipUndefined || !isUndefined(val)) {
+        result[targetKey] = val;
+      }
     }
   };
 
@@ -227698,7 +228766,7 @@ function merge(/* obj1, obj2, obj3, ... */) {
  */
 const extend = (a, b, thisArg, {allOwnKeys}= {}) => {
   forEach(b, (val, key) => {
-    if (thisArg && isFunction(val)) {
+    if (thisArg && isFunction$1(val)) {
       a[key] = bind(val, thisArg);
     } else {
       a[key] = val;
@@ -227838,13 +228906,13 @@ const isTypedArray = (TypedArray => {
  * @returns {void}
  */
 const forEachEntry = (obj, fn) => {
-  const generator = obj && obj[Symbol.iterator];
+  const generator = obj && obj[iterator];
 
-  const iterator = generator.call(obj);
+  const _iterator = generator.call(obj);
 
   let result;
 
-  while ((result = iterator.next()) && !result.done) {
+  while ((result = _iterator.next()) && !result.done) {
     const pair = result.value;
     fn.call(obj, pair[0], pair[1]);
   }
@@ -227914,13 +228982,13 @@ const reduceDescriptors = (obj, reducer) => {
 const freezeMethods = (obj) => {
   reduceDescriptors(obj, (descriptor, name) => {
     // skip restricted props in strict mode
-    if (isFunction(obj) && ['arguments', 'caller', 'callee'].indexOf(name) !== -1) {
+    if (isFunction$1(obj) && ['arguments', 'caller', 'callee'].indexOf(name) !== -1) {
       return false;
     }
 
     const value = obj[name];
 
-    if (!isFunction(value)) return;
+    if (!isFunction$1(value)) return;
 
     descriptor.enumerable = false;
 
@@ -227957,25 +229025,7 @@ const toFiniteNumber = (value, defaultValue) => {
   return value != null && Number.isFinite(value = +value) ? value : defaultValue;
 };
 
-const ALPHA = 'abcdefghijklmnopqrstuvwxyz';
 
-const DIGIT = '0123456789';
-
-const ALPHABET = {
-  DIGIT,
-  ALPHA,
-  ALPHA_DIGIT: ALPHA + ALPHA.toUpperCase() + DIGIT
-};
-
-const generateString = (size = 16, alphabet = ALPHABET.ALPHA_DIGIT) => {
-  let str = '';
-  const {length} = alphabet;
-  while (size--) {
-    str += alphabet[Math.random() * length|0];
-  }
-
-  return str;
-};
 
 /**
  * If the thing is a FormData object, return true, otherwise return false.
@@ -227985,7 +229035,7 @@ const generateString = (size = 16, alphabet = ALPHABET.ALPHA_DIGIT) => {
  * @returns {boolean}
  */
 function isSpecCompliantForm(thing) {
-  return !!(thing && isFunction(thing.append) && thing[Symbol.toStringTag] === 'FormData' && thing[Symbol.iterator]);
+  return !!(thing && isFunction$1(thing.append) && thing[toStringTag] === 'FormData' && thing[iterator]);
 }
 
 const toJSONObject = (obj) => {
@@ -227996,6 +229046,11 @@ const toJSONObject = (obj) => {
     if (isObject(source)) {
       if (stack.indexOf(source) >= 0) {
         return;
+      }
+
+      //Buffer check
+      if (isBuffer(source)) {
+        return source;
       }
 
       if(!('toJSON' in source)) {
@@ -228022,7 +229077,7 @@ const toJSONObject = (obj) => {
 const isAsyncFn = kindOfTest('AsyncFunction');
 
 const isThenable = (thing) =>
-  thing && (isObject(thing) || isFunction(thing)) && isFunction(thing.then) && isFunction(thing.catch);
+  thing && (isObject(thing) || isFunction$1(thing)) && isFunction$1(thing.then) && isFunction$1(thing.catch);
 
 // original code
 // https://github.com/DigitalBrainJS/AxiosPromise/blob/16deab13710ec09779922131f3fa5954320f83ab/lib/utils.js#L11-L34
@@ -228046,13 +229101,17 @@ const _setImmediate = ((setImmediateSupported, postMessageSupported) => {
   })(`axios@${Math.random()}`, []) : (cb) => setTimeout(cb);
 })(
   typeof setImmediate === 'function',
-  isFunction(_global.postMessage)
+  isFunction$1(_global.postMessage)
 );
 
 const asap = typeof queueMicrotask !== 'undefined' ?
   queueMicrotask.bind(_global) : ( typeof process !== 'undefined' && process.nextTick || _setImmediate);
 
 // *********************
+
+
+const isIterable = (thing) => thing != null && isFunction$1(thing[iterator]);
+
 
 const utils$1 = {
   isArray,
@@ -228065,6 +229124,7 @@ const utils$1 = {
   isBoolean,
   isObject,
   isPlainObject,
+  isEmptyObject,
   isReadableStream,
   isRequest,
   isResponse,
@@ -228074,7 +229134,7 @@ const utils$1 = {
   isFile,
   isBlob,
   isRegExp,
-  isFunction,
+  isFunction: isFunction$1,
   isStream,
   isURLSearchParams,
   isTypedArray,
@@ -228104,14 +229164,13 @@ const utils$1 = {
   findKey,
   global: _global,
   isContextDefined,
-  ALPHABET,
-  generateString,
   isSpecCompliantForm,
   toJSONObject,
   isAsyncFn,
   isThenable,
   setImmediate: _setImmediate,
-  asap
+  asap,
+  isIterable
 };
 
 /**
@@ -228201,11 +229260,18 @@ AxiosError.from = (error, code, config, request, response, customProps) => {
     return prop !== 'isAxiosError';
   });
 
-  AxiosError.call(axiosError, error.message, code, config, request, response);
+  const msg = error && error.message ? error.message : 'Error';
 
-  axiosError.cause = error;
+  // Prefer explicit code; otherwise copy the low-level error's code (e.g. ECONNREFUSED)
+  const errCode = code == null && error ? error.code : code;
+  AxiosError.call(axiosError, msg, errCode, config, request, response);
 
-  axiosError.name = error.name;
+  // Chain the original error on the standard field; non-enumerable to avoid JSON noise
+  if (error && axiosError.cause == null) {
+    Object.defineProperty(axiosError, 'cause', { value: error, configurable: true });
+  }
+
+  axiosError.name = (error && error.name) || 'Error';
 
   customProps && Object.assign(axiosError, customProps);
 
@@ -228325,6 +229391,10 @@ function toFormData(obj, formData, options) {
 
     if (utils$1.isDate(value)) {
       return value.toISOString();
+    }
+
+    if (utils$1.isBoolean(value)) {
+      return value.toString();
     }
 
     if (!useBlob && utils$1.isBlob(value)) {
@@ -228489,9 +229559,7 @@ function encode(val) {
     replace(/%3A/gi, ':').
     replace(/%24/g, '$').
     replace(/%2C/gi, ',').
-    replace(/%20/g, '+').
-    replace(/%5B/gi, '[').
-    replace(/%5D/gi, ']');
+    replace(/%20/g, '+');
 }
 
 /**
@@ -228499,7 +229567,7 @@ function encode(val) {
  *
  * @param {string} url The base of the url (e.g., http://www.google.com)
  * @param {object} [params] The params to be appended
- * @param {?object} options
+ * @param {?(object|Function)} options
  *
  * @returns {string} The formatted url
  */
@@ -228510,6 +229578,12 @@ function buildURL(url, params, options) {
   }
   
   const _encode = options && options.encode || encode;
+
+  if (utils$1.isFunction(options)) {
+    options = {
+      serialize: options
+    };
+  } 
 
   const serializeFn = options && options.serialize;
 
@@ -228611,6 +229685,29 @@ const transitionalDefaults = {
 
 const URLSearchParams = url__default["default"].URLSearchParams;
 
+const ALPHA = 'abcdefghijklmnopqrstuvwxyz';
+
+const DIGIT = '0123456789';
+
+const ALPHABET = {
+  DIGIT,
+  ALPHA,
+  ALPHA_DIGIT: ALPHA + ALPHA.toUpperCase() + DIGIT
+};
+
+const generateString = (size = 16, alphabet = ALPHABET.ALPHA_DIGIT) => {
+  let str = '';
+  const {length} = alphabet;
+  const randomValues = new Uint32Array(size);
+  crypto__default["default"].randomFillSync(randomValues);
+  for (let i = 0; i < size; i++) {
+    str += alphabet[randomValues[i] % length];
+  }
+
+  return str;
+};
+
+
 const platform$1 = {
   isNode: true,
   classes: {
@@ -228618,6 +229715,8 @@ const platform$1 = {
     FormData: FormData__default["default"],
     Blob: typeof Blob !== 'undefined' && Blob || null
   },
+  ALPHABET,
+  generateString,
   protocols: [ 'http', 'https', 'file', 'data' ]
 };
 
@@ -228680,7 +229779,7 @@ const platform = {
 };
 
 function toURLEncodedForm(data, options) {
-  return toFormData(data, new platform.classes.URLSearchParams(), Object.assign({
+  return toFormData(data, new platform.classes.URLSearchParams(), {
     visitor: function(value, key, path, helpers) {
       if (platform.isNode && utils$1.isBuffer(value)) {
         this.append(key, value.toString('base64'));
@@ -228688,8 +229787,9 @@ function toURLEncodedForm(data, options) {
       }
 
       return helpers.defaultVisitor.apply(this, arguments);
-    }
-  }, options));
+    },
+    ...options
+  });
 }
 
 /**
@@ -228885,7 +229985,7 @@ const defaults = {
       const strictJSONParsing = !silentJSONParsing && JSONRequested;
 
       try {
-        return JSON.parse(data);
+        return JSON.parse(data, this.parseReviver);
       } catch (e) {
         if (strictJSONParsing) {
           if (e.name === 'SyntaxError') {
@@ -229083,10 +230183,18 @@ class AxiosHeaders {
       setHeaders(header, valueOrRewrite);
     } else if(utils$1.isString(header) && (header = header.trim()) && !isValidHeaderName(header)) {
       setHeaders(parseHeaders(header), valueOrRewrite);
-    } else if (utils$1.isHeaders(header)) {
-      for (const [key, value] of header.entries()) {
-        setHeader(value, key, rewrite);
+    } else if (utils$1.isObject(header) && utils$1.isIterable(header)) {
+      let obj = {}, dest, key;
+      for (const entry of header) {
+        if (!utils$1.isArray(entry)) {
+          throw TypeError('Object iterator must return a key-value pair');
+        }
+
+        obj[key = entry[0]] = (dest = obj[key]) ?
+          (utils$1.isArray(dest) ? [...dest, entry[1]] : [dest, entry[1]]) : entry[1];
       }
+
+      setHeaders(obj, valueOrRewrite);
     } else {
       header != null && setHeader(valueOrRewrite, header, rewrite);
     }
@@ -229226,6 +230334,10 @@ class AxiosHeaders {
 
   toString() {
     return Object.entries(this.toJSON()).map(([header, value]) => header + ': ' + value).join('\n');
+  }
+
+  getSetCookie() {
+    return this.get("set-cookie") || [];
   }
 
   get [Symbol.toStringTag]() {
@@ -229392,14 +230504,15 @@ function combineURLs(baseURL, relativeURL) {
  *
  * @returns {string} The combined full path
  */
-function buildFullPath(baseURL, requestedURL) {
-  if (baseURL && !isAbsoluteURL(requestedURL)) {
+function buildFullPath(baseURL, requestedURL, allowAbsoluteUrls) {
+  let isRelativeUrl = !isAbsoluteURL(requestedURL);
+  if (baseURL && (isRelativeUrl || allowAbsoluteUrls == false)) {
     return combineURLs(baseURL, requestedURL);
   }
   return requestedURL;
 }
 
-const VERSION = "1.7.7";
+const VERSION = "1.12.1";
 
 function parseProtocol(url) {
   const match = /^([-+\w]{1,25})(:?\/\/|:)/.exec(url);
@@ -229609,9 +230722,9 @@ const readBlob = async function* (blob) {
 
 const readBlob$1 = readBlob;
 
-const BOUNDARY_ALPHABET = utils$1.ALPHABET.ALPHA_DIGIT + '-_';
+const BOUNDARY_ALPHABET = platform.ALPHABET.ALPHA_DIGIT + '-_';
 
-const textEncoder = new util.TextEncoder();
+const textEncoder = typeof TextEncoder === 'function' ? new TextEncoder() : new util__default["default"].TextEncoder();
 
 const CRLF = '\r\n';
 const CRLF_BYTES = textEncoder.encode(CRLF);
@@ -229669,7 +230782,7 @@ const formDataToStream = (form, headersHandler, options) => {
   const {
     tag = 'form-data-boundary',
     size = 25,
-    boundary = tag + '-' + utils$1.generateString(size, BOUNDARY_ALPHABET)
+    boundary = tag + '-' + platform.generateString(size, BOUNDARY_ALPHABET)
   } = options || {};
 
   if(!utils$1.isFormData(form)) {
@@ -229681,7 +230794,7 @@ const formDataToStream = (form, headersHandler, options) => {
   }
 
   const boundaryBytes = textEncoder.encode('--' + boundary + CRLF);
-  const footerBytes = textEncoder.encode('--' + boundary + '--' + CRLF + CRLF);
+  const footerBytes = textEncoder.encode('--' + boundary + '--' + CRLF);
   let contentLength = footerBytes.byteLength;
 
   const parts = Array.from(form.entries()).map(([name, value]) => {
@@ -229827,7 +230940,7 @@ function throttle(fn, freq) {
       clearTimeout(timer);
       timer = null;
     }
-    fn.apply(null, args);
+    fn(...args);
   };
 
   const throttled = (...args) => {
@@ -229892,6 +231005,80 @@ const progressEventDecorator = (total, throttled) => {
 
 const asyncDecorator = (fn) => (...args) => utils$1.asap(() => fn(...args));
 
+/**
+ * Estimate decoded byte length of a data:// URL *without* allocating large buffers.
+ * - For base64: compute exact decoded size using length and padding;
+ *               handle %XX at the character-count level (no string allocation).
+ * - For non-base64: use UTF-8 byteLength of the encoded body as a safe upper bound.
+ *
+ * @param {string} url
+ * @returns {number}
+ */
+function estimateDataURLDecodedBytes(url) {
+  if (!url || typeof url !== 'string') return 0;
+  if (!url.startsWith('data:')) return 0;
+
+  const comma = url.indexOf(',');
+  if (comma < 0) return 0;
+
+  const meta = url.slice(5, comma);
+  const body = url.slice(comma + 1);
+  const isBase64 = /;base64/i.test(meta);
+
+  if (isBase64) {
+    let effectiveLen = body.length;
+    const len = body.length; // cache length
+
+    for (let i = 0; i < len; i++) {
+      if (body.charCodeAt(i) === 37 /* '%' */ && i + 2 < len) {
+        const a = body.charCodeAt(i + 1);
+        const b = body.charCodeAt(i + 2);
+        const isHex =
+          ((a >= 48 && a <= 57) || (a >= 65 && a <= 70) || (a >= 97 && a <= 102)) &&
+          ((b >= 48 && b <= 57) || (b >= 65 && b <= 70) || (b >= 97 && b <= 102));
+
+        if (isHex) {
+          effectiveLen -= 2;
+          i += 2;
+        }
+      }
+    }
+
+    let pad = 0;
+    let idx = len - 1;
+
+    const tailIsPct3D = (j) =>
+      j >= 2 &&
+      body.charCodeAt(j - 2) === 37 && // '%'
+      body.charCodeAt(j - 1) === 51 && // '3'
+      (body.charCodeAt(j) === 68 || body.charCodeAt(j) === 100); // 'D' or 'd'
+
+    if (idx >= 0) {
+      if (body.charCodeAt(idx) === 61 /* '=' */) {
+        pad++;
+        idx--;
+      } else if (tailIsPct3D(idx)) {
+        pad++;
+        idx -= 3;
+      }
+    }
+
+    if (pad === 1 && idx >= 0) {
+      if (body.charCodeAt(idx) === 61 /* '=' */) {
+        pad++;
+      } else if (tailIsPct3D(idx)) {
+        pad++;
+      }
+    }
+
+    const groups = Math.floor(effectiveLen / 4);
+    const bytes = groups * 3 - (pad || 0);
+    return bytes > 0 ? bytes : 0;
+  }
+
+  return Buffer.byteLength(body, 'utf8');
+}
+
 const zlibOptions = {
   flush: zlib__default["default"].constants.Z_SYNC_FLUSH,
   finishFlush: zlib__default["default"].constants.Z_SYNC_FLUSH
@@ -229912,6 +231099,7 @@ const supportedProtocols = platform.protocols.map(protocol => {
   return protocol + ':';
 });
 
+
 const flushOnFinish = (stream, [throttled, flush]) => {
   stream
     .on('end', flush)
@@ -229919,6 +231107,7 @@ const flushOnFinish = (stream, [throttled, flush]) => {
 
   return throttled;
 };
+
 
 /**
  * If the proxy or config beforeRedirects functions are defined, call them with the options
@@ -229949,7 +231138,7 @@ function dispatchBeforeRedirect(options, responseDetails) {
 function setProxy(options, configProxy, location) {
   let proxy = configProxy;
   if (!proxy && proxy !== false) {
-    const proxyUrl = proxyFromEnv.getProxyForUrl(location);
+    const proxyUrl = proxyFromEnv__default["default"].getProxyForUrl(location);
     if (proxyUrl) {
       proxy = new URL(proxyUrl);
     }
@@ -230094,11 +231283,26 @@ const httpAdapter = isHttpAdapterSupported && function httpAdapter(config) {
     }
 
     // Parse url
-    const fullPath = buildFullPath(config.baseURL, config.url);
+    const fullPath = buildFullPath(config.baseURL, config.url, config.allowAbsoluteUrls);
     const parsed = new URL(fullPath, platform.hasBrowserEnv ? platform.origin : undefined);
     const protocol = parsed.protocol || supportedProtocols[0];
 
     if (protocol === 'data:') {
+      // Apply the same semantics as HTTP: only enforce if a finite, non-negative cap is set.
+      if (config.maxContentLength > -1) {
+        // Use the exact string passed to fromDataURI (config.url); fall back to fullPath if needed.
+        const dataUrl = String(config.url || fullPath || '');
+        const estimated = estimateDataURLDecodedBytes(dataUrl);
+
+        if (estimated > config.maxContentLength) {
+          return reject(new AxiosError(
+            'maxContentLength size of ' + config.maxContentLength + ' exceeded',
+            AxiosError.ERR_BAD_RESPONSE,
+            config
+          ));
+        }
+      }
+
       let convertedData;
 
       if (method !== 'GET') {
@@ -230180,7 +231384,7 @@ const httpAdapter = isHttpAdapterSupported && function httpAdapter(config) {
         } catch (e) {
         }
       }
-    } else if (utils$1.isBlob(data)) {
+    } else if (utils$1.isBlob(data) || utils$1.isFile(data)) {
       data.size && headers.setContentType(data.type || 'application/octet-stream');
       headers.setContentLength(data.size || 0);
       data = stream__default["default"].Readable.from(readBlob$1(data));
@@ -230433,7 +231637,7 @@ const httpAdapter = isHttpAdapterSupported && function httpAdapter(config) {
           }
 
           const err = new AxiosError(
-            'maxContentLength size of ' + config.maxContentLength + ' exceeded',
+            'stream has been aborted',
             AxiosError.ERR_BAD_RESPONSE,
             config,
             lastRequest
@@ -230556,68 +231760,18 @@ const httpAdapter = isHttpAdapterSupported && function httpAdapter(config) {
   });
 };
 
-const isURLSameOrigin = platform.hasStandardBrowserEnv ?
+const isURLSameOrigin = platform.hasStandardBrowserEnv ? ((origin, isMSIE) => (url) => {
+  url = new URL(url, platform.origin);
 
-// Standard browser envs have full support of the APIs needed to test
-// whether the request URL is of the same origin as current location.
-  (function standardBrowserEnv() {
-    const msie = platform.navigator && /(msie|trident)/i.test(platform.navigator.userAgent);
-    const urlParsingNode = document.createElement('a');
-    let originURL;
-
-    /**
-    * Parse a URL to discover its components
-    *
-    * @param {String} url The URL to be parsed
-    * @returns {Object}
-    */
-    function resolveURL(url) {
-      let href = url;
-
-      if (msie) {
-        // IE needs attribute set twice to normalize properties
-        urlParsingNode.setAttribute('href', href);
-        href = urlParsingNode.href;
-      }
-
-      urlParsingNode.setAttribute('href', href);
-
-      // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
-      return {
-        href: urlParsingNode.href,
-        protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
-        host: urlParsingNode.host,
-        search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
-        hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
-        hostname: urlParsingNode.hostname,
-        port: urlParsingNode.port,
-        pathname: (urlParsingNode.pathname.charAt(0) === '/') ?
-          urlParsingNode.pathname :
-          '/' + urlParsingNode.pathname
-      };
-    }
-
-    originURL = resolveURL(window.location.href);
-
-    /**
-    * Determine if a URL shares the same origin as the current location
-    *
-    * @param {String} requestURL The URL to test
-    * @returns {boolean} True if URL shares the same origin, otherwise false
-    */
-    return function isURLSameOrigin(requestURL) {
-      const parsed = (utils$1.isString(requestURL)) ? resolveURL(requestURL) : requestURL;
-      return (parsed.protocol === originURL.protocol &&
-          parsed.host === originURL.host);
-    };
-  })() :
-
-  // Non standard browser envs (web workers, react-native) lack needed support.
-  (function nonStandardBrowserEnv() {
-    return function isURLSameOrigin() {
-      return true;
-    };
-  })();
+  return (
+    origin.protocol === url.protocol &&
+    origin.host === url.host &&
+    (isMSIE || origin.port === url.port)
+  );
+})(
+  new URL(platform.origin),
+  platform.navigator && /(msie|trident)/i.test(platform.navigator.userAgent)
+) : () => true;
 
 const cookies = platform.hasStandardBrowserEnv ?
 
@@ -230674,7 +231828,7 @@ function mergeConfig(config1, config2) {
   config2 = config2 || {};
   const config = {};
 
-  function getMergedValue(target, source, caseless) {
+  function getMergedValue(target, source, prop, caseless) {
     if (utils$1.isPlainObject(target) && utils$1.isPlainObject(source)) {
       return utils$1.merge.call({caseless}, target, source);
     } else if (utils$1.isPlainObject(source)) {
@@ -230686,11 +231840,11 @@ function mergeConfig(config1, config2) {
   }
 
   // eslint-disable-next-line consistent-return
-  function mergeDeepProperties(a, b, caseless) {
+  function mergeDeepProperties(a, b, prop , caseless) {
     if (!utils$1.isUndefined(b)) {
-      return getMergedValue(a, b, caseless);
+      return getMergedValue(a, b, prop , caseless);
     } else if (!utils$1.isUndefined(a)) {
-      return getMergedValue(undefined, a, caseless);
+      return getMergedValue(undefined, a, prop , caseless);
     }
   }
 
@@ -230748,10 +231902,10 @@ function mergeConfig(config1, config2) {
     socketPath: defaultToConfig2,
     responseEncoding: defaultToConfig2,
     validateStatus: mergeDirectKeys,
-    headers: (a, b) => mergeDeepProperties(headersToObject(a), headersToObject(b), true)
+    headers: (a, b , prop) => mergeDeepProperties(headersToObject(a), headersToObject(b),prop, true)
   };
 
-  utils$1.forEach(Object.keys(Object.assign({}, config1, config2)), function computeConfigValue(prop) {
+  utils$1.forEach(Object.keys({...config1, ...config2}), function computeConfigValue(prop) {
     const merge = mergeMap[prop] || mergeDeepProperties;
     const configValue = merge(config1[prop], config2[prop], prop);
     (utils$1.isUndefined(configValue) && merge !== mergeDirectKeys) || (config[prop] = configValue);
@@ -230763,11 +231917,11 @@ function mergeConfig(config1, config2) {
 const resolveConfig = (config) => {
   const newConfig = mergeConfig({}, config);
 
-  let {data, withXSRFToken, xsrfHeaderName, xsrfCookieName, headers, auth} = newConfig;
+  let { data, withXSRFToken, xsrfHeaderName, xsrfCookieName, headers, auth } = newConfig;
 
   newConfig.headers = headers = AxiosHeaders$1.from(headers);
 
-  newConfig.url = buildURL(buildFullPath(newConfig.baseURL, newConfig.url), config.params, config.paramsSerializer);
+  newConfig.url = buildURL(buildFullPath(newConfig.baseURL, newConfig.url, newConfig.allowAbsoluteUrls), config.params, config.paramsSerializer);
 
   // HTTP basic authentication
   if (auth) {
@@ -230776,17 +231930,21 @@ const resolveConfig = (config) => {
     );
   }
 
-  let contentType;
-
   if (utils$1.isFormData(data)) {
     if (platform.hasStandardBrowserEnv || platform.hasStandardBrowserWebWorkerEnv) {
-      headers.setContentType(undefined); // Let the browser set it
-    } else if ((contentType = headers.getContentType()) !== false) {
-      // fix semicolon duplication issue for ReactNative FormData implementation
-      const [type, ...tokens] = contentType ? contentType.split(';').map(token => token.trim()).filter(Boolean) : [];
-      headers.setContentType([type || 'multipart/form-data', ...tokens].join('; '));
+      headers.setContentType(undefined); // browser handles it
+    } else if (utils$1.isFunction(data.getHeaders)) {
+      // Node.js FormData (like form-data package)
+      const formHeaders = data.getHeaders();
+      // Only set safe headers to avoid overwriting security headers
+      const allowedHeaders = ['content-type', 'content-length'];
+      Object.entries(formHeaders).forEach(([key, val]) => {
+        if (allowedHeaders.includes(key.toLowerCase())) {
+          headers.set(key, val);
+        }
+      });
     }
-  }
+  }  
 
   // Add xsrf header
   // This is only done if running in a standard browser environment.
@@ -230903,15 +232061,18 @@ const xhrAdapter = isXHRAdapterSupported && function (config) {
     };
 
     // Handle low level network errors
-    request.onerror = function handleError() {
-      // Real errors are hidden from us by the browser
-      // onerror should only fire if it's a network error
-      reject(new AxiosError('Network Error', AxiosError.ERR_NETWORK, config, request));
-
-      // Clean up request
-      request = null;
+  request.onerror = function handleError(event) {
+       // Browsers deliver a ProgressEvent in XHR onerror
+       // (message may be empty; when present, surface it)
+       // See https://developer.mozilla.org/docs/Web/API/XMLHttpRequest/error_event
+       const msg = event && event.message ? event.message : 'Network Error';
+       const err = new AxiosError(msg, AxiosError.ERR_NETWORK, config, request);
+       // attach the underlying event for consumers who want details
+       err.event = event || null;
+       reject(err);
+       request = null;
     };
-
+    
     // Handle timeout
     request.ontimeout = function handleTimeout() {
       let timeoutErrorMessage = _config.timeout ? 'timeout of ' + _config.timeout + 'ms exceeded' : 'timeout exceeded';
@@ -231127,14 +232288,18 @@ const trackStream = (stream, chunkSize, onProgress, onFinish) => {
   })
 };
 
-const isFetchSupported = typeof fetch === 'function' && typeof Request === 'function' && typeof Response === 'function';
-const isReadableStreamSupported = isFetchSupported && typeof ReadableStream === 'function';
+const DEFAULT_CHUNK_SIZE = 64 * 1024;
 
-// used only inside the fetch adapter
-const encodeText = isFetchSupported && (typeof TextEncoder === 'function' ?
-    ((encoder) => (str) => encoder.encode(str))(new TextEncoder()) :
-    async (str) => new Uint8Array(await new Response(str).arrayBuffer())
-);
+const {isFunction} = utils$1;
+
+const globalFetchAPI = (({fetch, Request, Response}) => ({
+    fetch, Request, Response
+  }))(utils$1.global);
+
+const {
+  ReadableStream: ReadableStream$1, TextEncoder: TextEncoder$1
+} = utils$1.global;
+
 
 const test = (fn, ...args) => {
   try {
@@ -231144,211 +232309,266 @@ const test = (fn, ...args) => {
   }
 };
 
-const supportsRequestStream = isReadableStreamSupported && test(() => {
-  let duplexAccessed = false;
+const factory = (env) => {
+  const {fetch, Request, Response} = Object.assign({}, globalFetchAPI, env);
+  const isFetchSupported = isFunction(fetch);
+  const isRequestSupported = isFunction(Request);
+  const isResponseSupported = isFunction(Response);
 
-  const hasContentType = new Request(platform.origin, {
-    body: new ReadableStream(),
-    method: 'POST',
-    get duplex() {
-      duplexAccessed = true;
-      return 'half';
-    },
-  }).headers.has('Content-Type');
+  if (!isFetchSupported) {
+    return false;
+  }
 
-  return duplexAccessed && !hasContentType;
-});
+  const isReadableStreamSupported = isFetchSupported && isFunction(ReadableStream$1);
 
-const DEFAULT_CHUNK_SIZE = 64 * 1024;
+  const encodeText = isFetchSupported && (typeof TextEncoder$1 === 'function' ?
+      ((encoder) => (str) => encoder.encode(str))(new TextEncoder$1()) :
+      async (str) => new Uint8Array(await new Request(str).arrayBuffer())
+  );
 
-const supportsResponseStream = isReadableStreamSupported &&
-  test(() => utils$1.isReadableStream(new Response('').body));
+  const supportsRequestStream = isRequestSupported && isReadableStreamSupported && test(() => {
+    let duplexAccessed = false;
 
+    const hasContentType = new Request(platform.origin, {
+      body: new ReadableStream$1(),
+      method: 'POST',
+      get duplex() {
+        duplexAccessed = true;
+        return 'half';
+      },
+    }).headers.has('Content-Type');
 
-const resolvers = {
-  stream: supportsResponseStream && ((res) => res.body)
-};
+    return duplexAccessed && !hasContentType;
+  });
 
-isFetchSupported && (((res) => {
-  ['text', 'arrayBuffer', 'blob', 'formData', 'stream'].forEach(type => {
-    !resolvers[type] && (resolvers[type] = utils$1.isFunction(res[type]) ? (res) => res[type]() :
-      (_, config) => {
+  const supportsResponseStream = isResponseSupported && isReadableStreamSupported &&
+    test(() => utils$1.isReadableStream(new Response('').body));
+
+  const resolvers = {
+    stream: supportsResponseStream && ((res) => res.body)
+  };
+
+  isFetchSupported && ((() => {
+    ['text', 'arrayBuffer', 'blob', 'formData', 'stream'].forEach(type => {
+      !resolvers[type] && (resolvers[type] = (res, config) => {
+        let method = res && res[type];
+
+        if (method) {
+          return method.call(res);
+        }
+
         throw new AxiosError(`Response type '${type}' is not supported`, AxiosError.ERR_NOT_SUPPORT, config);
       });
-  });
-})(new Response));
-
-const getBodyLength = async (body) => {
-  if (body == null) {
-    return 0;
-  }
-
-  if(utils$1.isBlob(body)) {
-    return body.size;
-  }
-
-  if(utils$1.isSpecCompliantForm(body)) {
-    const _request = new Request(platform.origin, {
-      method: 'POST',
-      body,
     });
-    return (await _request.arrayBuffer()).byteLength;
-  }
+  })());
 
-  if(utils$1.isArrayBufferView(body) || utils$1.isArrayBuffer(body)) {
-    return body.byteLength;
-  }
+  const getBodyLength = async (body) => {
+    if (body == null) {
+      return 0;
+    }
 
-  if(utils$1.isURLSearchParams(body)) {
-    body = body + '';
-  }
+    if (utils$1.isBlob(body)) {
+      return body.size;
+    }
 
-  if(utils$1.isString(body)) {
-    return (await encodeText(body)).byteLength;
-  }
-};
-
-const resolveBodyLength = async (headers, body) => {
-  const length = utils$1.toFiniteNumber(headers.getContentLength());
-
-  return length == null ? getBodyLength(body) : length;
-};
-
-const fetchAdapter = isFetchSupported && (async (config) => {
-  let {
-    url,
-    method,
-    data,
-    signal,
-    cancelToken,
-    timeout,
-    onDownloadProgress,
-    onUploadProgress,
-    responseType,
-    headers,
-    withCredentials = 'same-origin',
-    fetchOptions
-  } = resolveConfig(config);
-
-  responseType = responseType ? (responseType + '').toLowerCase() : 'text';
-
-  let composedSignal = composeSignals$1([signal, cancelToken && cancelToken.toAbortSignal()], timeout);
-
-  let request;
-
-  const unsubscribe = composedSignal && composedSignal.unsubscribe && (() => {
-      composedSignal.unsubscribe();
-  });
-
-  let requestContentLength;
-
-  try {
-    if (
-      onUploadProgress && supportsRequestStream && method !== 'get' && method !== 'head' &&
-      (requestContentLength = await resolveBodyLength(headers, data)) !== 0
-    ) {
-      let _request = new Request(url, {
+    if (utils$1.isSpecCompliantForm(body)) {
+      const _request = new Request(platform.origin, {
         method: 'POST',
-        body: data,
-        duplex: "half"
+        body,
       });
-
-      let contentTypeHeader;
-
-      if (utils$1.isFormData(data) && (contentTypeHeader = _request.headers.get('content-type'))) {
-        headers.setContentType(contentTypeHeader);
-      }
-
-      if (_request.body) {
-        const [onProgress, flush] = progressEventDecorator(
-          requestContentLength,
-          progressEventReducer(asyncDecorator(onUploadProgress))
-        );
-
-        data = trackStream(_request.body, DEFAULT_CHUNK_SIZE, onProgress, flush);
-      }
+      return (await _request.arrayBuffer()).byteLength;
     }
 
-    if (!utils$1.isString(withCredentials)) {
-      withCredentials = withCredentials ? 'include' : 'omit';
+    if (utils$1.isArrayBufferView(body) || utils$1.isArrayBuffer(body)) {
+      return body.byteLength;
     }
 
-    // Cloudflare Workers throws when credentials are defined
-    // see https://github.com/cloudflare/workerd/issues/902
-    const isCredentialsSupported = "credentials" in Request.prototype;
-    request = new Request(url, {
-      ...fetchOptions,
-      signal: composedSignal,
-      method: method.toUpperCase(),
-      headers: headers.normalize().toJSON(),
-      body: data,
-      duplex: "half",
-      credentials: isCredentialsSupported ? withCredentials : undefined
+    if (utils$1.isURLSearchParams(body)) {
+      body = body + '';
+    }
+
+    if (utils$1.isString(body)) {
+      return (await encodeText(body)).byteLength;
+    }
+  };
+
+  const resolveBodyLength = async (headers, body) => {
+    const length = utils$1.toFiniteNumber(headers.getContentLength());
+
+    return length == null ? getBodyLength(body) : length;
+  };
+
+  return async (config) => {
+    let {
+      url,
+      method,
+      data,
+      signal,
+      cancelToken,
+      timeout,
+      onDownloadProgress,
+      onUploadProgress,
+      responseType,
+      headers,
+      withCredentials = 'same-origin',
+      fetchOptions
+    } = resolveConfig(config);
+
+    responseType = responseType ? (responseType + '').toLowerCase() : 'text';
+
+    let composedSignal = composeSignals$1([signal, cancelToken && cancelToken.toAbortSignal()], timeout);
+
+    let request = null;
+
+    const unsubscribe = composedSignal && composedSignal.unsubscribe && (() => {
+      composedSignal.unsubscribe();
     });
 
-    let response = await fetch(request);
+    let requestContentLength;
 
-    const isStreamResponse = supportsResponseStream && (responseType === 'stream' || responseType === 'response');
+    try {
+      if (
+        onUploadProgress && supportsRequestStream && method !== 'get' && method !== 'head' &&
+        (requestContentLength = await resolveBodyLength(headers, data)) !== 0
+      ) {
+        let _request = new Request(url, {
+          method: 'POST',
+          body: data,
+          duplex: "half"
+        });
 
-    if (supportsResponseStream && (onDownloadProgress || (isStreamResponse && unsubscribe))) {
-      const options = {};
+        let contentTypeHeader;
 
-      ['status', 'statusText', 'headers'].forEach(prop => {
-        options[prop] = response[prop];
-      });
-
-      const responseContentLength = utils$1.toFiniteNumber(response.headers.get('content-length'));
-
-      const [onProgress, flush] = onDownloadProgress && progressEventDecorator(
-        responseContentLength,
-        progressEventReducer(asyncDecorator(onDownloadProgress), true)
-      ) || [];
-
-      response = new Response(
-        trackStream(response.body, DEFAULT_CHUNK_SIZE, onProgress, () => {
-          flush && flush();
-          unsubscribe && unsubscribe();
-        }),
-        options
-      );
-    }
-
-    responseType = responseType || 'text';
-
-    let responseData = await resolvers[utils$1.findKey(resolvers, responseType) || 'text'](response, config);
-
-    !isStreamResponse && unsubscribe && unsubscribe();
-
-    return await new Promise((resolve, reject) => {
-      settle(resolve, reject, {
-        data: responseData,
-        headers: AxiosHeaders$1.from(response.headers),
-        status: response.status,
-        statusText: response.statusText,
-        config,
-        request
-      });
-    })
-  } catch (err) {
-    unsubscribe && unsubscribe();
-
-    if (err && err.name === 'TypeError' && /fetch/i.test(err.message)) {
-      throw Object.assign(
-        new AxiosError('Network Error', AxiosError.ERR_NETWORK, config, request),
-        {
-          cause: err.cause || err
+        if (utils$1.isFormData(data) && (contentTypeHeader = _request.headers.get('content-type'))) {
+          headers.setContentType(contentTypeHeader);
         }
-      )
-    }
 
-    throw AxiosError.from(err, err && err.code, config, request);
+        if (_request.body) {
+          const [onProgress, flush] = progressEventDecorator(
+            requestContentLength,
+            progressEventReducer(asyncDecorator(onUploadProgress))
+          );
+
+          data = trackStream(_request.body, DEFAULT_CHUNK_SIZE, onProgress, flush);
+        }
+      }
+
+      if (!utils$1.isString(withCredentials)) {
+        withCredentials = withCredentials ? 'include' : 'omit';
+      }
+
+      // Cloudflare Workers throws when credentials are defined
+      // see https://github.com/cloudflare/workerd/issues/902
+      const isCredentialsSupported = isRequestSupported && "credentials" in Request.prototype;
+
+      const resolvedOptions = {
+        ...fetchOptions,
+        signal: composedSignal,
+        method: method.toUpperCase(),
+        headers: headers.normalize().toJSON(),
+        body: data,
+        duplex: "half",
+        credentials: isCredentialsSupported ? withCredentials : undefined
+      };
+
+      request = isRequestSupported && new Request(url, resolvedOptions);
+
+      let response = await (isRequestSupported ? fetch(request, fetchOptions) : fetch(url, resolvedOptions));
+
+      const isStreamResponse = supportsResponseStream && (responseType === 'stream' || responseType === 'response');
+
+      if (supportsResponseStream && (onDownloadProgress || (isStreamResponse && unsubscribe))) {
+        const options = {};
+
+        ['status', 'statusText', 'headers'].forEach(prop => {
+          options[prop] = response[prop];
+        });
+
+        const responseContentLength = utils$1.toFiniteNumber(response.headers.get('content-length'));
+
+        const [onProgress, flush] = onDownloadProgress && progressEventDecorator(
+          responseContentLength,
+          progressEventReducer(asyncDecorator(onDownloadProgress), true)
+        ) || [];
+
+        response = new Response(
+          trackStream(response.body, DEFAULT_CHUNK_SIZE, onProgress, () => {
+            flush && flush();
+            unsubscribe && unsubscribe();
+          }),
+          options
+        );
+      }
+
+      responseType = responseType || 'text';
+
+      let responseData = await resolvers[utils$1.findKey(resolvers, responseType) || 'text'](response, config);
+
+      !isStreamResponse && unsubscribe && unsubscribe();
+
+      return await new Promise((resolve, reject) => {
+        settle(resolve, reject, {
+          data: responseData,
+          headers: AxiosHeaders$1.from(response.headers),
+          status: response.status,
+          statusText: response.statusText,
+          config,
+          request
+        });
+      })
+    } catch (err) {
+      unsubscribe && unsubscribe();
+
+      if (err && err.name === 'TypeError' && /Load failed|fetch/i.test(err.message)) {
+        throw Object.assign(
+          new AxiosError('Network Error', AxiosError.ERR_NETWORK, config, request),
+          {
+            cause: err.cause || err
+          }
+        )
+      }
+
+      throw AxiosError.from(err, err && err.code, config, request);
+    }
   }
-});
+};
+
+const seedCache = new Map();
+
+const getFetch = (config) => {
+  let env = utils$1.merge.call({
+    skipUndefined: true
+  }, globalFetchAPI, config ? config.env : null);
+
+  const {fetch, Request, Response} = env;
+
+  const seeds = [
+    Request, Response, fetch
+  ];
+
+  let len = seeds.length, i = len,
+    seed, target, map = seedCache;
+
+  while (i--) {
+    seed = seeds[i];
+    target = map.get(seed);
+
+    target === undefined && map.set(seed, target = (i ? new Map() : factory(env)));
+
+    map = target;
+  }
+
+  return target;
+};
+
+getFetch();
 
 const knownAdapters = {
   http: httpAdapter,
   xhr: xhrAdapter,
-  fetch: fetchAdapter
+  fetch: {
+    get: getFetch,
+  }
 };
 
 utils$1.forEach(knownAdapters, (fn, value) => {
@@ -231367,7 +232587,7 @@ const renderReason = (reason) => `- ${reason}`;
 const isResolvedHandle = (adapter) => utils$1.isFunction(adapter) || adapter === null || adapter === false;
 
 const adapters = {
-  getAdapter: (adapters) => {
+  getAdapter: (adapters, config) => {
     adapters = utils$1.isArray(adapters) ? adapters : [adapters];
 
     const {length} = adapters;
@@ -231390,7 +232610,7 @@ const adapters = {
         }
       }
 
-      if (adapter) {
+      if (adapter && (utils$1.isFunction(adapter) || (adapter = adapter.get(config)))) {
         break;
       }
 
@@ -231458,7 +232678,7 @@ function dispatchRequest(config) {
     config.headers.setContentType('application/x-www-form-urlencoded', false);
   }
 
-  const adapter = adapters.getAdapter(config.adapter || defaults$1.adapter);
+  const adapter = adapters.getAdapter(config.adapter || defaults$1.adapter, config);
 
   return adapter(config).then(function onAdapterResolution(response) {
     throwIfCancellationRequested(config);
@@ -231541,6 +232761,14 @@ validators$1.transitional = function transitional(validator, version, message) {
   };
 };
 
+validators$1.spelling = function spelling(correctSpelling) {
+  return (value, opt) => {
+    // eslint-disable-next-line no-console
+    console.warn(`${opt} is likely a misspelling of ${correctSpelling}`);
+    return true;
+  }
+};
+
 /**
  * Assert object's properties type
  *
@@ -231590,7 +232818,7 @@ const validators = validator.validators;
  */
 class Axios {
   constructor(instanceConfig) {
-    this.defaults = instanceConfig;
+    this.defaults = instanceConfig || {};
     this.interceptors = {
       request: new InterceptorManager$1(),
       response: new InterceptorManager$1()
@@ -231610,9 +232838,9 @@ class Axios {
       return await this._request(configOrUrl, config);
     } catch (err) {
       if (err instanceof Error) {
-        let dummy;
+        let dummy = {};
 
-        Error.captureStackTrace ? Error.captureStackTrace(dummy = {}) : (dummy = new Error());
+        Error.captureStackTrace ? Error.captureStackTrace(dummy) : (dummy = new Error());
 
         // slice off the Error: ... line
         const stack = dummy.stack ? dummy.stack.replace(/^.+\n/, '') : '';
@@ -231667,6 +232895,18 @@ class Axios {
       }
     }
 
+    // Set config.allowAbsoluteUrls
+    if (config.allowAbsoluteUrls !== undefined) ; else if (this.defaults.allowAbsoluteUrls !== undefined) {
+      config.allowAbsoluteUrls = this.defaults.allowAbsoluteUrls;
+    } else {
+      config.allowAbsoluteUrls = true;
+    }
+
+    validator.assertOptions(config, {
+      baseUrl: validators.spelling('baseURL'),
+      withXsrfToken: validators.spelling('withXSRFToken')
+    }, true);
+
     // Set config.method
     config.method = (config.method || this.defaults.method || 'get').toLowerCase();
 
@@ -231709,8 +232949,8 @@ class Axios {
 
     if (!synchronousRequestInterceptors) {
       const chain = [dispatchRequest.bind(this), undefined];
-      chain.unshift.apply(chain, requestInterceptorChain);
-      chain.push.apply(chain, responseInterceptorChain);
+      chain.unshift(...requestInterceptorChain);
+      chain.push(...responseInterceptorChain);
       len = chain.length;
 
       promise = Promise.resolve(config);
@@ -231757,7 +232997,7 @@ class Axios {
 
   getUri(config) {
     config = mergeConfig(this.defaults, config);
-    const fullPath = buildFullPath(config.baseURL, config.url);
+    const fullPath = buildFullPath(config.baseURL, config.url, config.allowAbsoluteUrls);
     return buildURL(fullPath, config.params, config.paramsSerializer);
   }
 }
