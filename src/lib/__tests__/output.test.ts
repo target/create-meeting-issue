@@ -1,10 +1,16 @@
-import { afterEach, describe, expect, test, vi } from 'vitest'
-
 import { setOutput } from '@actions/core'
 import { DateTime } from 'luxon'
+import { afterEach, describe, expect, test, vi } from 'vitest'
 
 import octokit from '../getOctokit'
 import output from '../output'
+
+vi.mock('../getOctokit', () => ({
+	__esModule: true,
+	default: { rest: { issues: { create: vi.fn() } } },
+}))
+
+vi.mock('@actions/core')
 
 const MOCK_OWNER = 'test-owner'
 const MOCK_REPO = 'test-repo'
@@ -13,13 +19,6 @@ const MOCK_DATE = DateTime.fromISO('2025-01-15T14:30:00Z')
 const MOCK_LOCATION = 'test-location'
 
 describe('output', () => {
-	vi.mock('../getOctokit', () => ({
-		__esModule: true,
-		default: { rest: { issues: { create: vi.fn() } } },
-	}))
-
-	vi.mock('@actions/core')
-
 	afterEach(() => {
 		vi.resetAllMocks()
 	})
@@ -29,7 +28,7 @@ describe('output', () => {
 			html_url: 'https://github.com/test-org/test-repo/issues/1',
 		}
 		vi.spyOn(octokit.rest.issues, 'create').mockResolvedValue({
-			//@ts-ignore - we don't need the whole thing
+			//@ts-expect-error - we don't need the whole thing
 			data: newIssue,
 		})
 

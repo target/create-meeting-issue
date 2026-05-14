@@ -1,6 +1,5 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
-
 import { DateTime } from 'luxon'
+import { describe, expect, test } from 'vitest'
 import generateMeetingTimes from '../generateMeetingTimes'
 
 const MOCK_TIMEZONES = ['UTC', 'America/Chicago', 'Asia/Kolkata']

@@ -3,14 +3,14 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import getLabeledIssuesAndPRs from '../getLabeledIssuesAndPRs'
 import { paginateIssues } from '../paginateIssues'
 
+vi.mock('../paginateIssues', () => ({
+	paginateIssues: vi.fn(),
+}))
+
 describe('getLabeledIssuesAndPRs', () => {
 	afterEach(() => {
 		vi.clearAllMocks()
 	})
-
-	vi.mock('../paginateIssues', () => ({
-		paginateIssues: vi.fn(),
-	}))
 
 	let mockIssuesAndPRs: any[]
 	let mockOrgWideIssuesAndPRs: any[]
