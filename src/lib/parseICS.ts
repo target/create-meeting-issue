@@ -1,10 +1,9 @@
-import isDST from 'is-dst'
 import { DateTime } from 'luxon'
 import ical from 'node-ical'
 import type { RRule } from 'rrule'
 
 const parseICS = async (icsContents: string) => {
-	let rrule: RRule | undefined = undefined
+	let rrule: RRule | undefined
 	let location = ''
 	try {
 		const icsData = await ical.async.parseICS(icsContents)
@@ -42,34 +41,8 @@ const parseICS = async (icsContents: string) => {
 		throw new Error('Could not find next meeting date in .ics file')
 	}
 
-	// apply my local timezone to nextMeeting
-	const localNextMeeting = DateTime.fromJSDate(nextMeeting)
-
-	// this is done wrong, so we need to manually get the offset hours and add them
-	const offsetHours = localNextMeeting.offset / 60
-
-	// apply the offset hours to localNextMeeting
-	let adjustedLocalNextMeeting: DateTime
-	if (offsetHours < 0) {
-		adjustedLocalNextMeeting = localNextMeeting.plus({
-			hours: Math.abs(offsetHours),
-		})
-	} else {
-		adjustedLocalNextMeeting = localNextMeeting.minus({
-			hours: Math.abs(offsetHours),
-		})
-	}
-
-	// convert nextMeeting to UTC
-	const UTCNextMeeting = adjustedLocalNextMeeting.toUTC()
-
-	// if it is not DST, add an hour. this is due to a bug in Rrule coming from the ics parser in that recurrences do not account for DST traversal
-	// see https://github.com/jkbrzt/rrule/issues/610
-	// node-ical is using rrule, FWIW https://github.com/jens-maus/node-ical/blob/master/package.json#L23
-	const adjustedDate = isDST()
-		? UTCNextMeeting
-		: UTCNextMeeting.plus({ hours: 1 })
-	return { location, nextMeetingDateAndTimeUTC: adjustedDate }
+	const nextMeetingDateAndTimeUTC = DateTime.fromJSDate(nextMeeting).toUTC()
+	return { location, nextMeetingDateAndTimeUTC }
 }
 
 //recursively look for needle within obj

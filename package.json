@@ -10,30 +10,35 @@
 		"test": "vitest",
 		"coverage": "vitest run --coverage"
 	},
-	"keywords": ["actions", "node", "meeting", "agenda", "working-groups"],
+	"keywords": [
+		"actions",
+		"node",
+		"meeting",
+		"agenda",
+		"working-groups"
+	],
 	"engines": {
-		"node": ">=20"
+		"node": ">=24"
 	},
 	"exports": {
 		".": "./dist/index.js"
 	},
 	"dependencies": {
-		"@actions/core": "1.11.1",
-		"@actions/github": "6.0.1",
-		"is-dst": "1.0.0",
-		"isomorphic-dompurify": "2.25.0",
-		"luxon": "3.6.1",
-		"node-ical": "0.20.1"
+		"@actions/core": "3.0.1",
+		"@actions/github": "9.1.1",
+		"isomorphic-dompurify": "3.13.0",
+		"luxon": "3.7.2",
+		"node-ical": "0.26.1"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
-		"@types/luxon": "3.6.2",
-		"@types/node": "22.15.33",
-		"@vercel/ncc": "0.38.3",
-		"@vitest/coverage-v8": "3.2.4",
+		"@biomejs/biome": "2.4.15",
+		"@types/luxon": "3.7.1",
+		"@types/node": "24.12.4",
+		"@vercel/ncc": "0.38.4",
+		"@vitest/coverage-v8": "4.1.6",
 		"rrule": "2.8.1",
-		"typescript": "5.8.3",
-		"vitest": "3.2.4"
+		"typescript": "6.0.3",
+		"vitest": "4.1.6"
 	},
 	"author": "bmuenzenmeyer",
 	"license": "Apache-2.0",

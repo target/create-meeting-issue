@@ -108,18 +108,18 @@ describe('parseICS', () => {
 		expect(nextMeetingDateAndTimeUTC.toLocaleString()).toEqual('12/18/2024')
 	})
 
-	test('during daylight savings time, should not add an hour to the next calculated recurrence', async () => {
+	test('during daylight savings time, should return correct UTC time', async () => {
 		vi.stubEnv('TZ', 'America/New_York')
 		vi.setSystemTime(new Date(2024, 5, 1)) // June 1, 2024
 		const { nextMeetingDateAndTimeUTC } = await parseICS(MOCK_RECURRENCE)
 		expect(nextMeetingDateAndTimeUTC.toISOTime()).toEqual('13:30:00.000Z')
 	})
 
-	test('when it is not daylight savings time, should add an hour to the next calculated recurrence', async () => {
+	test('when it is not daylight savings time, should return correct UTC time', async () => {
 		vi.stubEnv('TZ', 'America/New_York')
 		vi.setSystemTime(new Date(2024, 11, 16)) // December 16, 2024
 		const { nextMeetingDateAndTimeUTC } = await parseICS(MOCK_RECURRENCE)
-		expect(nextMeetingDateAndTimeUTC.toISOTime()).toEqual('14:30:00.000Z')
+		expect(nextMeetingDateAndTimeUTC.toISOTime()).toEqual('13:30:00.000Z')
 	})
 
 	test('should find location if defined', async () => {

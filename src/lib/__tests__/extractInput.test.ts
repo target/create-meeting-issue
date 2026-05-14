@@ -1,9 +1,18 @@
 import { getInput } from '@actions/core'
-import { context } from '@actions/github'
-import { describe, expect, it, vi } from 'vitest'
 import type { Mock } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import extractInput from '../extractInput'
+
+vi.mock('@actions/core')
+vi.mock('@actions/github', () => ({
+	context: {
+		repo: {
+			owner: 'test-owner', // hoisted, so cannot use MOCK_OWNER
+			repo: 'test-repo', // hoisted, so cannot use MOCK_REPO
+		},
+	},
+}))
 
 const MOCK_GITHUB_TOKEN = 'test-token'
 const MOCK_OWNER = 'test-owner'
@@ -13,16 +22,6 @@ const MOCK_SLACK_CHANNEL = 'test-channel'
 const MOCK_TIMEZONES = 'UTC,CST'
 
 describe('extractInput', () => {
-	vi.mock('@actions/core')
-	vi.mock('@actions/github', () => ({
-		context: {
-			repo: {
-				owner: 'test-owner', // hoisted, so cannot use MOCK_OWNER
-				repo: 'test-repo', // hoisted, so cannot use MOCK_REPO
-			},
-		},
-	}))
-
 	describe('extractInput', () => {
 		it('should extract input correctly', () => {
 			;(getInput as Mock).mockImplementation((name: string) => {
