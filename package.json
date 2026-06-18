@@ -7,8 +7,9 @@
 		"dev": "pnpm package --watch",
 		"package": "npx ncc build src/index.ts -o dist --license licenses.txt",
 		"lint": "pnpm biome check src",
-		"test": "vitest",
-		"coverage": "vitest run --coverage"
+		"test": "node --test --experimental-test-module-mocks \"src/**/*.test.ts\"",
+		"test:watch": "node --test --watch --experimental-test-module-mocks \"src/**/*.test.ts\"",
+		"coverage": "node --test --experimental-test-module-mocks --experimental-test-coverage \"src/**/*.test.ts\""
 	},
 	"keywords": [
 		"actions",
@@ -26,7 +27,7 @@
 	"dependencies": {
 		"@actions/core": "3.0.1",
 		"@actions/github": "9.1.1",
-		"isomorphic-dompurify": "3.13.0",
+		"isomorphic-dompurify": "3.17.0",
 		"luxon": "3.7.2",
 		"node-ical": "0.26.1"
 	},
@@ -35,10 +36,8 @@
 		"@types/luxon": "3.7.1",
 		"@types/node": "24.12.4",
 		"@vercel/ncc": "0.38.4",
-		"@vitest/coverage-v8": "4.1.6",
 		"rrule": "2.8.1",
-		"typescript": "6.0.3",
-		"vitest": "4.1.6"
+		"typescript": "6.0.3"
 	},
 	"author": "bmuenzenmeyer",
 	"license": "Apache-2.0",

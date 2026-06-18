@@ -1,15 +1,19 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
+import assert from 'node:assert/strict'
+import { afterEach, beforeEach, describe, mock, test } from 'node:test'
 
-import getLabeledIssuesAndPRs from '../getLabeledIssuesAndPRs'
-import { paginateIssues } from '../paginateIssues'
+const paginateIssues = mock.fn<(...args: any[]) => Promise<any>>()
 
-vi.mock('../paginateIssues', () => ({
-	paginateIssues: vi.fn(),
-}))
+mock.module('../paginateIssues.ts', {
+	namedExports: { paginateIssues },
+})
+
+const { default: getLabeledIssuesAndPRs } = await import(
+	'../getLabeledIssuesAndPRs.ts'
+)
 
 describe('getLabeledIssuesAndPRs', () => {
 	afterEach(() => {
-		vi.clearAllMocks()
+		paginateIssues.mock.resetCalls()
 	})
 
 	let mockIssuesAndPRs: any[]
@@ -54,36 +58,37 @@ describe('getLabeledIssuesAndPRs', () => {
 	})
 
 	test('should return a list of issues and PRs with the agenda label', async () => {
-		;(paginateIssues as any).mockResolvedValue(mockIssuesAndPRs)
+		paginateIssues.mock.mockImplementation(async () => mockIssuesAndPRs)
 
 		const result = await getLabeledIssuesAndPRs('org', 'repo')
-		expect(result).toBe(
+		assert.strictEqual(
+			result,
 			'- [ ] https://github.com/org/repo/issues/1\n- [ ] https://github.com/org/repo/pull/4',
 		)
 	})
 
 	test('should return an empty string if no issues or PRs have the agenda label', async () => {
-		;(paginateIssues as any).mockResolvedValue([])
+		paginateIssues.mock.mockImplementation(async () => [])
 
 		const result = await getLabeledIssuesAndPRs('org', 'repo')
-		expect(result).toBe('')
+		assert.strictEqual(result, '')
 	})
 
 	test('should handle errors gracefully', async () => {
-		;(paginateIssues as any).mockRejectedValue(new Error('Network error'))
+		paginateIssues.mock.mockImplementation(async () => {
+			throw new Error('Network error')
+		})
 
-		const consoleErrorSpy = vi
-			.spyOn(console, 'error')
-			.mockImplementation(() => {})
+		const consoleErrorSpy = mock.method(console, 'error', () => {})
 
 		const result = await getLabeledIssuesAndPRs('org', 'repo')
-		expect(result).toBe('')
-		expect(consoleErrorSpy).toHaveBeenCalledWith(
+		assert.strictEqual(result, '')
+		assert.deepStrictEqual(consoleErrorSpy.mock.calls[0].arguments, [
 			'Error fetching issues',
 			'Network error',
-		)
+		])
 
-		consoleErrorSpy.mockRestore()
+		consoleErrorSpy.mock.restore()
 	})
 
 	test('should use custom agenda label', async () => {
@@ -96,21 +101,21 @@ describe('getLabeledIssuesAndPRs', () => {
 				pull_request: null,
 			},
 		]
-		;(paginateIssues as any).mockResolvedValue(customLabeledIssues)
+		paginateIssues.mock.mockImplementation(async () => customLabeledIssues)
 
 		const result = await getLabeledIssuesAndPRs('org', 'repo', 'meeting-topic')
 
-		expect(result).toBe('- [ ] https://github.com/org/repo/issues/1')
-		expect(paginateIssues).toHaveBeenCalledWith(
+		assert.strictEqual(result, '- [ ] https://github.com/org/repo/issues/1')
+		assert.deepStrictEqual(paginateIssues.mock.calls[0].arguments, [
 			'org',
 			'repo',
 			false,
 			'meeting-topic',
-		)
+		])
 	})
 
 	test('should handle org-wide search', async () => {
-		;(paginateIssues as any).mockResolvedValue(mockOrgWideIssuesAndPRs)
+		paginateIssues.mock.mockImplementation(async () => mockOrgWideIssuesAndPRs)
 
 		const result = await getLabeledIssuesAndPRs(
 			'org',
@@ -119,14 +124,15 @@ describe('getLabeledIssuesAndPRs', () => {
 			true,
 		)
 
-		expect(result).toBe(
+		assert.strictEqual(
+			result,
 			'- [ ] https://github.com/org/repo1/issues/1\n- [ ] https://github.com/org/repo2/pull/4',
 		)
-		expect(paginateIssues).toHaveBeenCalledWith(
+		assert.deepStrictEqual(paginateIssues.mock.calls[0].arguments, [
 			'org',
 			'repo',
 			true,
 			'meeting-topic',
-		)
+		])
 	})
 })

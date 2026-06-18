@@ -1,16 +1,18 @@
-import { setOutput } from '@actions/core'
+import assert from 'node:assert/strict'
+import { afterEach, describe, mock, test } from 'node:test'
 import { DateTime } from 'luxon'
-import { afterEach, describe, expect, test, vi } from 'vitest'
 
-import octokit from '../getOctokit'
-import output from '../output'
+const issuesCreate = mock.fn<(...args: any[]) => Promise<any>>()
+const setOutput = mock.fn()
 
-vi.mock('../getOctokit', () => ({
-	__esModule: true,
-	default: { rest: { issues: { create: vi.fn() } } },
-}))
+mock.module('../getOctokit.ts', {
+	defaultExport: { rest: { issues: { create: issuesCreate } } },
+})
+mock.module('@actions/core', {
+	namedExports: { setOutput },
+})
 
-vi.mock('@actions/core')
+const { default: output } = await import('../output.ts')
 
 const MOCK_OWNER = 'test-owner'
 const MOCK_REPO = 'test-repo'
@@ -18,19 +20,29 @@ const MOCK_CONTENT = 'test content'
 const MOCK_DATE = DateTime.fromISO('2025-01-15T14:30:00Z')
 const MOCK_LOCATION = 'test-location'
 
+// Mirrors vitest's `toHaveBeenCalledWith`: true if any recorded call matches.
+const calledWith = (m: typeof setOutput, ...args: unknown[]) =>
+	m.mock.calls.some((call) => {
+		try {
+			assert.deepStrictEqual(call.arguments, args)
+			return true
+		} catch {
+			return false
+		}
+	})
+
 describe('output', () => {
 	afterEach(() => {
-		vi.resetAllMocks()
+		issuesCreate.mock.resetCalls()
+		setOutput.mock.resetCalls()
+		mock.restoreAll()
 	})
 
 	test('creates an issue and sets outputs when not a dry run', async () => {
 		const newIssue = {
 			html_url: 'https://github.com/test-org/test-repo/issues/1',
 		}
-		vi.spyOn(octokit.rest.issues, 'create').mockResolvedValue({
-			//@ts-expect-error - we don't need the whole thing
-			data: newIssue,
-		})
+		issuesCreate.mock.mockImplementation(async () => ({ data: newIssue }))
 
 		await output(
 			MOCK_OWNER,
@@ -41,21 +53,20 @@ describe('output', () => {
 			MOCK_LOCATION,
 		)
 
-		expect(octokit.rest.issues.create).toHaveBeenCalled()
-		expect(setOutput).toHaveBeenCalledWith('ISSUE_URL', newIssue.html_url)
-		expect(setOutput).toHaveBeenCalledWith(
-			'NEXT_MEETING_DATE',
-			MOCK_DATE.toLocaleString(),
+		assert.ok(issuesCreate.mock.callCount() > 0)
+		assert.ok(calledWith(setOutput, 'ISSUE_URL', newIssue.html_url))
+		assert.ok(
+			calledWith(setOutput, 'NEXT_MEETING_DATE', MOCK_DATE.toLocaleString()),
 		)
-		expect(setOutput).toHaveBeenCalledWith('LOCATION', MOCK_LOCATION)
+		assert.ok(calledWith(setOutput, 'LOCATION', MOCK_LOCATION))
 	})
 
 	test('logs error when issue creation fails', async () => {
 		const error = new Error('Issue creation failed')
-		vi.spyOn(octokit.rest.issues, 'create').mockRejectedValue(error)
-		const consoleErrorSpy = vi
-			.spyOn(console, 'error')
-			.mockImplementation(() => {})
+		issuesCreate.mock.mockImplementation(async () => {
+			throw error
+		})
+		const consoleErrorSpy = mock.method(console, 'error', () => {})
 
 		await output(
 			MOCK_OWNER,
@@ -66,14 +77,14 @@ describe('output', () => {
 			MOCK_LOCATION,
 		)
 
-		expect(consoleErrorSpy).toHaveBeenCalledWith(
+		assert.deepStrictEqual(consoleErrorSpy.mock.calls[0].arguments, [
 			'Error creating issue',
 			error.message,
-		)
+		])
 	})
 
 	test('only logs body content when dry run', async () => {
-		const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
+		const consoleLogSpy = mock.method(console, 'log', () => {})
 
 		await output(
 			MOCK_OWNER,
@@ -84,10 +95,11 @@ describe('output', () => {
 			MOCK_LOCATION,
 		)
 
-		expect(consoleLogSpy).toHaveBeenCalledWith(
-			'Dry run, only outputting issue body',
-		)
-		expect(consoleLogSpy).toHaveBeenCalledWith(MOCK_CONTENT)
-		expect(octokit.rest.issues.create).not.toHaveBeenCalled()
+		const logArgs = consoleLogSpy.mock.calls.map((call) => call.arguments)
+		assert.deepStrictEqual(logArgs, [
+			['Dry run, only outputting issue body'],
+			[MOCK_CONTENT],
+		])
+		assert.strictEqual(issuesCreate.mock.callCount(), 0)
 	})
 })
