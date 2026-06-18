@@ -6,6 +6,7 @@
 		"module": "esnext",
 		"rootDir": "./src",
 		"moduleResolution": "node",
+		"rewriteRelativeImportExtensions": true,
 		"baseUrl": "./",
 		"sourceMap": true,
 		"outDir": "./dist",
@@ -17,5 +18,5 @@
 		"newLine": "lf",
 		"resolveJsonModule": true
 	},
-	"exclude": ["./dist", "./node_modules", "./__tests__", "./coverage"]
+	"exclude": ["./dist", "./node_modules", "src/**/__tests__", "./coverage"]
 }
