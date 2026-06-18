@@ -1,4 +1,4 @@
-import octokit from './getOctokit'
+import octokit from './getOctokit.ts'
 /**
  * Fetches GitHub issues and/or PRs with a specific label
  */

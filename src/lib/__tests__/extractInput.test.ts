@@ -1,18 +1,23 @@
-import { getInput } from '@actions/core'
-import type { Mock } from 'vitest'
-import { describe, expect, it, vi } from 'vitest'
+import assert from 'node:assert/strict'
+import { describe, it, mock } from 'node:test'
 
-import extractInput from '../extractInput'
+const getInput = mock.fn<(name: string) => string | undefined>()
 
-vi.mock('@actions/core')
-vi.mock('@actions/github', () => ({
-	context: {
-		repo: {
-			owner: 'test-owner', // hoisted, so cannot use MOCK_OWNER
-			repo: 'test-repo', // hoisted, so cannot use MOCK_REPO
+mock.module('@actions/core', {
+	namedExports: { getInput },
+})
+mock.module('@actions/github', {
+	namedExports: {
+		context: {
+			repo: {
+				owner: 'test-owner',
+				repo: 'test-repo',
+			},
 		},
 	},
-}))
+})
+
+const { default: extractInput } = await import('../extractInput.ts')
 
 const MOCK_GITHUB_TOKEN = 'test-token'
 const MOCK_OWNER = 'test-owner'
@@ -24,7 +29,7 @@ const MOCK_TIMEZONES = 'UTC,CST'
 describe('extractInput', () => {
 	describe('extractInput', () => {
 		it('should extract input correctly', () => {
-			;(getInput as Mock).mockImplementation((name: string) => {
+			getInput.mock.mockImplementation((name: string) => {
 				const inputs: { [key: string]: string } = {
 					GITHUB_TOKEN: MOCK_GITHUB_TOKEN,
 					MEETING_PATH: MOCK_PATH,
@@ -37,7 +42,7 @@ describe('extractInput', () => {
 
 			const input = extractInput()
 
-			expect(input).toEqual({
+			assert.deepStrictEqual(input, {
 				token: MOCK_GITHUB_TOKEN,
 				org: MOCK_OWNER,
 				repo: MOCK_REPO,
@@ -51,7 +56,7 @@ describe('extractInput', () => {
 		})
 
 		it('should handle optional inputs correctly', () => {
-			;(getInput as Mock).mockImplementation((name: string) => {
+			getInput.mock.mockImplementation((name: string) => {
 				const inputs: { [key: string]: string } = {
 					GITHUB_TOKEN: MOCK_GITHUB_TOKEN,
 					MEETING_PATH: MOCK_PATH,
@@ -62,7 +67,7 @@ describe('extractInput', () => {
 
 			const input = extractInput()
 
-			expect(input).toEqual({
+			assert.deepStrictEqual(input, {
 				token: MOCK_GITHUB_TOKEN,
 				org: MOCK_OWNER,
 				repo: MOCK_REPO,
@@ -76,7 +81,7 @@ describe('extractInput', () => {
 		})
 
 		it('should handle custom agenda label and org wide search', () => {
-			;(getInput as Mock).mockImplementation((name: string) => {
+			getInput.mock.mockImplementation((name: string) => {
 				const inputs: { [key: string]: string } = {
 					GITHUB_TOKEN: MOCK_GITHUB_TOKEN,
 					MEETING_PATH: MOCK_PATH,
@@ -89,7 +94,7 @@ describe('extractInput', () => {
 
 			const input = extractInput()
 
-			expect(input).toEqual({
+			assert.deepStrictEqual(input, {
 				token: MOCK_GITHUB_TOKEN,
 				org: MOCK_OWNER,
 				repo: MOCK_REPO,

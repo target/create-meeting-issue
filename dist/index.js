@@ -87930,12 +87930,12 @@ __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(76760);
 /* harmony import */ var node_path__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(node_path__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var isomorphic_dompurify__WEBPACK_IMPORTED_MODULE_2__ = __nccwpck_require__(65061);
-/* harmony import */ var _lib_createIssueBody__WEBPACK_IMPORTED_MODULE_8__ = __nccwpck_require__(46697);
-/* harmony import */ var _lib_extractInput__WEBPACK_IMPORTED_MODULE_3__ = __nccwpck_require__(21183);
-/* harmony import */ var _lib_generateMeetingTimes__WEBPACK_IMPORTED_MODULE_7__ = __nccwpck_require__(45458);
-/* harmony import */ var _lib_getLabeledIssuesAndPRs__WEBPACK_IMPORTED_MODULE_4__ = __nccwpck_require__(23279);
-/* harmony import */ var _lib_output__WEBPACK_IMPORTED_MODULE_5__ = __nccwpck_require__(89345);
-/* harmony import */ var _lib_parseICS__WEBPACK_IMPORTED_MODULE_6__ = __nccwpck_require__(54744);
+/* harmony import */ var _lib_createIssueBody_js__WEBPACK_IMPORTED_MODULE_8__ = __nccwpck_require__(46697);
+/* harmony import */ var _lib_extractInput_js__WEBPACK_IMPORTED_MODULE_3__ = __nccwpck_require__(21183);
+/* harmony import */ var _lib_generateMeetingTimes_js__WEBPACK_IMPORTED_MODULE_7__ = __nccwpck_require__(45458);
+/* harmony import */ var _lib_getLabeledIssuesAndPRs_js__WEBPACK_IMPORTED_MODULE_4__ = __nccwpck_require__(23279);
+/* harmony import */ var _lib_output_js__WEBPACK_IMPORTED_MODULE_5__ = __nccwpck_require__(89345);
+/* harmony import */ var _lib_parseICS_js__WEBPACK_IMPORTED_MODULE_6__ = __nccwpck_require__(54744);
 
 
 
@@ -87945,7 +87945,7 @@ __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 
 
 
-const { dryRun, meetingPath, org, repo, slackChannel, timezones, agendaLabel, orgWide, } = (0,_lib_extractInput__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A)();
+const { dryRun, meetingPath, org, repo, slackChannel, timezones, agendaLabel, orgWide, } = (0,_lib_extractInput_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A)();
 const isDryRun = dryRun || false;
 let icsContents;
 try {
@@ -87955,12 +87955,12 @@ catch (err) {
     console.error('Error reading .ics', err.message);
     throw err;
 }
-const { location, nextMeetingDateAndTimeUTC } = await (0,_lib_parseICS__WEBPACK_IMPORTED_MODULE_6__/* ["default"] */ .A)(icsContents);
-const nextMeetingDateAndTimesAcrossTimeZones = (0,_lib_generateMeetingTimes__WEBPACK_IMPORTED_MODULE_7__/* ["default"] */ .A)(timezones, nextMeetingDateAndTimeUTC);
-const issues = await (0,_lib_getLabeledIssuesAndPRs__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .A)(org, repo, agendaLabel, orgWide);
-const bodyContent = (0,_lib_createIssueBody__WEBPACK_IMPORTED_MODULE_8__/* ["default"] */ .A)(repo, slackChannel, nextMeetingDateAndTimesAcrossTimeZones, issues, location, agendaLabel);
+const { location, nextMeetingDateAndTimeUTC } = await (0,_lib_parseICS_js__WEBPACK_IMPORTED_MODULE_6__/* ["default"] */ .A)(icsContents);
+const nextMeetingDateAndTimesAcrossTimeZones = (0,_lib_generateMeetingTimes_js__WEBPACK_IMPORTED_MODULE_7__/* ["default"] */ .A)(timezones, nextMeetingDateAndTimeUTC);
+const issues = await (0,_lib_getLabeledIssuesAndPRs_js__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .A)(org, repo, agendaLabel, orgWide);
+const bodyContent = (0,_lib_createIssueBody_js__WEBPACK_IMPORTED_MODULE_8__/* ["default"] */ .A)(repo, slackChannel, nextMeetingDateAndTimesAcrossTimeZones, issues, location, agendaLabel);
 const sanitizedBodyContent = isomorphic_dompurify__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sanitize */ .Ay.sanitize(bodyContent);
-(0,_lib_output__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .A)(org, repo, isDryRun, sanitizedBodyContent, nextMeetingDateAndTimeUTC, location);
+(0,_lib_output_js__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .A)(org, repo, isDryRun, sanitizedBodyContent, nextMeetingDateAndTimeUTC, location);
 
 __webpack_async_result__();
 } catch(e) { __webpack_async_result__(e); } }, 1);
@@ -88130,10 +88130,10 @@ const getLabeledIssuesAndPRs = async (org, repo, agendaLabel = 'agenda', orgWide
 /* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(57358);
-/* harmony import */ var _extractInput__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(21183);
+/* harmony import */ var _extractInput_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(21183);
 
 
-const input = (0,_extractInput__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A)();
+const input = (0,_extractInput_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A)();
 const octokit = (0,_actions_github__WEBPACK_IMPORTED_MODULE_0__/* .getOctokit */ .Q)(input.token);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (octokit);
 
@@ -88147,7 +88147,7 @@ const octokit = (0,_actions_github__WEBPACK_IMPORTED_MODULE_0__/* .getOctokit */
 /* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(82075);
-/* harmony import */ var _getOctokit__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(32593);
+/* harmony import */ var _getOctokit_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(32593);
 
 
 const output = async (org, repo, isDryRun, bodyContent, date, location) => {
@@ -88157,7 +88157,7 @@ const output = async (org, repo, isDryRun, bodyContent, date, location) => {
     }
     else {
         try {
-            const { data: newIssue } = await _getOctokit__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A.rest.issues.create({
+            const { data: newIssue } = await _getOctokit_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A.rest.issues.create({
                 owner: org,
                 repo: repo,
                 title: `Agenda for ${date.toLocaleString()}`,

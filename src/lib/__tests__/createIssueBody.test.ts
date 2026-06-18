@@ -1,5 +1,6 @@
-import { describe, expect, it } from 'vitest'
-import createIssueBody from '../createIssueBody'
+import assert from 'node:assert/strict'
+import { describe, it } from 'node:test'
+import createIssueBody from '../createIssueBody.ts'
 
 const MOCK_REPO = 'test-repo'
 const MOCK_SLACK = 'https://slack.com/test'
@@ -18,7 +19,9 @@ describe('createIssueBody', () => {
 			'agenda',
 		)
 
-		expect(result).toBe(`Agenda for test-repo meeting
+		assert.strictEqual(
+			result,
+			`Agenda for test-repo meeting
 
 ## Meeting Details
 
@@ -35,7 +38,8 @@ Tomorrow
 - Issue 1
 - Issue 2
 
-`)
+`,
+		)
 	})
 
 	it('should generate issue body without slack link', () => {
@@ -48,7 +52,9 @@ Tomorrow
 			'agenda',
 		)
 
-		expect(result).toBe(`Agenda for test-repo meeting
+		assert.strictEqual(
+			result,
+			`Agenda for test-repo meeting
 
 ## Meeting Details
 
@@ -65,7 +71,8 @@ Tomorrow
 - Issue 1
 - Issue 2
 
-`)
+`,
+		)
 	})
 
 	it('should generate issue body with empty issues', () => {
@@ -78,7 +85,9 @@ Tomorrow
 			'agenda',
 		)
 
-		expect(result).toBe(`Agenda for test-repo meeting
+		assert.strictEqual(
+			result,
+			`Agenda for test-repo meeting
 
 ## Meeting Details
 
@@ -94,6 +103,7 @@ Tomorrow
 
 
 
-`)
+`,
+		)
 	})
 })
