@@ -2,12 +2,12 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import DOMPurify from 'isomorphic-dompurify'
 
-import createIssueBody from './lib/createIssueBody'
-import extractInput from './lib/extractInput'
-import generateMeetingTimes from './lib/generateMeetingTimes'
-import getLabeledIssuesAndPRs from './lib/getLabeledIssuesAndPRs'
-import output from './lib/output'
-import parseICS from './lib/parseICS'
+import createIssueBody from './lib/createIssueBody.ts'
+import extractInput from './lib/extractInput.ts'
+import generateMeetingTimes from './lib/generateMeetingTimes.ts'
+import getLabeledIssuesAndPRs from './lib/getLabeledIssuesAndPRs.ts'
+import output from './lib/output.ts'
+import parseICS from './lib/parseICS.ts'
 
 const {
 	dryRun,

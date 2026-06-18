@@ -1,8 +1,10 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
+import assert from 'node:assert/strict'
+import { afterEach, beforeEach, describe, mock, test } from 'node:test'
 
-import parseICS from '../parseICS'
+import parseICS from '../parseICS.ts'
 
 process.env.TZ = 'UTC'
+const ORIGINAL_TZ = process.env.TZ
 
 const MOCK_RECURRENCE = `
 BEGIN:VCALENDAR
@@ -85,45 +87,43 @@ const MOCK_DATE = new Date(2024, 11, 16) // December 16, 2024
 
 describe('parseICS', () => {
 	beforeEach(() => {
-		vi.setSystemTime(MOCK_DATE)
+		mock.timers.enable({ apis: ['Date'], now: MOCK_DATE })
 	})
 	afterEach(() => {
-		vi.unstubAllEnvs()
-		vi.useRealTimers()
+		process.env.TZ = ORIGINAL_TZ
+		mock.timers.reset()
 	})
 
 	test('should throw an error if rrule is not found', async () => {
-		expect(async () => await parseICS('')).rejects.toThrow(
-			'Could not find rrule within .ics file',
-		)
+		await assert.rejects(parseICS(''), /Could not find rrule within \.ics file/)
 	})
 
 	test('should find rrule if defined', async () => {
 		const { nextMeetingDateAndTimeUTC } = await parseICS(MOCK_RECURRENCE)
-		await expect(nextMeetingDateAndTimeUTC).toBeDefined()
+		assert.notStrictEqual(nextMeetingDateAndTimeUTC, undefined)
 	})
 
 	test('should find the next calculated recurrence', async () => {
 		const { nextMeetingDateAndTimeUTC } = await parseICS(MOCK_RECURRENCE)
-		expect(nextMeetingDateAndTimeUTC.toLocaleString()).toEqual('12/18/2024')
+		assert.strictEqual(nextMeetingDateAndTimeUTC.toLocaleString(), '12/18/2024')
 	})
 
 	test('during daylight savings time, should return correct UTC time', async () => {
-		vi.stubEnv('TZ', 'America/New_York')
-		vi.setSystemTime(new Date(2024, 5, 1)) // June 1, 2024
+		process.env.TZ = 'America/New_York'
+		mock.timers.setTime(new Date(2024, 5, 1).getTime()) // June 1, 2024
 		const { nextMeetingDateAndTimeUTC } = await parseICS(MOCK_RECURRENCE)
-		expect(nextMeetingDateAndTimeUTC.toISOTime()).toEqual('13:30:00.000Z')
+		assert.strictEqual(nextMeetingDateAndTimeUTC.toISOTime(), '13:30:00.000Z')
 	})
 
 	test('when it is not daylight savings time, should return correct UTC time', async () => {
-		vi.stubEnv('TZ', 'America/New_York')
-		vi.setSystemTime(new Date(2024, 11, 16)) // December 16, 2024
+		process.env.TZ = 'America/New_York'
+		mock.timers.setTime(new Date(2024, 11, 16).getTime()) // December 16, 2024
 		const { nextMeetingDateAndTimeUTC } = await parseICS(MOCK_RECURRENCE)
-		expect(nextMeetingDateAndTimeUTC.toISOTime()).toEqual('13:30:00.000Z')
+		assert.strictEqual(nextMeetingDateAndTimeUTC.toISOTime(), '13:30:00.000Z')
 	})
 
 	test('should find location if defined', async () => {
 		const { location } = await parseICS(MOCK_RECURRENCE)
-		expect(location).toBeDefined()
+		assert.notStrictEqual(location, undefined)
 	})
 })

@@ -1,7 +1,7 @@
 import { setOutput } from '@actions/core'
 import type { DateTime } from 'luxon'
 
-import octokit from './getOctokit'
+import octokit from './getOctokit.ts'
 
 const output = async (
 	org: string,

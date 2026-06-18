@@ -1,4 +1,4 @@
-import { paginateIssues } from './paginateIssues'
+import { paginateIssues } from './paginateIssues.ts'
 
 /**
  * Fetches all issues and pull requests from the repository or organization that have the specified label.
