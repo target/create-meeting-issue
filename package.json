@@ -27,7 +27,7 @@
 	"dependencies": {
 		"@actions/core": "3.0.1",
 		"@actions/github": "9.1.1",
-		"isomorphic-dompurify": "3.13.0",
+		"isomorphic-dompurify": "3.17.0",
 		"luxon": "3.7.2",
 		"node-ical": "0.26.1"
 	},
