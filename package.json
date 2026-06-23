@@ -49,5 +49,8 @@
 	"bugs": {
 		"url": "https://github.com/target/create-meeting-issue/issues"
 	},
-	"packageManager": "pnpm@10.12.3"
+	"packageManager": "pnpm@10.12.3",
+	"overrides": {
+		"undici": "6.27.0"
+	}
 }
