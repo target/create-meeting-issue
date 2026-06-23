@@ -51,6 +51,7 @@
 	},
 	"packageManager": "pnpm@10.12.3",
 	"overrides": {
-		"undici": "6.27.0"
+		"@octokit/request>undici": "6.27.0",
+		"@actions/http-client>undici": "6.27.0"
 	}
 }
