@@ -33,7 +33,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.0",
-		"@types/luxon": "3.7.1",
+		"@types/luxon": "3.7.2",
 		"@types/node": "24.12.4",
 		"@vercel/ncc": "0.44.0",
 		"rrule": "2.8.1",
