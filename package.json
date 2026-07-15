@@ -32,7 +32,7 @@
 		"node-ical": "0.26.1"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.5.0",
+		"@biomejs/biome": "2.5.2",
 		"@types/luxon": "3.7.2",
 		"@types/node": "24.12.4",
 		"@vercel/ncc": "0.44.0",
