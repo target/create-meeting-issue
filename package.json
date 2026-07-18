@@ -37,7 +37,7 @@
 		"@types/node": "24.12.4",
 		"@vercel/ncc": "0.44.0",
 		"rrule": "2.8.1",
-		"typescript": "6.0.3"
+		"typescript": "7.0.2"
 	},
 	"author": "bmuenzenmeyer",
 	"license": "Apache-2.0",
