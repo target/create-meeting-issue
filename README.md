@@ -45,6 +45,9 @@ on:
 jobs:
   create-meeting:
     runs-on: ubuntu-latest
+    concurrency:
+      group: create-meeting-${{ github.repository }}
+      cancel-in-progress: false
     permissions:
       contents: read
       pull-requests: read
@@ -79,7 +82,7 @@ jobs:
 | `NEXT_MEETING_DATE` | `1/15/2025`                                    | The next meeting date from the `.ics` file. |
 | `LOCATION`          | `https://example.zoom.us/j/foo`                | The meeting location from the `.ics` file.  |
 
-The daily schedule removes the need to time the workflow just before a meeting. The first run creates an issue titled for the next meeting date. Later runs for that occurrence update the same issue, so newly labeled agenda items appear without creating duplicates. After the meeting passes, the calendar advances and the action creates an issue for the next occurrence.
+The daily schedule removes the need to time the workflow just before a meeting. The first run creates an issue titled for the next meeting date. Later runs for that occurrence update the same issue, so newly labeled agenda items appear without creating duplicates. The `concurrency` group is suggested because the action's lookup-then-create operation cannot be made atomic by the action itself; without it, overlapping scheduled and manual runs can create duplicates. After the meeting passes, the calendar advances and the action creates an issue for the next occurrence.
 
 ### Optional manual invocation
 
@@ -100,6 +103,9 @@ on:
 jobs:
   create-meeting:
     runs-on: ubuntu-latest
+    concurrency:
+      group: create-meeting-${{ github.repository }}
+      cancel-in-progress: false
     permissions:
       pull-requests: read
       issues: write
