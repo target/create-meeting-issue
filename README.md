@@ -46,6 +46,7 @@ jobs:
   create-meeting:
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       pull-requests: read
       issues: write
 
