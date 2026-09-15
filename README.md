@@ -2,7 +2,7 @@
 
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/target/create-meeting-issue/badge)](https://scorecard.dev/viewer/?uri=github.com/target/create-meeting-issue)
 
-Automatically scaffold out a meeting using `.ics` recurrence, timezone info, and agenda topics from the issue log and prs.
+Automatically create or update a meeting issue using `.ics` recurrence, timezone info, and agenda topics from the issue log and pull requests.
 
 ## Why?
 
@@ -16,7 +16,7 @@ Upon invocation, the action will:
   - > ⚠️ The recurrence does not know about any moved instances
   - read the location from the meeting, often a zoom, slack huddle, or teams link
 - find all issues and pull requests labeled with the specified agenda label (default: `agenda`) and add them to the upcoming meeting agenda
-- open a new issue with the collected date, timezones, location info, and agenda items
+- create an issue for the next meeting, or update the existing issue for that meeting with the latest agenda items
 - output the issue url, location, and next meeting date for further use by downstream actions
 
 <!--
@@ -38,33 +38,39 @@ name: Create Meeting
 
 on:
   workflow_dispatch:
+  schedule:
+    # Run every day at 12:00 UTC so the next meeting issue stays current.
+    - cron: "0 12 * * *"
 
 jobs:
   create-meeting:
     runs-on: ubuntu-latest
+    concurrency:
+      group: create-meeting-${{ github.repository }}
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: write
 
-permissions:
-  pull-requests: read
-  issues: write
+    steps:
+      - uses: actions/checkout@v4 # use an immutable SHA in production
 
-steps:
-  - uses: actions/checkout@v4 # use an immutable SHA in production
-
-  - uses: target/create-meeting-issue@v1 # use an immutable SHA in production
-    id: create-meeting
-    with:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: target/create-meeting-issue@v1 # use an immutable SHA in production
+        id: create-meeting
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ### Inputs
 
 | Name            | Required | Default       | Description                                                                                                                                                                                                      |
 | --------------- | -------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GITHUB_TOKEN`  | ✅       |               | A token with `pull-request` read access and `issues` write to the repository, used to create an issue.                                                                                                           |
+| `GITHUB_TOKEN`  | ✅       |               | A token with `pull-request` read access and `issues` write to the repository, used to create or update the meeting issue.                                                                                         |
 | `MEETING_PATH`  | ✅       | `meeting.ics` | The path to the recurring `meeting.ics` file.                                                                                                                                                                    |
 | `TIMEZONES`     | ✅       | `Etc/UTC`     | The comma-separated timezones to display for the next meeting. For example, `America/Chicago,Asia/Kolkata`. Use `TZ Identifiers` from [this list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). |
 | `SLACK_CHANNEL` |          |               | The slack channel to mention within the issue body.<br />This input is **not used** in any workflow dispatch logic mentioned later, that is a separate process governed by a webhook originating in Slack.       |
-| `DRY_RUN`       |          | `false`       | If true, only outputs the issue body instead of creating the issue.                                                                                                                                              |
+| `DRY_RUN`       |          | `false`       | If true, only outputs the issue body instead of creating or updating the issue.                                                                                                                                  |
 | `AGENDA_LABEL`  |          | `agenda`      | The label used to identify agenda items to include in the meeting.                                                                                                                                              |
 | `ORG_WIDE`      |          | `false`       | If true, searches for agenda items across the entire organization instead of just the repository.                                                                                                               |
 
@@ -72,11 +78,13 @@ steps:
 
 | Name                | Example                                        | Description                                 |
 | ------------------- | ---------------------------------------------- | ------------------------------------------- |
-| `ISSUE_URL`         | `https://github.com/octocat/example/issues/16` | The url of the issue that was created.      |
+| `ISSUE_URL`         | `https://github.com/octocat/example/issues/16` | The url of the issue created or updated.    |
 | `NEXT_MEETING_DATE` | `1/15/2025`                                    | The next meeting date from the `.ics` file. |
 | `LOCATION`          | `https://example.zoom.us/j/foo`                | The meeting location from the `.ics` file.  |
 
-### Invoke manually prior to the meeting
+The daily schedule removes the need to time the workflow just before a meeting. The first run creates an issue titled for the next meeting date. Later runs for that occurrence update the same issue, so newly labeled agenda items appear without creating duplicates. The `concurrency` group is suggested because the action's lookup-then-create operation cannot be made atomic by the action itself; without it, overlapping scheduled and manual runs can create duplicates. After the meeting passes, the calendar advances and the action creates an issue for the next occurrence.
+
+### Optional manual invocation
 
 [`Run workflow` directly](https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-workflow-runs/manually-running-a-workflow) within the Actions > Create Meeting Workflow screen.
 
@@ -89,10 +97,15 @@ name: Create Meeting
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "0 12 * * *"
 
 jobs:
   create-meeting:
     runs-on: ubuntu-latest
+    concurrency:
+      group: create-meeting-${{ github.repository }}
+      cancel-in-progress: false
     permissions:
       pull-requests: read
       issues: write
@@ -115,6 +128,9 @@ jobs:
   notify-slack:
     runs-on: ubuntu-latest
     needs: create-meeting
+    # Avoid sending a message after every daily refresh. Run this job when the
+    # workflow is manually invoked, or replace this with your desired cadence.
+    if: github.event_name == 'workflow_dispatch'
     permissions: {} # no extra permissions needed
 
     steps:
