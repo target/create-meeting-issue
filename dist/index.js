@@ -88739,7 +88739,7 @@ const nextMeetingDateAndTimesAcrossTimeZones = (0,_lib_generateMeetingTimes_js__
 const issues = await (0,_lib_getLabeledIssuesAndPRs_js__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .A)(org, repo, agendaLabel, orgWide);
 const bodyContent = (0,_lib_createIssueBody_js__WEBPACK_IMPORTED_MODULE_8__/* ["default"] */ .A)(repo, slackChannel, nextMeetingDateAndTimesAcrossTimeZones, issues, location, agendaLabel);
 const sanitizedBodyContent = isomorphic_dompurify__WEBPACK_IMPORTED_MODULE_2__/* ["default"].sanitize */ .Ay.sanitize(bodyContent);
-(0,_lib_output_js__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .A)(org, repo, isDryRun, sanitizedBodyContent, nextMeetingDateAndTimeUTC, location);
+await (0,_lib_output_js__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .A)(org, repo, isDryRun, sanitizedBodyContent, nextMeetingDateAndTimeUTC, location);
 
 __webpack_async_result__();
 } catch(e) { __webpack_async_result__(e); } }, 1);
@@ -88890,7 +88890,9 @@ const getLabeledIssuesAndPRs = async (org, repo, agendaLabel = 'agenda', orgWide
     try {
         // The label filtering is now performed in the pagination API call
         const issuesAndPRs = await paginateIssues(org, repo, orgWide, agendaLabel);
-        return issuesAndPRs.map((item) => `- [ ] ${item.html_url}`).join('\n');
+        return issuesAndPRs
+            .map((item) => `- [ ] ${item.html_url}`)
+            .join('\n');
     }
     catch (err) {
         console.error('Error fetching issues', err.message);
@@ -88929,6 +88931,21 @@ const octokit = (0,_actions_github__WEBPACK_IMPORTED_MODULE_0__/* .getOctokit */
 /* harmony import */ var _getOctokit_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(15034);
 
 
+const findIssueByTitle = async (org, repo, title) => {
+    for await (const response of _getOctokit_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A.paginate.iterator(_getOctokit_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A.rest.issues.listForRepo, {
+        owner: org,
+        repo,
+        state: 'all',
+        sort: 'updated',
+        direction: 'desc',
+        per_page: 100,
+    })) {
+        const issue = response.data.find((candidate) => candidate.title === title && !candidate.pull_request);
+        if (issue) {
+            return issue;
+        }
+    }
+};
 const output = async (org, repo, isDryRun, bodyContent, date, location) => {
     if (isDryRun) {
         console.log('Dry run, only outputting issue body');
@@ -88936,22 +88953,32 @@ const output = async (org, repo, isDryRun, bodyContent, date, location) => {
     }
     else {
         try {
-            const { data: newIssue } = await _getOctokit_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A.rest.issues.create({
-                owner: org,
-                repo: repo,
-                title: `Agenda for ${date.toLocaleString()}`,
-                body: bodyContent,
-            });
+            const title = `Agenda for ${date.toLocaleString()}`;
+            const existingIssue = await findIssueByTitle(org, repo, title);
+            const { data: meetingIssue } = existingIssue
+                ? await _getOctokit_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A.rest.issues.update({
+                    owner: org,
+                    repo,
+                    issue_number: existingIssue.number,
+                    title,
+                    body: bodyContent,
+                })
+                : await _getOctokit_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A.rest.issues.create({
+                    owner: org,
+                    repo,
+                    title,
+                    body: bodyContent,
+                });
             console.log(`Next meeting on ${date.toLocaleString()}`);
-            console.log(`Created issue ${newIssue.html_url}`);
-            (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .setOutput */ .uH)('ISSUE_URL', newIssue.html_url);
+            console.log(`${existingIssue ? 'Updated' : 'Created'} issue ${meetingIssue.html_url}`);
+            (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .setOutput */ .uH)('ISSUE_URL', meetingIssue.html_url);
             (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .setOutput */ .uH)('NEXT_MEETING_DATE', date.toLocaleString());
             if (location) {
                 (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__/* .setOutput */ .uH)('LOCATION', location);
             }
         }
         catch (err) {
-            console.error('Error creating issue', err.message);
+            console.error('Error creating or updating issue', err.message);
         }
     }
 };

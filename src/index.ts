@@ -48,7 +48,7 @@ const bodyContent = createIssueBody(
 
 const sanitizedBodyContent = DOMPurify.sanitize(bodyContent)
 
-output(
+await output(
 	org,
 	repo,
 	isDryRun,
