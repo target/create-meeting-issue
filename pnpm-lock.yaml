@@ -34,8 +34,8 @@ importers:
         specifier: 24.12.4
         version: 24.12.4
       '@vercel/ncc':
-        specifier: 0.44.0
-        version: 0.44.0
+        specifier: 0.45.0
+        version: 0.45.0
       rrule:
         specifier: 2.8.1
         version: 2.8.1
@@ -235,8 +235,8 @@ packages:
   '@types/trusted-types@2.0.7':
     resolution: {integrity: sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==}
 
-  '@vercel/ncc@0.44.0':
-    resolution: {integrity: sha512-pHyI+bZokSgIscTKFSmpNk5vZzmOrb9RW0Vu4SRyqUvkJ0kgg3PzaZLLDVTFXhbUiCqg0/Eu8L4fKtgViA92kg==}
+  '@vercel/ncc@0.45.0':
+    resolution: {integrity: sha512-8zPi1yO2mHpoKTD+e+Bf0ZT3e+sWHSOyGapm9s7b5R0gxJi3CiFTqmeQiMEyu6ejrz2s09M8JkEoUaTWjBJPQQ==}
     hasBin: true
 
   before-after-hook@4.0.0:
@@ -589,7 +589,7 @@ snapshots:
   '@types/trusted-types@2.0.7':
     optional: true
 
-  '@vercel/ncc@0.44.0': {}
+  '@vercel/ncc@0.45.0': {}
 
   before-after-hook@4.0.0: {}
 
