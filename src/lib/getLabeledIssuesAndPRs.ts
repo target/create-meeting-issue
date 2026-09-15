@@ -27,7 +27,9 @@ const getLabeledIssuesAndPRs = async (
 		// The label filtering is now performed in the pagination API call
 		const issuesAndPRs = await paginateIssues(org, repo, orgWide, agendaLabel)
 
-		return issuesAndPRs.map((item) => `- [ ] ${item.html_url}`).join('\n')
+		return issuesAndPRs
+			.map((item: { html_url: string }) => `- [ ] ${item.html_url}`)
+			.join('\n')
 	} catch (err: unknown) {
 		console.error('Error fetching issues', (err as Error).message)
 	}

@@ -85,6 +85,10 @@ updates:
       timezone: "Asia/Kolkata"
     allow:
       - dependency-type: "direct"
+    groups:
+      codeql:
+        patterns:
+          - "github/codeql-action*"
 
   - package-ecosystem: "gomod"
     directory: "/"

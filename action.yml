@@ -1,5 +1,5 @@
 name: "create-meeting-issue"
-description: "Automatically scaffold out a meeting using .ics recurrence, timezone info, and agenda topics from the issue log and prs."
+description: "Automatically create or update a meeting issue using .ics recurrence, timezone info, and agenda topics."
 author: "Brian Muenzenmeyer"
 
 inputs:
@@ -18,7 +18,7 @@ inputs:
     default: "Etc/UTC"
     required: true
   DRY_RUN:
-    description: "If true, only outputs the issue body instead of creating the issue"
+    description: "If true, only outputs the issue body instead of creating or updating the issue"
     required: false
     default: false
   AGENDA_LABEL:
@@ -32,7 +32,7 @@ inputs:
 
 outputs:
   ISSUE_URL:
-    description: "The issue url of the next meeting"
+    description: "The url of the issue created or updated for the next meeting"
   NEXT_MEETING_DATE:
     description: "The date of the next meeting"
   LOCATION:
